@@ -1,5 +1,5 @@
 import { ITheWholeModel, IDrawMaker, ITickable, IDrawable } from "./PureModel/AbstractModelItem";
-import { Planet } from "./PureModel/DrawMakers/Planet";
+import { PlanetDrawer } from "./PureModel/DrawMakers/PlanetDrawer";
 import { LinearMover } from "./PureModel/LinearMover";
 
 
@@ -7,7 +7,7 @@ import { LinearMover } from "./PureModel/LinearMover";
 
 const modelMap = {
     "linear-mover": LinearMover, 
-    "planet": Planet
+    "planet": PlanetDrawer
 } as const; 
 
 
@@ -77,6 +77,11 @@ export class TheWholeModel implements TheWholeModel {
 
     updateProperty(key: string, value: unknown) {
         
+    }
+
+
+    getControllers() : unknown {
+        return ; 
     }
 
 }

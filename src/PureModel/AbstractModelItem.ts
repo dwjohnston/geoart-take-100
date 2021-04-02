@@ -35,3 +35,12 @@ export interface ITheWholeModel  {
     tick: () =>  IDrawable[]; 
     updateProperty: (key: string, value: unknown) => void; // TODO probably have a tighter definition. 
 }
+
+
+export type ControlConfig = {
+
+}
+export interface IControllable<T> {
+    updateValue: (value: T) => void;
+    getControlConfig: ControlConfig; 
+}

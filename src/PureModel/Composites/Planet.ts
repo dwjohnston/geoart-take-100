@@ -1,13 +1,10 @@
-import { IDrawable, IDrawMaker, ITickable, Position } from "../AbstractModelItem";
+import { IControllable, IDrawable, IDrawMaker, ITickable, Position } from "../AbstractModelItem";
 import { PlanetDrawer } from "../DrawMakers/PlanetDrawer";
 import { AbstractNumberMaker, PhasingNumberMaker, StaticNumberMaker } from "../ValueMakers/NumberMakers";
 import { AbstractPositionMaker } from "../ValueMakers/PositionMakers";
 
 
-export class Planet implements ITickable, IDrawMaker {
-
-
-
+export class Planet implements ITickable, IDrawMaker{
 
     private center: AbstractPositionMaker; 
     private orbitSize: AbstractNumberMaker; 
@@ -33,4 +30,9 @@ export class Planet implements ITickable, IDrawMaker {
     getDrawables() : IDrawable[] {
         return this.planetDrawer.getDrawables(); 
     }
+
+    
+
+
+
 }
