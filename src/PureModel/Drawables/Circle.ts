@@ -1,11 +1,11 @@
-import { Canvas, IDrawable } from "../AbstractModelItem";
+import { Canvas, IDrawable, Position } from "../AbstractModelItem";
 
 export class Circle implements IDrawable {
 
-   constructor() {
+   constructor(center: Position, radius: number, color: string) {
 
 }
     draw(ctx : Canvas) {
-
+        
     }
 }

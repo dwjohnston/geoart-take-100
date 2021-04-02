@@ -1,8 +1,14 @@
 
 
-export type Canvas {
+export type Canvas = {
     
     ctx: unknown; 
+}
+
+
+export type Position =  {
+    x: number;  // 0 - 1 
+    y: number;  // 0 - 1 
 }
 
 
