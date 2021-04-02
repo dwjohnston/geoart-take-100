@@ -86,7 +86,8 @@ export class TheWholeModel implements TheWholeModel {
  * 
  *  1. Regularly tick the quartz
  *  2. After each tick, retrieve the drawables
- *  3. Respond to property draw events. 
+ *  3. Declare a list of controllers to put on the FE.  
+ *  4. Respond to property update events. 
  * @param definition 
  */
 export function createModelFromDefinition(definition: Definition) : ITheWholeModel{
