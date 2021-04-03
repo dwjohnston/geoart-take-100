@@ -1,13 +1,16 @@
 import { ITheWholeModel, IDrawMaker, ITickable, IDrawable } from "./PureModel/AbstractModelItem";
 import { PlanetDrawer } from "./PureModel/DrawMakers/PlanetDrawer";
 import { LinearMover } from "./PureModel/LinearMover";
+import { StaticPositionMaker } from "./PureModel/ValueMakers/PositionMakers";
+import {StaticNumberMaker} from "./PureModel/ValueMakers/NumberMakers";
+import { Planet } from "./PureModel/Composites/Planet";
 
 
 
 
 const modelMap = {
     "linear-mover": LinearMover, 
-    "planet": PlanetDrawer
+    "planet": Planet
 } as const; 
 
 
@@ -43,7 +46,7 @@ export class TheWholeModel implements TheWholeModel {
             // @ts-ignore - sort this out later. 
             const modelItem = new modelClass(...v.props);
 
-            
+            console.log(modelItem);
             // This should be ok. 
             //@ts-ignore
             if (modelItem.tick) {
@@ -61,6 +64,8 @@ export class TheWholeModel implements TheWholeModel {
     }; 
 
     tick() {
+
+        console.log(this._tickables);
 
         this._tickables.forEach((v) => {
             v.tick();
@@ -95,8 +100,22 @@ export class TheWholeModel implements TheWholeModel {
  *  4. Respond to property update events. 
  * @param definition 
  */
-export function createModelFromDefinition(definition: Definition) : ITheWholeModel{
+export function createModelFromDefinition(definition: Definition) : TheWholeModel{
 
     return new TheWholeModel(definition);
     
+}
+
+
+export function getRandomModel() : TheWholeModel {
+
+    return createModelFromDefinition([
+        {
+            itemKey: "planet", 
+            props: [new StaticPositionMaker({x: 0.5, y: 0.5}), 
+                new StaticNumberMaker(0.0025), 
+                new StaticNumberMaker(0.25), 
+            ]
+        }
+    ]); 
 }

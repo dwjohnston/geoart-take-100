@@ -2,7 +2,7 @@
 
 export type Canvas = {
     
-    ctx: unknown; 
+    ctx: CanvasRenderingContext2D; 
 }
 
 

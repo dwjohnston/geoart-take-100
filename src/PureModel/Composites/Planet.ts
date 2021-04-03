@@ -24,6 +24,7 @@ export class Planet implements ITickable, IDrawMaker{
     }; 
 
     tick() {
+        console.log(this.phase);
         this.phase.increment(this.speed.getValue());
     }
 

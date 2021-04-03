@@ -35,3 +35,7 @@ code {
 .geo-slider>div {
   flex: 1 0 auto; 
 }
+
+canvas {
+  border: solid 1px black; 
+}

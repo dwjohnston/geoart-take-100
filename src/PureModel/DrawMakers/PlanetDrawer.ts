@@ -21,8 +21,8 @@ export class PlanetDrawer implements IDrawMaker {
 
 
     getDrawables() {
-        return [new Circle(
-            this._center.getPosition(), this._orbitSize.getValue(), COLOR_ORBIT_GREY), 
+        return [
+            new Circle(this._center.getPosition(), this._orbitSize.getValue(), COLOR_ORBIT_GREY), 
 
             new Circle({
                 x: this._center.getPosition().x + (Math.cos((Math.PI * 2 * Math.PI * this._phase.getValue())) * this._orbitSize.getValue()),  
