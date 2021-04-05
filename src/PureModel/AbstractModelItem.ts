@@ -37,10 +37,17 @@ export interface ITheWholeModel  {
 }
 
 
-export type ControlConfig = {
-
+export type ControlConfigItem<TId extends string> = {
+    controlType: "slider", 
+    id: TId, 
+    params: Record<string, unknown>
 }
+
+export type ControlConfigMap = {
+    [key :string]: ControlConfigItem<string> // This isn't quite right
+}; 
+
 export interface IControllable<T> {
     updateValue: (value: T) => void;
-    getControlConfig: ControlConfig; 
+    getControlConfig: ControlConfigMap; 
 }

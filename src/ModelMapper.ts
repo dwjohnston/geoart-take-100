@@ -1,16 +1,18 @@
 import { ITheWholeModel, IDrawMaker, ITickable, IDrawable } from "./PureModel/AbstractModelItem";
 import { PlanetDrawer } from "./PureModel/DrawMakers/PlanetDrawer";
 import { LinearMover } from "./PureModel/LinearMover";
-import { StaticPositionMaker } from "./PureModel/ValueMakers/PositionMakers";
-import {StaticNumberMaker} from "./PureModel/ValueMakers/NumberMakers";
+import { OrbittingPositionMaker, StaticPositionMaker } from "./PureModel/ValueMakers/PositionMakers";
+import {PhasingNumberMaker, StaticNumberMaker, TickingPhasingNumberMaker} from "./PureModel/ValueMakers/NumberMakers";
 import { Planet } from "./PureModel/Composites/Planet";
+import { Linker } from "./PureModel/DrawMakers/Linker";
 
 
 
 
 const modelMap = {
     "linear-mover": LinearMover, 
-    "planet": Planet
+    "planet": Planet, 
+    "linker": Linker, 
 } as const; 
 
 
@@ -46,7 +48,6 @@ export class TheWholeModel implements TheWholeModel {
             // @ts-ignore - sort this out later. 
             const modelItem = new modelClass(...v.props);
 
-            console.log(modelItem);
             // This should be ok. 
             //@ts-ignore
             if (modelItem.tick) {
@@ -60,12 +61,9 @@ export class TheWholeModel implements TheWholeModel {
 
         }); 
 
-
     }; 
 
     tick() {
-
-        console.log(this._tickables);
 
         this._tickables.forEach((v) => {
             v.tick();
@@ -109,13 +107,64 @@ export function createModelFromDefinition(definition: Definition) : TheWholeMode
 
 export function getRandomModel() : TheWholeModel {
 
+
+
+    const planet1Center = new StaticPositionMaker({x: 0.5, y: 0.5}); 
+    const planet2Center =new StaticPositionMaker({x: 0.5, y: 0.5});
+
+    const planet1Speed = new StaticNumberMaker(0.0025, "speed"); 
+    const planet1Radius = new StaticNumberMaker(0.15, "radius"); 
+    const planet1Phase = new TickingPhasingNumberMaker(0, 1, planet1Speed);
+
+    const planet2Speed = new StaticNumberMaker(0.0035, "speed"); 
+    const planet2Radius = new StaticNumberMaker(0.35, "radius"); 
+    const planet2Phase = new TickingPhasingNumberMaker(0, 1, planet2Speed);
+    
+
+    const planet1Position = new OrbittingPositionMaker(planet1Center, planet1Radius, planet1Speed, planet1Phase); 
+    const planet2Position = new OrbittingPositionMaker(planet2Center, planet2Radius, planet2Speed, planet2Phase); 
+
+
+    const planet1Drawmaker = new PlanetDrawer(planet1Center, planet1Radius, planet1Position);
+    const planet2Drawmaker = new PlanetDrawer(planet2Center, planet2Radius, planet2Position);
+
+
+    const tickables = [
+        ...planet1Position.getTickables(), 
+        ...planet2Position.getTickables(), 
+    ]; 
+
+    const controllers = {
+        ...planet1Position.getControls(), 
+        ...planet2Position.getControls(), 
+    }
+
+    const drawMakers = [ 
+        planet1Drawmaker, 
+        planet2Drawmaker   
+    ]; 
+
+
     return createModelFromDefinition([
         {
             itemKey: "planet", 
-            props: [new StaticPositionMaker({x: 0.5, y: 0.5}), 
-                new StaticNumberMaker(0.0025), 
-                new StaticNumberMaker(0.25), 
+            props: [
+                planet1Center, 
+                new StaticNumberMaker(0.0025, "speed"), 
+                new StaticNumberMaker(0.15, "radius"), 
             ]
+        }, 
+        {
+            itemKey: "planet", 
+            props: [
+                planet2Center, 
+                new StaticNumberMaker(0.0035, "speed"), 
+                new StaticNumberMaker(0.35, "radius"), 
+            ]
+        }, 
+        {
+            itemKey: "linker",
+            props: [planet1Center, planet2Center]
         }
     ]); 
 }
