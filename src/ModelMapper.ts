@@ -1,4 +1,4 @@
-import { ITheWholeModel, IDrawMaker, ITickable, IDrawable } from "./PureModel/AbstractModelItem";
+import { ITheWholeModel, IDrawMaker, ITickable, IDrawable, ControlConfigMap } from "./PureModel/AbstractModelItem";
 import { PlanetDrawer } from "./PureModel/DrawMakers/PlanetDrawer";
 import { LinearMover } from "./PureModel/LinearMover";
 import { OrbittingPositionMaker, StaticPositionMaker } from "./PureModel/ValueMakers/PositionMakers";
@@ -35,37 +35,22 @@ export class TheWholeModel implements TheWholeModel {
 
 
     private _drawmakers: IDrawMaker[]  = []; 
-    private _tickables: ITickable[] = []; 
+    private _tickables: ITickable[] = [];
+    private controllers: ControlConfigMap;  
 
-    constructor(definition: Definition) {
-
-        definition.forEach((v) => {
-
-            const modelClass = modelMap[v.itemKey];
-            const props = v.props; 
+    constructor(tickables: ITickable[], controllers : ControlConfigMap, drawmakers: IDrawMaker[]) {
 
 
-            // @ts-ignore - sort this out later. 
-            const modelItem = new modelClass(...v.props);
-
-            // This should be ok. 
-            //@ts-ignore
-            if (modelItem.tick) {
-                this._tickables.push(modelItem as ITickable); 
-            }
-
-            //@ts-ignore
-            if (modelItem.getDrawables) {
-                this._drawmakers.push(modelItem as IDrawMaker);
-            }
-
-        }); 
+        this._tickables = tickables; 
+        this.controllers = controllers; 
+        this._drawmakers = drawmakers; 
 
     }; 
 
     tick() {
 
         this._tickables.forEach((v) => {
+            console.log(v);
             v.tick();
         })
 
@@ -145,26 +130,5 @@ export function getRandomModel() : TheWholeModel {
     ]; 
 
 
-    return createModelFromDefinition([
-        {
-            itemKey: "planet", 
-            props: [
-                planet1Center, 
-                new StaticNumberMaker(0.0025, "speed"), 
-                new StaticNumberMaker(0.15, "radius"), 
-            ]
-        }, 
-        {
-            itemKey: "planet", 
-            props: [
-                planet2Center, 
-                new StaticNumberMaker(0.0035, "speed"), 
-                new StaticNumberMaker(0.35, "radius"), 
-            ]
-        }, 
-        {
-            itemKey: "linker",
-            props: [planet1Center, planet2Center]
-        }
-    ]); 
+    return new TheWholeModel(tickables, controllers, drawMakers); 
 }
