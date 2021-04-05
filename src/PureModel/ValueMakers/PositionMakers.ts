@@ -44,16 +44,19 @@ export class OrbittingPositionMaker extends AbstractPositionMaker implements ITi
 
     private radius: AbstractNumberMaker;
     private speed: AbstractNumberMaker;
+    private id: string; 
 
 
     private phase: TickingPhasingNumberMaker;
 
-    constructor(center: AbstractPositionMaker, radius: AbstractNumberMaker, speed: AbstractNumberMaker, phase: TickingPhasingNumberMaker) {
+    constructor(center: AbstractPositionMaker, radius: AbstractNumberMaker, speed: AbstractNumberMaker, phase: TickingPhasingNumberMaker, id: string) {
         super();
         this.center = center;
         this.radius = radius;
         this.speed = speed;
         this.phase = phase;
+
+        this.id = id; 
 
     }
 
@@ -79,9 +82,9 @@ export class OrbittingPositionMaker extends AbstractPositionMaker implements ITi
 
     getControls(): ControlConfigMap {
 
-        return {
+        return {[this.id]: {
             ...this.radius.getControls(), 
             ...this.speed.getControls()
-        }
+        }}
     }
 }

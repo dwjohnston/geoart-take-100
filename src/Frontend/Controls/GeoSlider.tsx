@@ -1,40 +1,46 @@
 import { ReactComponent } from "*.svg";
 
-import React from "react"; 
-import {Slider} from "@material-ui/core"; 
+import React from "react";
+import { Slider } from "@material-ui/core";
 type SliderProps = {
-    label: string; 
-    min: number; 
-    max: number; 
-    initialValue: number; 
-    step: number; 
-    id:string; 
-    onChange:  (id: string, value: number) => void 
+    label: string;
+    id: string;
+    onChange: (id: string, value: number) => void
+
+
+    params: {
+        min: number;
+        max: number;
+        initialValue: number;
+        step: number;
+    }
 
 }
 
-export const GeoSlider = (props: SliderProps)  => {
+export const GeoSlider = (props: SliderProps) => {
 
 
-    const {label, min, max, initialValue, step, onChange, id}= props; 
-    return <div className = "geo-slider"> <p> {label}</p> 
+    const { label, params, onChange, id } = props;
+    const { min, max, initialValue, step } = params;
 
-    <div> 
-    <Slider
-        orientation = "vertical"
-        defaultValue = {initialValue}
-        min = {min} 
-        max= {max}
-        step = {step}
-        onChange = {(e, value) => {
+    return <div className="geo-slider"> <p> {label}</p>
 
-            if (Array.isArray(value)){
-                throw new Error("We weren't expecting an array"); 
-            }
-            onChange(id, value)
-        }}
-        />
-        </div> 
-        </div>; 
+        <div>
+            <Slider
+                orientation="vertical"
+                defaultValue={initialValue}
+                min={min}
+                max={max}
+                step={step}
+                onChange={(e, value) => {
 
-    }
+                    if (Array.isArray(value)) {
+                        throw new Error("We weren't expecting an array");
+                    }
+                    onChange(id, value)
+                }}
+            />
+        </div>
+    </div>;
+
+}

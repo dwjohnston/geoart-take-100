@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import './App.css';
 import { Canvas } from './Frontend/Canvas/Canvas';
+import { ControlContainer } from './Frontend/Controls/ControlContainer/ControlContainer';
 import { GeoSlider } from './Frontend/Controls/GeoSlider';
-import { ControlContainer } from './Frontend/Layout/ControlContainer';
+import { Debug } from './Frontend/DebugTools/Debug';
+import { ControlContainer as ControlContainerLayout } from './Frontend/Layout/ControlContainer';
 import { getRandomModel } from './ModelMapper';
 
 function App() {
@@ -9,14 +12,31 @@ function App() {
 
   const model = getRandomModel();
 
+  console.log(model.getControllers());
+
+  const handleChange= (idList: string[],value: unknown) => {
+    console.log(idList,value);
+
+    setOnChangeDebug({
+      idList, value
+    }); 
+  }
+
+
+  const [onChangeDebug, setOnChangeDebug] = useState<any>(null);
+
   return (
     <div className="App">
 
 
+      <Debug label = "onChange" item = {onChangeDebug}/> 
+
+
       <Canvas model = {model}/>
-      <ControlContainer>
-        <GeoSlider label="aa" min={0} max={100} step={1} initialValue={50} onChange={(id, value) => console.log(id, value)} id="aaa" />
-      </ControlContainer>
+      <ControlContainerLayout>
+      </ControlContainerLayout>
+
+      <ControlContainer idList = {[]} onChange= {handleChange} label = "main" depth = {0} controlConfig = {model.getControllers()}/>
     </div>
   );
 }

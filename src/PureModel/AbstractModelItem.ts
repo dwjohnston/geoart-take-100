@@ -44,7 +44,7 @@ export type ControlConfigItem<TId extends string> = {
 }
 
 export type ControlConfigMap = {
-    [key :string]: ControlConfigItem<string> // This isn't quite right
+    [key :string]: ControlConfigItem<string> | ControlConfigMap // This isn't quite right
 }; 
 
 export interface IControllable<T> {

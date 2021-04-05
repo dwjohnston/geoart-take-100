@@ -68,8 +68,8 @@ export class TheWholeModel implements TheWholeModel {
     }
 
 
-    getControllers() : unknown {
-        return ; 
+    getControllers() : ControlConfigMap {
+        return this.controllers ; 
     }
 
 }
@@ -106,12 +106,13 @@ export function getRandomModel() : TheWholeModel {
     const planet2Phase = new TickingPhasingNumberMaker(0, 1, planet2Speed);
     
 
-    const planet1Position = new OrbittingPositionMaker(planet1Center, planet1Radius, planet1Speed, planet1Phase); 
-    const planet2Position = new OrbittingPositionMaker(planet2Center, planet2Radius, planet2Speed, planet2Phase); 
+    const planet1Position = new OrbittingPositionMaker(planet1Center, planet1Radius, planet1Speed, planet1Phase, "planet1"); 
+    const planet2Position = new OrbittingPositionMaker(planet2Center, planet2Radius, planet2Speed, planet2Phase, "planet2"); 
 
 
     const planet1Drawmaker = new PlanetDrawer(planet1Center, planet1Radius, planet1Position);
     const planet2Drawmaker = new PlanetDrawer(planet2Center, planet2Radius, planet2Position);
+    const linker = new Linker(planet1Position, planet2Position);
 
 
     const tickables = [
@@ -126,7 +127,8 @@ export function getRandomModel() : TheWholeModel {
 
     const drawMakers = [ 
         planet1Drawmaker, 
-        planet2Drawmaker   
+        planet2Drawmaker, 
+        linker
     ]; 
 
 
