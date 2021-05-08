@@ -2,30 +2,48 @@ import { ReactComponent } from "*.svg";
 
 import React from "react";
 import { Slider } from "@material-ui/core";
-type SliderProps = {
-    label: string;
-    id: string;
-    onChange: (id: string, value: number) => void
+import { AbstractControlId, AbstractControlProps } from '../Abstractions';
+import styled from "styled-components"; 
 
 
-    params: {
+
+
+export type SliderProps = AbstractControlProps<AbstractControlId,
+    {
+        label: string;
         min: number;
         max: number;
         initialValue: number;
         step: number;
-    }
+    },
+    number
+>;
 
-}
+
+const StyledGeoSlider = styled.div`
+
+display: flex; 
+flex-flow: column nowrap; 
+    .label {
+
+    }; 
+
+    .body {
+        flex: 1 0 auto; 
+
+    }
+`;
 
 export const GeoSlider = (props: SliderProps) => {
 
 
-    const { label, params, onChange, id } = props;
-    const { min, max, initialValue, step } = params;
+    const { params, onChange, id } = props;
+    const { min, max, initialValue, step, label } = params;
 
-    return <div className="geo-slider"> <p> {label}</p>
+    return <StyledGeoSlider className="geo-slider"> 
+        <p className = "label"> {label}</p>
 
-        <div>
+        <div className = "body">
             <Slider
                 orientation="vertical"
                 defaultValue={initialValue}
@@ -37,10 +55,10 @@ export const GeoSlider = (props: SliderProps) => {
                     if (Array.isArray(value)) {
                         throw new Error("We weren't expecting an array");
                     }
-                    onChange(id, value)
+                    onChange({ id, value })
                 }}
             />
         </div>
-    </div>;
+    </StyledGeoSlider>;
 
 }

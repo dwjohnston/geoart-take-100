@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './App.css';
 import { Canvas } from './Frontend/Canvas/Canvas';
 import { ControlContainer } from './Frontend/Controls/ControlContainer/ControlContainer';
-import { GeoSlider } from './Frontend/Controls/GeoSlider';
+import { GeoSlider } from './Frontend/Controls/GeoSlider/GeoSlider';
 import { Debug } from './Frontend/DebugTools/Debug';
 import { ControlContainer as ControlContainerLayout } from './Frontend/Layout/ControlContainer';
 import { getRandomModel } from './ModelMapper';
