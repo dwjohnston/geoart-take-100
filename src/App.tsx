@@ -17,6 +17,7 @@ function App() {
   const handleChange= (idList: string[],value: unknown) => {
     console.log(idList,value);
 
+    model.updateProperty(idList, value);
     setOnChangeDebug({
       idList, value
     }); 

@@ -1,10 +1,11 @@
-import { ITheWholeModel, IDrawMaker, ITickable, IDrawable, ControlConfigMap } from "./PureModel/AbstractModelItem";
+import { ITheWholeModel, IDrawMaker, ITickable, IDrawable, ControllerMap, ControlConfigItem, IControllable } from "./PureModel/AbstractModelItem";
 import { PlanetDrawer } from "./PureModel/DrawMakers/PlanetDrawer";
 import { LinearMover } from "./PureModel/LinearMover";
 import { OrbittingPositionMaker, StaticPositionMaker } from "./PureModel/ValueMakers/PositionMakers";
 import {PhasingNumberMaker, StaticNumberMaker, TickingPhasingNumberMaker} from "./PureModel/ValueMakers/NumberMakers";
 import { Planet } from "./PureModel/Composites/Planet";
 import { Linker } from "./PureModel/DrawMakers/Linker";
+import { GeneralError } from "./Errors/errors";
 
 
 
@@ -36,21 +37,26 @@ export class TheWholeModel implements TheWholeModel {
 
     private _drawmakers: IDrawMaker[]  = []; 
     private _tickables: ITickable[] = [];
-    private controllers: ControlConfigMap;  
+    private controllers: ControllerMap;  
 
-    constructor(tickables: ITickable[], controllers : ControlConfigMap, drawmakers: IDrawMaker[]) {
+
+    private controlFlatMap: Record<string, IControllable<unknown>>; 
+
+    constructor(tickables: ITickable[], controllers : ControllerMap, drawmakers: IDrawMaker[]) {
 
 
         this._tickables = tickables; 
         this.controllers = controllers; 
         this._drawmakers = drawmakers; 
 
+
+        this.controlFlatMap = 
+
     }; 
 
     tick() {
 
         this._tickables.forEach((v) => {
-            console.log(v);
             v.tick();
         })
 
@@ -63,12 +69,35 @@ export class TheWholeModel implements TheWholeModel {
     }
 
 
-    updateProperty(key: string, value: unknown) {
+    updateProperty(keyList: string[], value: unknown) {
         
+        const propertyToUpdate = keyList.reduce((acc, cur) => {
+
+            const configItem = (acc as ControllerMap) [cur];
+            if (!configItem) {
+                throw new GeneralError("No property for given keylist exists", {
+                    keyList, 
+                    currentKey: cur, 
+                    currentItem: acc
+                }); 
+            }
+
+            return configItem; 
+
+        }, this.controllers as ControlConfigItem<string> | ControllerMap); 
+
+
+        if (!propertyToUpdate.controlType) {
+            throw new GeneralError ("Property to update was not a control config item", {propertyToUpdate});
+           
+        }
+
+        console.log(propertyToUpdate);
+
     }
 
 
-    getControllers() : ControlConfigMap {
+    getControllers() : ControllerMap {
         return this.controllers ; 
     }
 
@@ -82,12 +111,12 @@ export class TheWholeModel implements TheWholeModel {
  *  3. Declare a list of controllers to put on the FE.  
  *  4. Respond to property update events. 
  * @param definition 
- */
-export function createModelFromDefinition(definition: Definition) : TheWholeModel{
+//  */
+// export function createModelFromDefinition(definition: Definition) : TheWholeModel{
 
-    return new TheWholeModel(definition);
+//     return new TheWholeModel(definition);
     
-}
+// }
 
 
 export function getRandomModel() : TheWholeModel {

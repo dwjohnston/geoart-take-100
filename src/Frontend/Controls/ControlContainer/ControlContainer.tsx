@@ -1,10 +1,10 @@
 import React from "react"; 
-import { ControlConfigMap } from "../../../PureModel/AbstractModelItem";
+import { ControllerMap } from "../../../PureModel/AbstractModelItem";
 import { controlMapping } from "../mapping";
 
 
 type ControlContainerProps = {
-    controlConfig: ControlConfigMap; 
+    controlConfig: ControllerMap; 
     depth: number; 
     label: string; 
     idList: string[]; 

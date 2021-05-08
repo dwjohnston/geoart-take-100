@@ -1,5 +1,5 @@
 import { NotImplementedError } from "../../Errors/errors";
-import {  ControlConfigMap, ITickable, Position } from "../AbstractModelItem";
+import {  ControllerMap, ITickable, Position } from "../AbstractModelItem";
 import { AbstractNumberMaker, TickingPhasingNumberMaker } from "./NumberMakers";
 
 export class AbstractPositionMaker {
@@ -7,7 +7,7 @@ export class AbstractPositionMaker {
         throw new NotImplementedError();
     }
 
-    getControls() : ControlConfigMap {
+    getControls() : ControllerMap {
         throw new NotImplementedError();
     }
 
@@ -80,11 +80,11 @@ export class OrbittingPositionMaker extends AbstractPositionMaker implements ITi
         ];
     }    
 
-    getControls(): ControlConfigMap {
+    getControls(): ControllerMap {
 
         return {[this.id]: {
-            ...this.radius.getControls(), 
-            ...this.speed.getControls()
+            ...this.radius, 
+            ...this.speed
         }}
     }
 }

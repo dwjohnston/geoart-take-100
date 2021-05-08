@@ -14,8 +14,7 @@ export class Linker implements IDrawMaker {
 
     getDrawables(): IDrawable[] {
 
-        console.log(this);
-        return [new Line(this.p1.getPosition(), this.p2.getPosition(), "rgba(255, 0, 0, 1)")]; 
+P        return [new Line(this.p1.getPosition(), this.p2.getPosition(), "rgba(255, 0, 0, 1)")]; 
 
     }
 }

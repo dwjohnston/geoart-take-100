@@ -1,19 +1,27 @@
 import { NotImplementedError } from "../../Errors/errors";
-import { ControlConfig, ControlConfigMap, ITickable } from "../AbstractModelItem";
+import { ControlConfig, ControlConfigItem, ControllerMap, IControllable, ITickable } from "../AbstractModelItem";
 
-export class AbstractNumberMaker {
+export class AbstractNumberMaker implements IControllable<unknown> {
 
     getValue(): number {
         throw new NotImplementedError();
     }
 
-    getControls(): ControlConfig {
+    getControlMap(): ControlConfig {
+        throw new NotImplementedError();
+    }
+
+    updateValue(v: unknown) {
+        throw new NotImplementedError();
+    }
+
+    getControlConfig() : ControllerMap {
         throw new NotImplementedError();
     }
 }
 
 
-export class StaticNumberMaker extends AbstractNumberMaker {
+export class StaticNumberMaker extends AbstractNumberMaker implements IControllable<number> {
 
     private number: number;
 
@@ -39,7 +47,7 @@ export class StaticNumberMaker extends AbstractNumberMaker {
         return this.number;
     }
 
-    getControls(): ControlConfigMap {
+    getControlMap() : ControllerMap{
         return {
             [this.id]: {
                 controlType: "slider",
@@ -52,6 +60,14 @@ export class StaticNumberMaker extends AbstractNumberMaker {
                 }
             }
         }
+    }
+
+    updateValue(value: number) {
+        this.number = value;
+    }
+
+    getControlConfig() : ControllerMap {
+        return this.getControlMap();
     }
 }
 

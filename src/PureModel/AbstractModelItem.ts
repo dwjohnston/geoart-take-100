@@ -25,7 +25,7 @@ export interface IDrawMaker {
     getDrawables: () => IDrawable[]; 
 }
 
-/** A an that can respond to ticks */
+/** A object that can respond to ticks */
 export interface ITickable  {
     tick: () => void; 
 }; 
@@ -33,7 +33,7 @@ export interface ITickable  {
 export interface ITheWholeModel  {
 
     tick: () =>  IDrawable[]; 
-    updateProperty: (key: string, value: unknown) => void; // TODO probably have a tighter definition. 
+    updateProperty: (keyList: string[], value: unknown) => void; // TODO probably have a tighter definition. 
 }
 
 
@@ -43,11 +43,11 @@ export type ControlConfigItem<TId extends string> = {
     params: Record<string, unknown>
 }
 
-export type ControlConfigMap = {
-    [key :string]: ControlConfigItem<string> | ControlConfigMap // This isn't quite right
+export type ControllerMap = {
+    [key :string]: IControllable<unknown, key> | ControllerMap // This isn't quite right
 }; 
 
-export interface IControllable<T> {
+export interface IControllable<T, TId extends string> {
     updateValue: (value: T) => void;
-    getControlConfig: ControlConfigMap; 
+    getControlConfig: () =>  ControlConfigItem<TId>; 
 }
