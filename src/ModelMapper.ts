@@ -40,7 +40,7 @@ export class TheWholeModel implements TheWholeModel {
     private controllers: ControllerMap;  
 
 
-    private controlFlatMap: Record<string, IControllable<unknown>>; 
+    //private controlFlatMap: Record<string, IControllable<unknown>>; 
 
     constructor(tickables: ITickable[], controllers : ControllerMap, drawmakers: IDrawMaker[]) {
 
@@ -48,10 +48,6 @@ export class TheWholeModel implements TheWholeModel {
         this._tickables = tickables; 
         this.controllers = controllers; 
         this._drawmakers = drawmakers; 
-
-
-        this.controlFlatMap = 
-
     }; 
 
     tick() {
@@ -69,32 +65,32 @@ export class TheWholeModel implements TheWholeModel {
     }
 
 
-    updateProperty(keyList: string[], value: unknown) {
+    // updateProperty(keyList: string[], value: unknown) {
         
-        const propertyToUpdate = keyList.reduce((acc, cur) => {
+    //     const propertyToUpdate = keyList.reduce((acc, cur) => {
 
-            const configItem = (acc as ControllerMap) [cur];
-            if (!configItem) {
-                throw new GeneralError("No property for given keylist exists", {
-                    keyList, 
-                    currentKey: cur, 
-                    currentItem: acc
-                }); 
-            }
+    //         const configItem = (acc as ControllerMap) [cur];
+    //         if (!configItem) {
+    //             throw new GeneralError("No property for given keylist exists", {
+    //                 keyList, 
+    //                 currentKey: cur, 
+    //                 currentItem: acc
+    //             }); 
+    //         }
 
-            return configItem; 
+    //         return configItem; 
 
-        }, this.controllers as ControlConfigItem<string> | ControllerMap); 
+    //     }, this.controllers as ControlConfigItem<string> | ControllerMap); 
 
 
-        if (!propertyToUpdate.controlType) {
-            throw new GeneralError ("Property to update was not a control config item", {propertyToUpdate});
+    //     if (!propertyToUpdate.controlType) {
+    //         throw new GeneralError ("Property to update was not a control config item", {propertyToUpdate});
            
-        }
+    //     }
 
-        console.log(propertyToUpdate);
+    //     console.log(propertyToUpdate);
 
-    }
+    // }
 
 
     getControllers() : ControllerMap {

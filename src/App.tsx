@@ -14,13 +14,13 @@ function App() {
 
   console.log(model.getControllers());
 
-  const handleChange= (idList: string[],value: unknown) => {
-    console.log(idList,value);
+  const handleChange = (idList: string[], value: unknown) => {
+    console.log(idList, value);
 
     model.updateProperty(idList, value);
     setOnChangeDebug({
       idList, value
-    }); 
+    });
   }
 
 
@@ -30,14 +30,11 @@ function App() {
     <div className="App">
 
 
-      <Debug label = "onChange" item = {onChangeDebug}/> 
-
-
-      <Canvas model = {model}/>
+      <Debug label="onChange" item={onChangeDebug} />
+      <Canvas model={model} />
       <ControlContainerLayout>
       </ControlContainerLayout>
-
-      <ControlContainer idList = {[]} onChange= {handleChange} label = "main" depth = {0} controlConfig = {model.getControllers()}/>
+      <ControlContainer idList={[]} onChange={handleChange} label="main" depth={0} controlConfig={model.getControllers()} />
     </div>
   );
 }
