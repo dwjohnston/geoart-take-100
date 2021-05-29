@@ -42,7 +42,7 @@ function App() {
       <p>THat project was my first real foray in to React development, and I'm since a lot better developer</p>
       <p>The focus this time around is to allow more declarative creation of models, and that will enable users to create their own models</p>
 
-      <p>Follow along with the <a href="">blog</a> if you're interested</p>
+      <p>Follow along with the <a href="https://github.com/dwjohnston/geoart-take-100/tree/master/blog" target ="_blank" rel = "noreferrer">blog</a> if you're interested</p>
 
 
 
