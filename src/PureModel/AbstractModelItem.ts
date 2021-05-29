@@ -60,13 +60,13 @@ export interface IControllable<T> {
 
 export type ValueReference<T> =
   | {
-      type: "static";
-      value: T;
-    }
+    type: "static";
+    value: T;
+  }
   | {
-      type: "reference";
-      reference: string;
-    };
+    type: "reference";
+    reference: string;
+  };
 
 export type ValueTypes = "number" | "position" | "color";
 
@@ -76,8 +76,8 @@ export type ValueTypeMap = {
   position: Position;
 };
 
-export type EnforcedValueType<T, U extends ValueTypes> = ValueTypeMap[U] & T; 
-export type EnforcedValueMaker<T extends ValueMakers, U extends ValueTypes> = ValueMakersMap[T] extends U ? T : never; 
+export type EnforcedValueType<T, U extends ValueTypes> = ValueTypeMap[U] & T;
+export type EnforcedValueMaker<T extends ValueMakers, U extends ValueTypes> = ValueMakersMap[T] extends U ? T : never;
 
 
 export type ValueMakers =
@@ -93,20 +93,25 @@ export type ValueMakersMap = {
   TickingPhaseMaker: "number";
 };
 
-
+export type PossibleValueMakersForValueType<T extends ValueMakersMap[TValueMakers], TValueMakers extends ValueMakers = ValueMakers> = ValueMakersMap[TValueMakers] extends T ? ValueMakersMap[TValueMakers] : never;
 
 export type ValueMakersParamMap = {
   StaticPositionMaker: {
     value: Position;
   };
+
+  StaticNumberMaker: {
+    value: number;
+    min: number;
+    max: number;
+    step: number;
+  };
+
   OrbitingPositionMaker: {
     center: Position;
     radius: number;
     speed: number;
     phase: number;
-  };
-  StaticNumberMaker: {
-    value: number;
   };
   TickingPhaseMaker: {
     initialValue: number;
@@ -115,12 +120,90 @@ export type ValueMakersParamMap = {
   };
 };
 
+export type ParamsWithReferences<T extends Record<string, unknown>> = {
+  [K in keyof T]: T[K] | ValueReference<T[K]>
+}
+
 export type ValueJson<
   TValueMaker extends ValueMakers,
   TValueType extends ValueMakersMap[TValueMaker]
-> = {
-  valueType: TValueType;
-  valueMaker: EnforcedValueMaker<TValueMaker, TValueType>;
-  params: ValueMakersParamMap[TValueMaker];
-  id: string;
-};
+  > = {
+    valueType: TValueType;
+    valueMaker: EnforcedValueMaker<TValueMaker, TValueType>;
+    params: ParamsWithReferences<ValueMakersParamMap[TValueMaker]>;
+    id: string;
+  };
+
+
+
+
+
+
+export function createMapFromArray(json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>) : Record<string, ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>> {
+
+
+  return json.reduce((acc, cur) => {
+
+    if (acc[cur.id]) {
+      throw new Error("Duplicate key detected");
+    }
+    return {
+      ...acc,
+      [cur.id]: cur
+    }
+  }, {} as Record<string, ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>);
+}
+
+function objectIsValueReference(obj: unknown): obj is ValueReference<unknown> {
+
+  const _obj = obj as ValueReference<unknown>;
+
+  if (typeof _obj === 'object' && _obj !== null && _obj.type !== undefined){
+    return true; 
+  }
+
+  return false; 
+}
+
+export function checkForCircularDependencies(json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>) {
+
+  const map =createMapFromArray(json);
+
+
+  json.forEach((valueJson) => {
+    const foundIds : Record<string, boolean> = {
+
+    }; 
+
+    const recursiveCheck = (currentJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>) => {
+      const params = Object.values(currentJson.params); 
+
+      params.forEach((param) => {
+        if (objectIsValueReference(param)){
+
+          if (param.type === 'reference') {
+            if (foundIds[param.reference]) {
+              throw new Error("Circular loop detected!");
+            }
+            foundIds[param.reference] = true; 
+
+            const newReference = map[param.reference]; 
+
+
+            recursiveCheck(newReference);
+          }
+        }
+      });
+
+    }; 
+
+    recursiveCheck(valueJson);
+  }); 
+
+
+}
+
+
+export function constructModelFromJsonArray(json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>) {
+
+}

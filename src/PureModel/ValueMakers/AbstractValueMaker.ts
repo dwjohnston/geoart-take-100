@@ -1,3 +1,4 @@
+import { isThisTypeNode } from 'typescript';
 import { NotImplementedError } from "../../Errors/errors";
 import {
   AbstractControlType,
@@ -9,7 +10,7 @@ import {
   ValueJson,
   ValueMakers,
   ValueMakersMap,
-  ValueTypeMap
+  ValueTypeMap,
   ValueTypes,
 } from "../AbstractModelItem";
 
@@ -24,12 +25,18 @@ export class AbstractValueMaker<
   T extends ValueTypeMap[TValueType],
 
 > {
-  private valueType: TValueType;
-  private valueMaker: TValueMaker;
+  protected valueType: TValueType;
+  protected valueMaker: TValueMaker;
+
+
+  protected valueJson: ValueJson<TValueMaker, TValueType>; 
 
   constructor(valueJson: ValueJson<TValueMaker, TValueType>) {
     this.valueType = valueJson.valueType;
     this.valueMaker = valueJson.valueMaker;
+
+    this.valueJson = valueJson; 
+
   }
 
   getValue(): T {
@@ -45,6 +52,7 @@ export class AbstractValueMaker<
   }
 
   toJson(): ValueJson<TValueMaker, TValueType> {
-    throw new NotImplementedError();
+
+    return this.valueJson;
   }
 }

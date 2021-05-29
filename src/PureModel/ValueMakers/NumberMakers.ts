@@ -3,51 +3,34 @@ import {
   AbstractControlType,
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
-import { IControllable, ITickable } from "../AbstractModelItem";
+import { IControllable, ITickable, PossibleValueMakersForValueType, ValueJson, ValueMakers } from "../AbstractModelItem";
 import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
 import { v4 as uuid } from "uuid";
 
-export class AbstractNumberMaker extends AbstractValueMaker<number> {}
+// I need a better way to extract that union type. 
+export class AbstractNumberMaker<T extends "StaticNumberMaker" | "TickingPhaseMaker"> extends AbstractValueMaker<T, "number", number> { }
 
-export class StaticNumberMaker
-  extends AbstractNumberMaker
+export class StaticNumberMaker extends AbstractNumberMaker<"StaticNumberMaker">
   implements IControllable<number>
 {
-  private number: number;
 
-  private id: string;
 
-  private min: number;
-  private max: number;
-  private step: number;
-  constructor(
-    value: number,
-    id: string = uuid(),
-    min = 0,
-    max = 1,
-    step = 0.01
-  ) {
-    super();
-    this.number = value;
-    this.id = id;
+  private value: number;
 
-    this.min = min;
-    this.max = max;
-    this.step = step;
-  }
-
-  getValue(): number {
-    console.log(this.id, this.number);
-
-    return this.number;
+  constructor(value: ValueJson<"StaticNumberMaker", "number">) {
+    super(value);
+    this.value = value.params.value;
   }
 
   updateValue(value: number) {
-    console.log(this.id, value);
-    this.number = value;
+    this.value = value;
+  }
+
+  getValue() {
+    return this.value;
   }
 
   getControlConfig(): ControlConfigAndUpdateFunction<number>[] {
@@ -55,13 +38,13 @@ export class StaticNumberMaker
       {
         config: {
           type: "slider",
-          id: this.id,
+          id: this.valueJson.id,
           params: {
-            label: this.id,
-            min: this.min,
-            max: this.max,
-            step: this.step,
-            initialValue: this.number,
+            label: this.valueJson.id,
+            min: this.valueJson.params.min,
+            max: this.valueJson.params.max,
+            step: this.valueJson.params.step,
+            initialValue: this.valueJson.params.value
           },
         },
         updateFn: (value) => this.updateValue(value),
@@ -70,45 +53,51 @@ export class StaticNumberMaker
   }
 }
 
-export class PhasingNumberMaker extends AbstractNumberMaker {
-  private number: number;
-  private max: number;
+export class PhasingNumberMaker extends AbstractNumberMaker<"TickingPhaseMaker"> implements ITickable {
+  private value: number;
 
-  constructor(number = 0, max = 1) {
-    super();
+  constructor(value: ValueJson<"TickingPhaseMaker", "number">) {
+    super(value);
 
-    this.number = 0;
-    this.max = 1;
+    this.value = value.params.initialValue;
   }
 
   increment(value: number) {
-    this.number = (this.number + value) % this.max;
+    this.value = (this.value + value) % this.valueJson.params.max;
+  }
+
+    tick() {
+    this.increment(this.valueJson.params.step);
   }
 
   getValue(): number {
-    return this.number;
+    return this.value;
   }
 }
 
-export class TickingPhasingNumberMaker
-  extends AbstractNumberMaker
-  implements ITickable
-{
-  private phaser: PhasingNumberMaker;
 
-  private step: AbstractNumberMaker;
+// NOTE: I can't remember why I thought I need two here. Possibly over engineering things. 
 
-  constructor(number = 0, max = 1, step: AbstractNumberMaker) {
-    super();
-    this.phaser = new PhasingNumberMaker(number, max);
-    this.step = step;
-  }
 
-  tick() {
-    this.phaser.increment(this.step.getValue());
-  }
 
-  getValue(): number {
-    return this.phaser.getValue();
-  }
-}
+// export class TickingPhasingNumberMaker
+//   extends AbstractNumberMaker
+//   implements ITickable {
+//   private phaser: PhasingNumberMaker;
+
+//   private step: AbstractNumberMaker;
+
+//   constructor(number = 0, max = 1, step: AbstractNumberMaker) {
+//     super();
+//     this.phaser = new PhasingNumberMaker(number, max);
+//     this.step = step;
+//   }
+
+//   tick() {
+//     this.phaser.increment(this.step.getValue());
+//   }
+
+//   getValue(): number {
+//     return this.phaser.getValue();
+//   }
+// }

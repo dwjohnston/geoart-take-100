@@ -3,60 +3,81 @@ import {
   AbstractControlType,
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
-import { ITickable, Position } from "../AbstractModelItem";
+import { ITickable, Position, ValueJson } from "../AbstractModelItem";
 import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
-import { AbstractNumberMaker, TickingPhasingNumberMaker } from "./NumberMakers";
+import { AbstractNumberMaker } from "./NumberMakers";
 
 import { v4 as uuid } from "uuid";
 
-export class AbstractPositionMaker extends AbstractValueMaker<Position> {}
+export class AbstractPositionMaker<T extends "StaticPositionMaker" | "OrbitingPositionMaker"> extends AbstractValueMaker<T, "position", Position> {}
 
-export class StaticPositionMaker extends AbstractPositionMaker {
-  private position: Position;
-  constructor(position: Position) {
-    super();
-
-    this.position = position;
+export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMaker"> {
+  private value: Position;
+  constructor(valueJson: ValueJson<"StaticPositionMaker", "position">) {
+    super(valueJson);
+    this.value = valueJson.params.value;
   }
 
-  getValue(): Position {
-    return this.position;
+  updateValue(value: Position) {
+    this.value = value; 
   }
 
-  getTickables(): ITickable[] {
-    return [];
+  getValue() {
+    return this.value; 
+  }
+
+
+  getControlConfig() : ControlConfigAndUpdateFunction<Position>[] {
+
+
+  // Typings aren't quite right here. 
+  // The control config should be allowed to be anything. 
+
+    return [
+      // {
+      //   config: {
+      //     type: "slider",
+      //     id: this.valueJson.id,
+      //     params: {
+      //       label: this.valueJson.id+'-x',
+      //       min: 0,
+      //       max: 1,
+      //       step: 0.1,
+      //       initialValue: this.valueJson.params.value.x
+      //     },
+      //   },
+
+      //   updateFn: (value) => this.updateValue({...this.value, x: value}),
+      // },
+      // {
+      //   config: {
+      //     type: "slider",
+      //     id: this.valueJson.id,
+      //     params: {
+      //       label: this.valueJson.id+'-y',
+      //       min: 0,
+      //       max: 1,
+      //       step: 0.1,
+      //       initialValue: this.valueJson.params.value.x
+      //     },
+      //   },
+      //   updateFn: (value) => this.updateValue({...this.value, y: value}),      },
+    ]
   }
 }
 
 export class OrbittingPositionMaker
-  extends AbstractPositionMaker
+  extends AbstractPositionMaker<"OrbitingPositionMaker">
   implements ITickable
 {
-  private center: AbstractPositionMaker;
-
-  private radius: AbstractNumberMaker;
-  private speed: AbstractNumberMaker;
-  private id: string;
-
-  private phase: TickingPhasingNumberMaker;
-
   constructor(
-    center: AbstractPositionMaker,
-    radius: AbstractNumberMaker,
-    speed: AbstractNumberMaker,
-    phase: TickingPhasingNumberMaker,
-    id: string = uuid()
+    valueJson: ValueJson<"OrbitingPositionMaker", "position">
   ) {
-    super();
-    this.center = center;
-    this.radius = radius;
-    this.speed = speed;
-    this.phase = phase;
+    super(valueJson);
 
-    this.id = id;
   }
 
   getValue(): Position {
