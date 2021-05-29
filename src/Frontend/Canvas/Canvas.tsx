@@ -91,7 +91,7 @@ export const Canvas = (props: CanvasProps) => {
         }; 
 
         window.requestAnimationFrame(draw);
-    }, []); 
+    }, [model]); 
 
     return <StyledCanvas> 
             <canvas  className = "paint-layer" height = "500" width = "500" ref = {refPaint}/>
