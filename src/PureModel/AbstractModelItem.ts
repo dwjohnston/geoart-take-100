@@ -1,3 +1,4 @@
+import { getPositionOfLineAndCharacter } from 'typescript';
 import { AbstractControlId, AbstractControlOutput, AbstractControlType, ControlConfig } from '../Frontend/Controls/Abstractions';
 import { ControlConfigAndUpdateFunction } from './ValueMakers/AbstractValueMaker';
 
@@ -54,4 +55,64 @@ export interface ITheWholeModel {
 export interface IControllable<T> {
     updateValue: (value: T) => void;
     getControlConfig: () => ControlConfigAndUpdateFunction<T>[];
+}
+
+
+
+export type ValueReference<T> = {
+    type: "static", 
+    value: T
+} | {
+    type: "reference", 
+    reference: string
+}; 
+
+export type ValueTypes = "number" | "position" | "color";
+
+type ValueTypeMap = {
+    "number": number; 
+    "color": string; 
+    "position": Position;
+}
+
+export type EnforcedValueType<T, U extends ValueTypes> = T extends ValueTypeMap[U] ? U : never; 
+
+
+export type ValueMakers = "StaticNumberMaker" |  "StaticPositionMaker" | "OrbitingPositionMaker" | "TickingPhaseMaker"; 
+
+export type ValueMakersMap = {
+    "StaticPositionMaker": "position"; 
+    "OrbitingPositionMaker": "position"; 
+    "StaticNumberMaker" : "number"; 
+    "TickingPhaseMaker" : "number"; 
+}
+
+export type EnforcedValueMaker<T extends ValueMakers, U extends ValueTypes> = U extends ValueMakersMap[T] ? T : never; 
+
+
+export type ValueMakersParamMap = {
+    "StaticPositionMaker": {
+        value: Position; 
+    }; 
+    "OrbitingPositionMaker": {
+        center: Position; 
+        radius: number; 
+        speed: number;
+        phase: number;  
+    }; 
+    "StaticNumberMaker" : {
+        value: number; 
+    }; 
+    "TickingPhaseMaker" : {
+        initialValue: number; 
+        max: number; 
+        step: number; 
+    }; 
+}
+
+export type ValueJson<TValueMaker extends ValueMakers, TValueType extends ValueMakersMap[TValueMaker]> = {
+    valueType: TValueType; 
+    valueMaker: EnforcedValueMaker<TValueMaker, TValueType>; 
+    params: ValueMakersParamMap[TValueMaker]
+    id: string; 
 }
