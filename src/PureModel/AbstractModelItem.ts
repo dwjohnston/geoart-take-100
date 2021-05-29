@@ -1,11 +1,14 @@
-import { getPositionOfLineAndCharacter } from "typescript";
+import { getPositionOfLineAndCharacter, isTypeReferenceNode } from "typescript";
 import {
   AbstractControlId,
   AbstractControlOutput,
   AbstractControlType,
   ControlConfig,
 } from "../Frontend/Controls/Abstractions";
+import { partition } from '../utils/partition';
 import { ControlConfigAndUpdateFunction } from "./ValueMakers/AbstractValueMaker";
+import {StaticNumberMaker, PhasingNumberMaker} from "./ValueMakers/NumberMakers";
+import { StaticPositionMaker, OrbittingPositionMaker} from './ValueMakers/PositionMakers';
 
 export type Canvas = {
   ctx: CanvasRenderingContext2D;
@@ -93,6 +96,15 @@ export type ValueMakersMap = {
   TickingPhaseMaker: "number";
 };
 
+
+// A little confusing but note that the types on the left are different to the classes on the right. 
+export const ValueMakersConstructorMap = {
+  StaticPositionMaker: StaticPositionMaker, 
+  OrbitingPositionMaker: OrbittingPositionMaker,
+  StaticNumberMaker: StaticNumberMaker,
+  TickingPhaseMaker: PhasingNumberMaker
+}
+
 export type PossibleValueMakersForValueType<T extends ValueMakersMap[TValueMakers], TValueMakers extends ValueMakers = ValueMakers> = ValueMakersMap[TValueMakers] extends T ? ValueMakersMap[TValueMakers] : never;
 
 export type ValueMakersParamMap = {
@@ -165,6 +177,22 @@ function objectIsValueReference(obj: unknown): obj is ValueReference<unknown> {
   return false; 
 }
 
+function objectIsReference(obj: unknown) : obj is {
+  type: "reference";
+  reference: string;
+} {
+  if (objectIsValueReference(obj)){
+    if (obj.type === 'reference') {
+      if (!obj.reference) {
+        throw new Error("Some how encountered a reference object that didn't have a reference");
+      }
+      return true; 
+    }
+  }
+
+  return false; 
+}
+
 export function checkForCircularDependencies(json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>) {
 
   const map =createMapFromArray(json);
@@ -179,19 +207,13 @@ export function checkForCircularDependencies(json: Array<ValueJson<ValueMakers, 
       const params = Object.values(currentJson.params); 
 
       params.forEach((param) => {
-        if (objectIsValueReference(param)){
-
-          if (param.type === 'reference') {
+        if (objectIsReference(param)){
             if (foundIds[param.reference]) {
               throw new Error("Circular loop detected!");
             }
             foundIds[param.reference] = true; 
-
             const newReference = map[param.reference]; 
-
-
             recursiveCheck(newReference);
-          }
         }
       });
 
@@ -204,6 +226,74 @@ export function checkForCircularDependencies(json: Array<ValueJson<ValueMakers, 
 }
 
 
+function constructSingleModelItemFromJson(valueJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>){
+
+  const Class = ValueMakersConstructorMap[valueJson.valueMaker]; 
+
+  //@ts-ignore - obvs I need to sort this.
+  return new Class(valueJson);
+}
+
+
+
 export function constructModelFromJsonArray(json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>) {
+  checkForCircularDependencies(json);
+
+
+  // Split into dependant nodes and leaf nodes so we can process the leaf nodes first
+  const [leafNodes, dependantNodes] = partition(json, (v) => {
+    const params = Object.values(v.params);
+    const hasDependencies = params.reduce((acc, cur) => {
+      if (objectIsValueReference(cur)) {
+        return cur.type === 'reference'; 
+      }
+
+      else {
+        return acc; 
+      }
+    }, false); 
+
+    return !hasDependencies; 
+  });
+
+  const map = leafNodes.reduce((acc,cur) => {
+
+    return {
+      ...acc, 
+      [cur.id]: constructSingleModelItemFromJson(cur)
+    }
+  }, {} as Record<string, unknown>); // Unknown for now. It's an instance of the class objects
+
+
+  let keepProcessing = true; 
+  let i = 0; 
+  while(keepProcessing) {
+    const valueJson = dependantNodes[i]; 
+
+    const params = Object.values(valueJson);
+    
+    const readyToCreate = params.every((v) => {
+      if (objectIsReference(v)){
+          return !!map[v.reference]
+      }
+      else {
+        return true; 
+      }
+    }); 
+
+    if (readyToCreate) {
+      const dependencies = {}; 
+    }
+
+ 
+
+    if (dependantNodes.length ===0) {
+      keepProcessing = false; 
+    } else {
+      i = (i+1) % dependantNodes.length;
+    }
+
+  } 
+
 
 }
