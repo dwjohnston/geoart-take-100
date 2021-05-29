@@ -25,7 +25,7 @@ function App() {
     });
   }
 
-  const handleChange2 = (value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>) =>{
+  const handleChange2 = (value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>) => {
     console.log(value);
 
     model.updateProperty(value);
@@ -36,17 +36,20 @@ function App() {
 
   return (
     <div className="App">
-      <h1>GeoPlanets - interactive geometric art</h1> 
+      <h1>GeoPlanets - interactive geometric art</h1>
       <strong> I'm rebuilding this!</strong>
-      <p>The <a href = "https://github.com/dwjohnston/geoart-v4" target ="_blank" rel ="noreferrer">original</a> project has died as it running on a really old version of node using GCP Firebase. </p>
-      <p>THat project was my first real foray in to React development, and I'm since a lot better developer</p> 
-      <p>The focus this time around is to allow more declarative creation of models, and that will enable users to create their own models</p> 
+      <p>The <a href="https://github.com/dwjohnston/geoart-v4" target="_blank" rel="noreferrer">original</a> project died as it was running on an old version of node (6) using GCP Firebase, which they discontinued support on. </p>
+      <p>THat project was my first real foray in to React development, and I'm since a lot better developer</p>
+      <p>The focus this time around is to allow more declarative creation of models, and that will enable users to create their own models</p>
 
-      <p>Follow along with the <a href = "">blog</a> if you're interested</p> 
+      <p>Follow along with the <a href="">blog</a> if you're interested</p>
 
+
+
+      <hr />
       <Debug label="onChange" item={onChangeDebug} />
       <Canvas model={model} />
-      <ControlPanel  onChange={handleChange2} controls={model.getControlConfigs().map(v=> v.config)} />
+      <ControlPanel onChange={handleChange2} controls={model.getControlConfigs().map(v => v.config)} />
     </div>
   );
 }
