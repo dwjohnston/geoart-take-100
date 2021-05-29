@@ -1,100 +1,84 @@
-import React, { useEffect, useRef } from "react"; 
+import React, { useEffect, useRef } from "react";
 import { TheWholeModel } from "../../ModelMapper";
-import styled from 'styled-components';
-
+import styled from "styled-components";
 
 const randInt = () => {
-    return Math.floor(Math.random() * 500); 
-}
-
+  return Math.floor(Math.random() * 500);
+};
 
 type CanvasProps = {
-    model: TheWholeModel; 
-}
-
-
+  model: TheWholeModel;
+};
 
 export const StyledCanvas = styled.div`
-    position: relative; 
-    border: dashed 1px blue;
+  position: relative;
+  border: dashed 1px blue;
 
-    height: 500px; 
-    width: 500px; 
-    margin: 0 auto;
+  height: 500px;
+  width: 500px;
+  margin: 0 auto;
 
-
-    > canvas {
-        position: absolute; 
-        left: 0; 
-        right: 0; 
-        top:0; 
-        bottom:0;
-    }
+  > canvas {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
 `;
 
-
 export const Canvas = (props: CanvasProps) => {
+  const { model } = props;
 
+  const refPaint = useRef<HTMLCanvasElement>(null);
+  const refTemp = useRef<HTMLCanvasElement>(null);
 
-    const {model} = props; 
+  useEffect(() => {
+    if (!refPaint.current) {
+      throw new Error("Canvas doesn't exist");
+    }
 
-    const refPaint = useRef<HTMLCanvasElement>(null); 
-    const refTemp = useRef<HTMLCanvasElement>(null); 
+    if (!refTemp.current) {
+      throw new Error("Canvas doesn't exist");
+    }
 
+    const contextPaint = refPaint.current.getContext("2d");
+    if (!contextPaint) {
+      throw new Error("Context doesn't exist");
+    }
 
+    const contextTemp = refPaint.current.getContext("2d");
+    if (!contextTemp) {
+      throw new Error("Context doesn't exist");
+    }
 
-    useEffect(() => {
+    const draw = () => {
+      contextTemp.clearRect(0, 0, 500, 500);
 
+      const drawPackage = model.tick();
 
-        if (!refPaint.current) {
-            throw new Error ("Canvas doesn't exist");
-        }
+      drawPackage.temp.forEach((v) => {
+        v.draw({
+          ctx: contextTemp,
+        });
+      });
 
-        if (!refTemp.current) {
-            throw new Error ("Canvas doesn't exist");
-        }
+      drawPackage.paint.forEach((v) => {
+        v.draw({
+          ctx: contextPaint,
+        });
+      });
 
-        const contextPaint = refPaint.current.getContext("2d"); 
-        if (!contextPaint) {
-            throw new Error ("Context doesn't exist");
-        }
+      window.requestAnimationFrame(draw);
+    };
 
-        const contextTemp = refPaint.current.getContext("2d"); 
-        if (!contextTemp) {
-            throw new Error ("Context doesn't exist");
-        }
+    window.requestAnimationFrame(draw);
+  }, [model]);
 
-
-
-        const draw = () => {
-
-            contextTemp.clearRect(0, 0, 500, 500);
-
-            const drawPackage = model.tick();
-
-
-            drawPackage.temp.forEach((v) => {
-                v.draw({
-                    ctx: contextTemp
-                }); 
-            })
-
-
-            drawPackage.paint.forEach((v) => {
-                v.draw({
-                    ctx: contextPaint
-                }); 
-            })
-
-            window.requestAnimationFrame(draw);
-
-        }; 
-
-        window.requestAnimationFrame(draw);
-    }, [model]); 
-
-    return <StyledCanvas> 
-            <canvas  className = "paint-layer" height = "500" width = "500" ref = {refPaint}/>
-            <canvas className = "temp-layer" height = "500" width = "500" ref = {refTemp}/>
+  return (
+    <StyledCanvas>
+      <canvas className="paint-layer" height="500" width="500" ref={refPaint} />
+      <canvas className="temp-layer" height="500" width="500" ref={refTemp} />
     </StyledCanvas>
-}
+  );
+};

@@ -1,15 +1,12 @@
-import React from 'react';
-
+import React from "react";
 
 export const TestOne = () => {
-    return <div> hello</div> 
-}
-
+  return <div> hello</div>;
+};
 
 export default {
-  title: 'Example/TestOne',
+  title: "Example/TestOne",
   argTypes: {
-    backgroundColor: { control: 'color' },
+    backgroundColor: { control: "color" },
   },
-} 
-
+};

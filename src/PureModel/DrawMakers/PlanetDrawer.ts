@@ -1,39 +1,41 @@
 import { COLOR_ORBIT_GREY, COLOR_PLANET_DEFAULT } from "../../Contants/colors";
 import { SIZE_PLANET } from "../../Contants/sizes";
-import {IDrawMaker, Position} from "../AbstractModelItem";
+import { IDrawMaker, Position } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
 import { AbstractNumberMaker } from "../ValueMakers/NumberMakers";
-import { AbstractPositionMaker, OrbittingPositionMaker } from "../ValueMakers/PositionMakers";
+import {
+  AbstractPositionMaker,
+  OrbittingPositionMaker,
+} from "../ValueMakers/PositionMakers";
 
 export class PlanetDrawer implements IDrawMaker {
+  private _center: AbstractPositionMaker;
+  private _orbitSize: AbstractNumberMaker;
 
+  private position: AbstractPositionMaker;
 
+  constructor(
+    center: AbstractPositionMaker,
+    orbitSize: AbstractNumberMaker,
+    position: AbstractPositionMaker
+  ) {
+    this._center = center;
+    this._orbitSize = orbitSize;
+    this.position = position;
+  }
 
-    private _center: AbstractPositionMaker; 
-    private   _orbitSize: AbstractNumberMaker; 
+  getDrawables() {
+    return {
+      temp: [
+        new Circle(
+          this._center.getValue(),
+          this._orbitSize.getValue(),
+          COLOR_ORBIT_GREY
+        ),
 
-    private position: AbstractPositionMaker; 
-
-    constructor(center: AbstractPositionMaker, orbitSize: AbstractNumberMaker, position:  AbstractPositionMaker) {
-        this._center = center; 
-        this._orbitSize = orbitSize; 
-        this.position = position;
-
-    }
-
-
-    getDrawables() {
-
-
-        return {
-
-            temp: [
-                new Circle(this._center.getValue(), this._orbitSize.getValue(), COLOR_ORBIT_GREY), 
-    
-                new Circle(this.position.getValue(), SIZE_PLANET, COLOR_PLANET_DEFAULT)
-            ], 
-            paint: []
-
-        } ; 
-    }
+        new Circle(this.position.getValue(), SIZE_PLANET, COLOR_PLANET_DEFAULT),
+      ],
+      paint: [],
+    };
+  }
 }
