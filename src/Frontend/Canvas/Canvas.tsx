@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react"; 
 import { TheWholeModel } from "../../ModelMapper";
+import styled from 'styled-components';
 
 
 const randInt = () => {
@@ -10,6 +11,27 @@ const randInt = () => {
 type CanvasProps = {
     model: TheWholeModel; 
 }
+
+
+
+export const StyledCanvas = styled.div`
+    position: relative; 
+    border: dashed 1px blue;
+
+    height: 500px; 
+    width: 500px; 
+    margin: 0 auto;
+
+
+    > canvas {
+        position: absolute; 
+        left: 0; 
+        right: 0; 
+        top:0; 
+        bottom:0;
+    }
+`;
+
 
 export const Canvas = (props: CanvasProps) => {
 
@@ -71,8 +93,8 @@ export const Canvas = (props: CanvasProps) => {
         window.requestAnimationFrame(draw);
     }, []); 
 
-    return <div> 
+    return <StyledCanvas> 
             <canvas  className = "paint-layer" height = "500" width = "500" ref = {refPaint}/>
             <canvas className = "temp-layer" height = "500" width = "500" ref = {refTemp}/>
-    </div>
+    </StyledCanvas>
 }
