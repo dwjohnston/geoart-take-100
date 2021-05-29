@@ -1,12 +1,14 @@
+import { AbstractControlId, AbstractControlOutput, AbstractControlType, ControlConfig } from '../Frontend/Controls/Abstractions';
+import { ControlConfigAndUpdateFunction } from './ValueMakers/AbstractValueMaker';
 
 
 export type Canvas = {
-    
-    ctx: CanvasRenderingContext2D; 
+
+    ctx: CanvasRenderingContext2D;
 }
 
 
-export type Position =  {
+export type Position = {
     x: number;  // 0 - 1 
     y: number;  // 0 - 1 
 }
@@ -17,30 +19,39 @@ export type Position =  {
  * eg. line, square, circle etc. 
  */
 export interface IDrawable {
-    draw : (ctx: Canvas ) => void; 
+    draw: (ctx: Canvas) => void;
+}
+
+
+/**
+ * A package of both temporary drawables and permentant drawables 
+ */
+export type DrawPackage = {
+    temp: IDrawable[];
+    paint: IDrawable[];
 }
 
 /** An object that returns a list of Drawables */
 export interface IDrawMaker {
-    getDrawables: () => IDrawable[]; 
+    getDrawables: () => DrawPackage;
 }
 
-/** A an that can respond to ticks */
-export interface ITickable  {
-    tick: () => void; 
-}; 
+/** A object that can respond to ticks */
+export interface ITickable {
+    tick: () => void;
+};
 
-export interface ITheWholeModel  {
+export interface ITheWholeModel {
 
-    tick: () =>  IDrawable[]; 
-    updateProperty: (key: string, value: unknown) => void; // TODO probably have a tighter definition. 
+    tick: () => DrawPackage;
+    updateProperty: (value: AbstractControlOutput<AbstractControlId, unknown>) => void; // TODO probably have a tighter definition. 
 }
 
+// export type ControllerMap = {
+//     [key :string]: IControllable<unknown> | ControllerMap // This isn't quite right
+// }; 
 
-export type ControlConfig = {
-
-}
 export interface IControllable<T> {
     updateValue: (value: T) => void;
-    getControlConfig: ControlConfig; 
+    getControlConfig: () => ControlConfigAndUpdateFunction<T>[];
 }

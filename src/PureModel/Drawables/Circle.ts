@@ -16,8 +16,6 @@ export class Circle implements IDrawable {
     this.radius = radius; 
 }
     draw(ctx : Canvas) {
-        console.log(ctx, this);
-
 
         const context  = ctx.ctx; 
 
@@ -30,8 +28,6 @@ export class Circle implements IDrawable {
         const position = adjustPosition(context, this.center); 
         const size = adjustSize(context, this.radius);
         
-
-        console.log(position, size);
         context.moveTo(position.x + size.x, position.y); 
         context.ellipse(position.x, position.y, size.x, size.y, 0, 0, 2 * Math.PI, false);
         context.closePath(); 
