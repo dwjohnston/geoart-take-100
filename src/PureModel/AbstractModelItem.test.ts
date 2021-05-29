@@ -46,7 +46,6 @@ describe("Typings", () => {
     });
 
     it("They don't have errors when things are correct", () => {
-        // valueType doesn't match the value maker
         testFunction({
             valueType: "position",
             valueMaker: "StaticPositionMaker",
