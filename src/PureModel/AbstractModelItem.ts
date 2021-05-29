@@ -70,14 +70,15 @@ export type ValueReference<T> =
 
 export type ValueTypes = "number" | "position" | "color";
 
-type ValueTypeMap = {
+export type ValueTypeMap = {
   number: number;
   color: string;
   position: Position;
 };
 
-export type EnforcedValueType<T, U extends ValueTypes> =
-  T extends ValueTypeMap[U] ? U : never;
+export type EnforcedValueType<T, U extends ValueTypes> = ValueTypeMap[U] & T; 
+export type EnforcedValueMaker<T extends ValueMakers, U extends ValueTypes> = ValueMakersMap[T] extends U ? T : never; 
+
 
 export type ValueMakers =
   | "StaticNumberMaker"
@@ -92,8 +93,7 @@ export type ValueMakersMap = {
   TickingPhaseMaker: "number";
 };
 
-export type EnforcedValueMaker<T extends ValueMakers, U extends ValueTypes> =
-  U extends ValueMakersMap[T] ? T : never;
+
 
 export type ValueMakersParamMap = {
   StaticPositionMaker: {

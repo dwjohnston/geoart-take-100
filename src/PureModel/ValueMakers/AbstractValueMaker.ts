@@ -8,6 +8,8 @@ import {
   EnforcedValueType,
   ValueJson,
   ValueMakers,
+  ValueMakersMap,
+  ValueTypeMap
   ValueTypes,
 } from "../AbstractModelItem";
 
@@ -17,9 +19,10 @@ export type ControlConfigAndUpdateFunction<T> = {
 };
 
 export class AbstractValueMaker<
-  T,
-  TValueType extends EnforcedValueType<T, ValueTypes>,
-  TValueMaker extends EnforcedValueMaker<ValueMakers, TValueType>
+  TValueMaker extends ValueMakers, 
+  TValueType extends ValueMakersMap[TValueMaker],
+  T extends ValueTypeMap[TValueType],
+
 > {
   private valueType: TValueType;
   private valueMaker: TValueMaker;
