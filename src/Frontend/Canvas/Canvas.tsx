@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react"; 
 import { TheWholeModel } from "../../ModelMapper";
+import styled from 'styled-components';
 
 
 const randInt = () => {
@@ -11,33 +12,77 @@ type CanvasProps = {
     model: TheWholeModel; 
 }
 
+
+
+export const StyledCanvas = styled.div`
+    position: relative; 
+    border: dashed 1px blue;
+
+    height: 500px; 
+    width: 500px; 
+    margin: 0 auto;
+
+
+    > canvas {
+        position: absolute; 
+        left: 0; 
+        right: 0; 
+        top:0; 
+        bottom:0;
+    }
+`;
+
+
 export const Canvas = (props: CanvasProps) => {
 
 
     const {model} = props; 
 
-    const ref = useRef<HTMLCanvasElement>(null); 
+    const refPaint = useRef<HTMLCanvasElement>(null); 
+    const refTemp = useRef<HTMLCanvasElement>(null); 
+
 
 
     useEffect(() => {
 
 
-        if (!ref.current) {
+        if (!refPaint.current) {
             throw new Error ("Canvas doesn't exist");
         }
 
-        const context = ref.current.getContext("2d"); 
-        if (!context) {
+        if (!refTemp.current) {
+            throw new Error ("Canvas doesn't exist");
+        }
+
+        const contextPaint = refPaint.current.getContext("2d"); 
+        if (!contextPaint) {
             throw new Error ("Context doesn't exist");
         }
+
+        const contextTemp = refPaint.current.getContext("2d"); 
+        if (!contextTemp) {
+            throw new Error ("Context doesn't exist");
+        }
+
+
+
         const draw = () => {
 
-            const drawables = model.tick();
+            contextTemp.clearRect(0, 0, 500, 500);
+
+            const drawPackage = model.tick();
 
 
-            drawables.forEach((v) => {
+            drawPackage.temp.forEach((v) => {
                 v.draw({
-                    ctx: context
+                    ctx: contextTemp
+                }); 
+            })
+
+
+            drawPackage.paint.forEach((v) => {
+                v.draw({
+                    ctx: contextPaint
                 }); 
             })
 
@@ -46,7 +91,10 @@ export const Canvas = (props: CanvasProps) => {
         }; 
 
         window.requestAnimationFrame(draw);
-    }, []); 
+    }, [model]); 
 
-    return <canvas height = "500" width = "500" ref = {ref}/>
+    return <StyledCanvas> 
+            <canvas  className = "paint-layer" height = "500" width = "500" ref = {refPaint}/>
+            <canvas className = "temp-layer" height = "500" width = "500" ref = {refTemp}/>
+    </StyledCanvas>
 }

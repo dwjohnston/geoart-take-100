@@ -1,4 +1,4 @@
-import { GeoSlider } from "./GeoSlider";
+import { GeoSlider } from "./GeoSlider/GeoSlider";
 
 export const controlMapping = {
 
