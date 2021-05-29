@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import './App.css';
 import { Canvas } from './Frontend/Canvas/Canvas';
+import { AbstractControlId, AbstractControlOutput, AbstractControlOutputValue } from './Frontend/Controls/Abstractions';
 import { ControlContainer } from './Frontend/Controls/ControlContainer/ControlContainer';
+import { ControlPanel } from './Frontend/Controls/ControlPanel/ControlPanel';
 import { GeoSlider } from './Frontend/Controls/GeoSlider/GeoSlider';
 import { Debug } from './Frontend/DebugTools/Debug';
 import { ControlContainer as ControlContainerLayout } from './Frontend/Layout/ControlContainer';
@@ -12,15 +14,21 @@ function App() {
 
   const model = getRandomModel();
 
-  console.log(model.getControllers());
+  console.log(model.getControlConfigs());
 
   const handleChange = (idList: string[], value: unknown) => {
     console.log(idList, value);
 
-    model.updateProperty(idList, value);
+    // model.updateProperty(idList, value);
     setOnChangeDebug({
       idList, value
     });
+  }
+
+  const handleChange2 = (value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>) =>{
+    console.log(value);
+
+    model.updateProperty(value);
   }
 
 
@@ -32,9 +40,7 @@ function App() {
 
       <Debug label="onChange" item={onChangeDebug} />
       <Canvas model={model} />
-      <ControlContainerLayout>
-      </ControlContainerLayout>
-      <ControlContainer idList={[]} onChange={handleChange} label="main" depth={0} controlConfig={model.getControllers()} />
+      <ControlPanel  onChange={handleChange2} controls={model.getControlConfigs().map(v=> v.config)} />
     </div>
   );
 }

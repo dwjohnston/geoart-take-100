@@ -1,21 +1,14 @@
 import { NotImplementedError } from "../../Errors/errors";
-import {  ControllerMap, ITickable, Position } from "../AbstractModelItem";
+import { AbstractControlType, ControlConfig } from '../../Frontend/Controls/Abstractions';
+import {   ITickable, Position } from "../AbstractModelItem";
+import { AbstractValueMaker, ControlConfigAndUpdateFunction } from './AbstractValueMaker';
 import { AbstractNumberMaker, TickingPhasingNumberMaker } from "./NumberMakers";
 
-export class AbstractPositionMaker {
-    getPosition(): Position {
-        throw new NotImplementedError();
-    }
+import { v4 as uuid } from 'uuid';
 
-    getControls() : ControllerMap {
-        throw new NotImplementedError();
-    }
+export class AbstractPositionMaker extends AbstractValueMaker<Position>{
 
-
-    getTickables() : ITickable[] {
-        throw new NotImplementedError();
-    }
-}
+}; 
 
 export class StaticPositionMaker extends AbstractPositionMaker {
 
@@ -28,7 +21,7 @@ export class StaticPositionMaker extends AbstractPositionMaker {
     }
 
 
-    getPosition(): Position {
+    getValue(): Position {
         return this.position;
     }
 
@@ -49,7 +42,7 @@ export class OrbittingPositionMaker extends AbstractPositionMaker implements ITi
 
     private phase: TickingPhasingNumberMaker;
 
-    constructor(center: AbstractPositionMaker, radius: AbstractNumberMaker, speed: AbstractNumberMaker, phase: TickingPhasingNumberMaker, id: string) {
+    constructor(center: AbstractPositionMaker, radius: AbstractNumberMaker, speed: AbstractNumberMaker, phase: TickingPhasingNumberMaker, id: string = uuid()) {
         super();
         this.center = center;
         this.radius = radius;
@@ -61,10 +54,10 @@ export class OrbittingPositionMaker extends AbstractPositionMaker implements ITi
     }
 
 
-    getPosition(): Position {
+    getValue(): Position {
         return {
-            x: this.center.getPosition().x + (Math.cos((Math.PI * 2 * Math.PI * this.phase.getValue())) * this.radius.getValue()),
-            y: this.center.getPosition().y + (Math.sin((Math.PI * 2 * Math.PI * this.phase.getValue())) * this.radius.getValue()),
+            x: this.center.getValue().x + (Math.cos((Math.PI * 2 * Math.PI * this.phase.getValue())) * this.radius.getValue()),
+            y: this.center.getValue().y + (Math.sin((Math.PI * 2 * Math.PI * this.phase.getValue())) * this.radius.getValue()),
 
         }
     }
@@ -80,11 +73,11 @@ export class OrbittingPositionMaker extends AbstractPositionMaker implements ITi
         ];
     }    
 
-    getControls(): ControllerMap {
+    getControlConfig(): Array<ControlConfigAndUpdateFunction<any>> {
 
-        return {[this.id]: {
-            ...this.radius, 
-            ...this.speed
-        }}
+        return [
+            ...this.speed.getControlConfig(), 
+            ...this.radius.getControlConfig(),
+        ]
     }
 }

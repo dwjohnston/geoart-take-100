@@ -39,7 +39,7 @@ export type AbstractControlProps<TId extends AbstractControlId, TInputParams ext
     params: TInputParams; 
 } 
 
-
+// We possibly want to add output value to this, so we are enforcing that they are getting the right output value type
 export type ControlConfig<T extends AbstractControlType> = {
     type: T;
     id: AbstractControlId; 

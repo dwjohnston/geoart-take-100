@@ -25,11 +25,15 @@ export class PlanetDrawer implements IDrawMaker {
     getDrawables() {
 
 
-        return [
-            new Circle(this._center.getPosition(), this._orbitSize.getValue(), COLOR_ORBIT_GREY), 
+        return {
 
-            new Circle(this.position.getPosition(), SIZE_PLANET, COLOR_PLANET_DEFAULT)
-        ];
+            temp: [
+                new Circle(this._center.getValue(), this._orbitSize.getValue(), COLOR_ORBIT_GREY), 
+    
+                new Circle(this.position.getValue(), SIZE_PLANET, COLOR_PLANET_DEFAULT)
+            ], 
+            paint: []
+
+        } ; 
     }
-
 }

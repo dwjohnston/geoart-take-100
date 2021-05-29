@@ -41,7 +41,7 @@ export const GeoSlider = (props: SliderProps) => {
     const { min, max, initialValue, step, label } = params;
 
     return <StyledGeoSlider className="geo-slider"> 
-        <p className = "label"> {label}</p>
+        <p className = "label"> {id}</p>
 
         <div className = "body">
             <Slider

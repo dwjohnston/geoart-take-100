@@ -12,9 +12,12 @@ export class Linker implements IDrawMaker {
         this.p2 = p2; 
     }
 
-    getDrawables(): IDrawable[] {
+    getDrawables() {
 
-        return [new Line(this.p1.getPosition(), this.p2.getPosition(), "rgba(255, 0, 0, 1)")]; 
+        return {
+            temp: [new Line(this.p1.getValue(), this.p2.getValue(), "rgba(255, 0, 0, 1)")], 
+            paint: [], 
+        }; 
 
     }
 }

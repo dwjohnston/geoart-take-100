@@ -16,28 +16,51 @@ export const Canvas = (props: CanvasProps) => {
 
     const {model} = props; 
 
-    const ref = useRef<HTMLCanvasElement>(null); 
+    const refPaint = useRef<HTMLCanvasElement>(null); 
+    const refTemp = useRef<HTMLCanvasElement>(null); 
+
 
 
     useEffect(() => {
 
 
-        if (!ref.current) {
+        if (!refPaint.current) {
             throw new Error ("Canvas doesn't exist");
         }
 
-        const context = ref.current.getContext("2d"); 
-        if (!context) {
+        if (!refTemp.current) {
+            throw new Error ("Canvas doesn't exist");
+        }
+
+        const contextPaint = refPaint.current.getContext("2d"); 
+        if (!contextPaint) {
             throw new Error ("Context doesn't exist");
         }
+
+        const contextTemp = refPaint.current.getContext("2d"); 
+        if (!contextTemp) {
+            throw new Error ("Context doesn't exist");
+        }
+
+
+
         const draw = () => {
 
-            const drawables = model.tick();
+            contextTemp.clearRect(0, 0, 500, 500);
+
+            const drawPackage = model.tick();
 
 
-            drawables.forEach((v) => {
+            drawPackage.temp.forEach((v) => {
                 v.draw({
-                    ctx: context
+                    ctx: contextTemp
+                }); 
+            })
+
+
+            drawPackage.paint.forEach((v) => {
+                v.draw({
+                    ctx: contextPaint
                 }); 
             })
 
@@ -48,5 +71,8 @@ export const Canvas = (props: CanvasProps) => {
         window.requestAnimationFrame(draw);
     }, []); 
 
-    return <canvas height = "500" width = "500" ref = {ref}/>
+    return <div> 
+            <canvas  className = "paint-layer" height = "500" width = "500" ref = {refPaint}/>
+            <canvas className = "temp-layer" height = "500" width = "500" ref = {refTemp}/>
+    </div>
 }
