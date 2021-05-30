@@ -246,8 +246,7 @@ export function checkForCircularDependencies(
 
 function constructSingleModelItemFromJson(
   valueJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>,
-  dependencyNodes: any= {} // I'm getting lazy
-
+  dependencyNodes: any = {} // I'm getting lazy
 ) {
   const Class = ValueMakersConstructorMap[valueJson.valueMaker];
 
@@ -256,7 +255,7 @@ function constructSingleModelItemFromJson(
 }
 
 export function constructModelFromJsonArray(
-  json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>, 
+  json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>
 ) {
   checkForCircularDependencies(json);
 
@@ -298,7 +297,6 @@ export function constructModelFromJsonArray(
       }
     });
 
-    
     if (readyToCreate) {
       const dependencies = {};
 
@@ -324,12 +322,16 @@ export function constructModelFromJsonArray(
 
       console.log(paramClassInstances);
 
-
-      const newNode = constructSingleModelItemFromJson(valueJson, paramClassInstances);
-      if (map[valueJson.id]){
-        throw new Error ("Something has gone wrong - new node already exists on the map");
+      const newNode = constructSingleModelItemFromJson(
+        valueJson,
+        paramClassInstances
+      );
+      if (map[valueJson.id]) {
+        throw new Error(
+          "Something has gone wrong - new node already exists on the map"
+        );
       }
-      map[valueJson.id] = newNode; 
+      map[valueJson.id] = newNode;
 
       dependantNodes.splice(i, 1);
     }
@@ -349,11 +351,11 @@ export function getValue<
   TValueMaker extends ValueMakers,
   TValueType extends ValueMakersMap[TValueMaker],
   TValueJson extends ValueJson<TValueMaker, TValueType>,
-  TReferenceNodes extends  NodeReferenceMap<TValueMaker, TValueType, TValueJson>,
+  TReferenceNodes extends NodeReferenceMap<TValueMaker, TValueType, TValueJson>
 >(
-  valueMakerString: TValueMaker, //- This solves a type issue, but I don't think it should be neccesary. 
+  valueMakerString: TValueMaker, //- This solves a type issue, but I don't think it should be neccesary.
   valueJson: TValueJson,
-  referenceNodes:TReferenceNodes,
+  referenceNodes: TReferenceNodes,
   paramKey: keyof TValueJson["params"]
 ): ValueTypeMap[TValueType] {
   const param = valueJson.params[paramKey];

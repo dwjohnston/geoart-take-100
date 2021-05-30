@@ -292,9 +292,8 @@ describe("constructModelFromJsonArray", () => {
     ).not.toThrow();
   });
 
-
   it.only("Return a map of class instances", () => {
-    const result =       constructModelFromJsonArray([
+    const result = constructModelFromJsonArray([
       {
         valueType: "position",
         valueMaker: "StaticPositionMaker",
@@ -328,11 +327,11 @@ describe("constructModelFromJsonArray", () => {
         },
         id: "bar",
       },
-    ]); 
+    ]);
 
     console.log(result);
     console.log(Object.values(result));
-  }); 
+  });
 });
 
 describe("getValue", () => {
@@ -376,7 +375,7 @@ describe("getValue", () => {
   });
 
   it("returns the right value for a node reference", () => {
-    const result = getValue( 
+    const result = getValue(
       "StaticPositionMaker",
       {
         valueType: "position",
@@ -390,7 +389,6 @@ describe("getValue", () => {
         id: "foo",
       },
       {
-
         value: new StaticPositionMaker(
           {
             id: "bar",
@@ -404,7 +402,7 @@ describe("getValue", () => {
             },
           },
           {
-            value: undefined
+            value: undefined,
           }
         ),
       },

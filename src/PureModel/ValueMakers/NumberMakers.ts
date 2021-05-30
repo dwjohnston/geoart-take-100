@@ -38,7 +38,12 @@ export class StaticNumberMaker
     >
   ) {
     super(valueJson, referencedNodes);
-    this.value = getValue("StaticNumberMaker",valueJson, referencedNodes, "value");
+    this.value = getValue(
+      "StaticNumberMaker",
+      valueJson,
+      referencedNodes,
+      "value"
+    );
   }
 
   updateValue(value: number) {
@@ -60,7 +65,12 @@ export class StaticNumberMaker
             min: 0, // Hard code these for now.  It is not up to the logic model to decide what the mins/maxes are. That is a display overlay question.
             max: 1, // Unless it kind of does makes sense?
             step: 0.01,
-            initialValue: getValue("StaticNumberMaker",this.valueJson, this.referencedNodes, "value"),
+            initialValue: getValue(
+              "StaticNumberMaker",
+              this.valueJson,
+              this.referencedNodes,
+              "value"
+            ),
           },
         },
         updateFn: (value) => this.updateValue(value),
@@ -85,15 +95,34 @@ export class PhasingNumberMaker
   ) {
     super(valueJson, referencedNodes);
 
-    this.value = getValue("TickingPhaseMaker",valueJson, referencedNodes, "initialValue");
+    this.value = getValue(
+      "TickingPhaseMaker",
+      valueJson,
+      referencedNodes,
+      "initialValue"
+    );
   }
 
   increment(value: number) {
-    this.value = (this.value + value) % getValue("TickingPhaseMaker",this.valueJson, this.referencedNodes, "max")
+    this.value =
+      (this.value + value) %
+      getValue(
+        "TickingPhaseMaker",
+        this.valueJson,
+        this.referencedNodes,
+        "max"
+      );
   }
 
   tick() {
-    this.increment(getValue("TickingPhaseMaker",this.valueJson, this.referencedNodes, "step"));
+    this.increment(
+      getValue(
+        "TickingPhaseMaker",
+        this.valueJson,
+        this.referencedNodes,
+        "step"
+      )
+    );
   }
 
   getValue(): number {

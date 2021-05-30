@@ -20,7 +20,7 @@ import { v4 as uuid } from "uuid";
 
 export class AbstractPositionMaker<
   T extends "StaticPositionMaker" | "OrbitingPositionMaker"
-  > extends AbstractValueMaker<T, "position", Position> { }
+> extends AbstractValueMaker<T, "position", Position> {}
 
 export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMaker"> {
   private value: Position;
@@ -33,7 +33,12 @@ export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMa
     >
   ) {
     super(valueJson, referenceNodes);
-    this.value = getValue("StaticPositionMaker", valueJson, referenceNodes, "value");
+    this.value = getValue(
+      "StaticPositionMaker",
+      valueJson,
+      referenceNodes,
+      "value"
+    );
   }
 
   updateValue(value: Position) {
@@ -82,40 +87,50 @@ export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMa
 
 export class OrbittingPositionMaker
   extends AbstractPositionMaker<"OrbitingPositionMaker">
-  implements ITickable {
-  constructor(valueJson: ValueJson<"OrbitingPositionMaker", "position">, referenceNodes: NodeReferenceMap<
-    "OrbitingPositionMaker",
-    "position",
-    ValueJson<"OrbitingPositionMaker", "position">
-  >) {
+  implements ITickable
+{
+  constructor(
+    valueJson: ValueJson<"OrbitingPositionMaker", "position">,
+    referenceNodes: NodeReferenceMap<
+      "OrbitingPositionMaker",
+      "position",
+      ValueJson<"OrbitingPositionMaker", "position">
+    >
+  ) {
     super(valueJson, referenceNodes);
   }
 
   getValue(): Position {
+    const center = getValue(
+      "OrbitingPositionMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "center"
+    );
 
-    const center = getValue("OrbitingPositionMaker", this.valueJson, this.referencedNodes, "center"); 
-
-    //@ts-ignore - I've obviously fucked up, this is wrong. 
-    const phase = getValue("StaticNumberMaker", this.valueJson, this.referencedNodes, "phase") as number; 
-    //@ts-ignore - I've obviously fucked up, this is wrong. 
-    const radius = getValue("StaticNumberMaker", this.valueJson, this.referencedNodes, "radius") as number; 
-
+    //@ts-ignore - I've obviously fucked up, this is wrong.
+    const phase = getValue(
+      "StaticNumberMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "phase"
+    ) as number;
+    //@ts-ignore - I've obviously fucked up, this is wrong.
+    const radius = getValue(
+      "StaticNumberMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "radius"
+    ) as number;
 
     return {
-      x:
-        center.x +
-        Math.cos(Math.PI * 2 * Math.PI *  phase) *
-        radius,
-      y:
-        center.y +
-        Math.sin(Math.PI * 2 * Math.PI * phase) *
-        radius,
+      x: center.x + Math.cos(Math.PI * 2 * Math.PI * phase) * radius,
+      y: center.y + Math.sin(Math.PI * 2 * Math.PI * phase) * radius,
     };
   }
 
   tick() {
-
-    // Argh, this is fucked. 
+    // Argh, this is fucked.
     //@ts-ignore
     this.referencedNodes.phase.tick();
   }
@@ -124,5 +139,4 @@ export class OrbittingPositionMaker
   getTickables(): ITickable[] {
     return [this.phase];
   }
-
 }
