@@ -1,4 +1,13 @@
-import { ValueJson, ValueMakers, ValueMakersMap, checkForCircularDependencies } from "./AbstractModelItem";
+import {
+  getValue,
+  ValueJson,
+  ValueMakers,
+  ValueMakersMap,
+  checkForCircularDependencies,
+  constructModelFromJsonArray,
+} from "./AbstractModelItem";
+import { StaticNumberMaker } from "./ValueMakers/NumberMakers";
+import { StaticPositionMaker } from "./ValueMakers/PositionMakers";
 
 function testFunction<
   TValueMaker extends ValueMakers,
@@ -58,22 +67,19 @@ describe("Typings", () => {
       valueMaker: "StaticPositionMaker",
       params: {
         value: {
-          type: "reference", 
-          reference: "some reference"
-        }
+          type: "reference",
+          reference: "some reference",
+        },
       },
       id: "foo",
     });
   });
 });
 
-
 describe("checkForCircularDependencies", () => {
-
-  it ("doesn't error for no circular dependencies", () => {
-
+  it("doesn't error for no circular dependencies", () => {
     // Standard case
-    expect(()=> {
+    expect(() => {
       checkForCircularDependencies([
         {
           valueType: "position",
@@ -96,23 +102,21 @@ describe("checkForCircularDependencies", () => {
             },
           },
           id: "bar",
-        }
-      ])
+        },
+      ]);
     }).not.toThrow();
-
-
 
     // Reference chain case
-    expect(()=> {
+    expect(() => {
       checkForCircularDependencies([
         {
           valueType: "position",
           valueMaker: "StaticPositionMaker",
           params: {
             value: {
-              type: "reference", 
-              reference: "bar"
-            }
+              type: "reference",
+              reference: "bar",
+            },
           },
           id: "foo",
         },
@@ -126,22 +130,21 @@ describe("checkForCircularDependencies", () => {
             },
           },
           id: "bar",
-        }
-      ])
+        },
+      ]);
     }).not.toThrow();
 
-
     // Two things referencing the same node (is ok)
-    expect(()=> {
+    expect(() => {
       checkForCircularDependencies([
         {
           valueType: "position",
           valueMaker: "StaticPositionMaker",
           params: {
             value: {
-              type: "reference", 
-              reference: "bar"
-            }
+              type: "reference",
+              reference: "bar",
+            },
           },
           id: "foo",
         },
@@ -150,9 +153,9 @@ describe("checkForCircularDependencies", () => {
           valueMaker: "StaticPositionMaker",
           params: {
             value: {
-              type: "reference", 
-              reference: "bar"
-            }
+              type: "reference",
+              reference: "bar",
+            },
           },
           id: "foo2",
         },
@@ -166,43 +169,40 @@ describe("checkForCircularDependencies", () => {
             },
           },
           id: "bar",
-        }
-      ])
+        },
+      ]);
     }).not.toThrow();
-
   });
 
-
-  it ("errors if there are circular dependencies", () => {
+  it("errors if there are circular dependencies", () => {
     // Self reference
-    expect(()=> {
+    expect(() => {
       checkForCircularDependencies([
         {
           valueType: "position",
           valueMaker: "StaticPositionMaker",
           params: {
             value: {
-              type: "reference", 
-              reference: "foo"
-            }
+              type: "reference",
+              reference: "foo",
+            },
           },
           id: "foo",
         },
-
-      ])
+      ]);
     }).toThrow();
 
     //referenceing each other
-    expect(()=> {
+    expect(() => {
       checkForCircularDependencies([
         {
           valueType: "position",
           valueMaker: "StaticPositionMaker",
           params: {
             value: {
-              type: "reference", 
-              reference: "foo"
-            }
+              type: "reference",
+              reference: "foo",
+            },
           },
           id: "bar",
         },
@@ -211,17 +211,177 @@ describe("checkForCircularDependencies", () => {
           valueMaker: "StaticPositionMaker",
           params: {
             value: {
-              type: "reference", 
-              reference: "bar"
-            }
+              type: "reference",
+              reference: "bar",
+            },
           },
           id: "foo",
         },
-      ])
+      ]);
     }).toThrow();
   });
-  
-  
+});
 
+describe("constructModelFromJsonArray", () => {
+  it("throws an error if there are circular dependencies", () => {
+    expect(() => {
+      constructModelFromJsonArray([
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              type: "reference",
+              reference: "foo",
+            },
+          },
+          id: "bar",
+        },
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              type: "reference",
+              reference: "bar",
+            },
+          },
+          id: "foo",
+        },
+      ]);
+    }).toThrow();
+  });
 
-}); 
+  it("finishes processing if there are not circular dependencies", () => {
+    expect(() =>
+      constructModelFromJsonArray([
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              type: "reference",
+              reference: "bar",
+            },
+          },
+          id: "foo",
+        },
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              type: "reference",
+              reference: "bar",
+            },
+          },
+          id: "foo2",
+        },
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              x: 1,
+              y: 1,
+            },
+          },
+          id: "bar",
+        },
+      ])
+    ).not.toThrow();
+  });
+});
+
+describe("getValue", () => {
+  it("returns the right value for a direct primitive", () => {
+    const result = getValue(
+      {
+        valueType: "position",
+        valueMaker: "StaticPositionMaker",
+        params: {
+          value: { x: 1, y: 1 },
+        },
+        id: "foo",
+      },
+      { value: undefined },
+      "value"
+    );
+
+    expect(result).toEqual({ x: 1, y: 1 });
+  });
+
+  it("returns the right value for a static refrerence", () => {
+    const result = getValue(
+      {
+        valueType: "position",
+        valueMaker: "StaticPositionMaker",
+        params: {
+          value: {
+            type: "static",
+            value: { x: 1, y: 1 },
+          },
+        },
+        id: "foo",
+      },
+      { value: undefined },
+      "value"
+    );
+
+    expect(result).toEqual({ x: 1, y: 1 });
+  });
+
+  it("returns the right value for a node reference", () => {
+    const result = getValue(
+      {
+        valueType: "position",
+        valueMaker: "StaticPositionMaker",
+        params: {
+          value: {
+            type: "reference",
+            reference: "bar",
+          },
+        },
+        id: "foo",
+      },
+      {
+        value: new StaticPositionMaker(
+          {
+            valueType: "position",
+            valueMaker: "StaticPositionMaker",
+            params: {
+              value: {
+                x: 2,
+                y: 2,
+              },
+            },
+          },
+          {}
+        ),
+      },
+      "value"
+    );
+
+    expect(result).toEqual({ x: 2, y: 2 });
+  });
+
+  it("throws an error if the reference nodes are not available", () => {
+    expect(() =>
+      getValue(
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              type: "reference",
+              reference: "bar",
+            },
+          },
+          id: "foo",
+        },
+        {},
+        "value"
+      )
+    ).toThrow();
+  });
+});

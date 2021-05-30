@@ -3,7 +3,13 @@ import {
   AbstractControlType,
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
-import { ITickable, Position, ValueJson } from "../AbstractModelItem";
+import {
+  ITickable,
+  NodeReferenceMap,
+  Position,
+  ValueJson,
+  getValue,
+} from "../AbstractModelItem";
 import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
@@ -12,29 +18,35 @@ import { AbstractNumberMaker } from "./NumberMakers";
 
 import { v4 as uuid } from "uuid";
 
-export class AbstractPositionMaker<T extends "StaticPositionMaker" | "OrbitingPositionMaker"> extends AbstractValueMaker<T, "position", Position> {}
+export class AbstractPositionMaker<
+  T extends "StaticPositionMaker" | "OrbitingPositionMaker"
+> extends AbstractValueMaker<T, "position", Position> {}
 
 export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMaker"> {
   private value: Position;
-  constructor(valueJson: ValueJson<"StaticPositionMaker", "position">) {
-    super(valueJson);
-    this.value = valueJson.params.value;
+  constructor(
+    valueJson: ValueJson<"StaticPositionMaker", "position">,
+    referenceNodes: NodeReferenceMap<
+      "StaticPositionMaker",
+      "position",
+      ValueJson<"StaticPositionMaker", "position">
+    >
+  ) {
+    super(valueJson, referenceNodes);
+    this.value = getValue(valueJson, referenceNodes, "value");
   }
 
   updateValue(value: Position) {
-    this.value = value; 
+    this.value = value;
   }
 
   getValue() {
-    return this.value; 
+    return this.value;
   }
 
-
-  getControlConfig() : ControlConfigAndUpdateFunction<Position>[] {
-
-
-  // Typings aren't quite right here. 
-  // The control config should be allowed to be anything. 
+  getControlConfig(): ControlConfigAndUpdateFunction<Position>[] {
+    // Typings aren't quite right here.
+    // The control config should be allowed to be anything.
 
     return [
       // {
@@ -49,7 +61,6 @@ export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMa
       //       initialValue: this.valueJson.params.value.x
       //     },
       //   },
-
       //   updateFn: (value) => this.updateValue({...this.value, x: value}),
       // },
       // {
@@ -65,7 +76,7 @@ export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMa
       //     },
       //   },
       //   updateFn: (value) => this.updateValue({...this.value, y: value}),      },
-    ]
+    ];
   }
 }
 
@@ -73,11 +84,8 @@ export class OrbittingPositionMaker
   extends AbstractPositionMaker<"OrbitingPositionMaker">
   implements ITickable
 {
-  constructor(
-    valueJson: ValueJson<"OrbitingPositionMaker", "position">
-  ) {
+  constructor(valueJson: ValueJson<"OrbitingPositionMaker", "position">) {
     super(valueJson);
-
   }
 
   getValue(): Position {

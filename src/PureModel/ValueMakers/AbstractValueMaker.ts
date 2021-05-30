@@ -1,4 +1,4 @@
-import { isThisTypeNode } from 'typescript';
+import { getConstantValue, isThisTypeNode } from "typescript";
 import { NotImplementedError } from "../../Errors/errors";
 import {
   AbstractControlType,
@@ -7,6 +7,7 @@ import {
 import {
   EnforcedValueMaker,
   EnforcedValueType,
+  NodeReferenceMap,
   ValueJson,
   ValueMakers,
   ValueMakersMap,
@@ -20,23 +21,33 @@ export type ControlConfigAndUpdateFunction<T> = {
 };
 
 export class AbstractValueMaker<
-  TValueMaker extends ValueMakers, 
+  TValueMaker extends ValueMakers,
   TValueType extends ValueMakersMap[TValueMaker],
-  T extends ValueTypeMap[TValueType],
-
+  T extends ValueTypeMap[TValueType]
 > {
   protected valueType: TValueType;
   protected valueMaker: TValueMaker;
 
+  protected valueJson: ValueJson<TValueMaker, TValueType>;
+  protected referencedNodes: NodeReferenceMap<
+    TValueMaker,
+    TValueType,
+    ValueJson<TValueMaker, TValueType>
+  >;
 
-  protected valueJson: ValueJson<TValueMaker, TValueType>; 
-
-  constructor(valueJson: ValueJson<TValueMaker, TValueType>) {
+  constructor(
+    valueJson: ValueJson<TValueMaker, TValueType>,
+    referencedNodes: NodeReferenceMap<
+      TValueMaker,
+      TValueType,
+      ValueJson<TValueMaker, TValueType>
+    >
+  ) {
     this.valueType = valueJson.valueType;
     this.valueMaker = valueJson.valueMaker;
 
-    this.valueJson = valueJson; 
-
+    this.valueJson = valueJson;
+    this.referencedNodes = referencedNodes;
   }
 
   getValue(): T {
@@ -52,7 +63,6 @@ export class AbstractValueMaker<
   }
 
   toJson(): ValueJson<TValueMaker, TValueType> {
-
     return this.valueJson;
   }
 }
