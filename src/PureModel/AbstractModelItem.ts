@@ -132,9 +132,6 @@ export type ValueMakersParamMap = {
 
   StaticNumberMaker: {
     value: number;
-    min: number;
-    max: number;
-    step: number;
   };
 
   OrbitingPositionMaker: {
@@ -167,7 +164,7 @@ export type ValueJson<
 export type ValueMakerClassInstance<
   TValueMaker extends ValueMakers,
   TValueType extends ValueMakersMap[TValueMaker]
-> = AbstractValueMaker<TValueMaker, TValueType, T>;
+> = AbstractValueMaker<TValueMaker, TValueType, ValueTypeMap[TValueType]>;
 
 export type NodeReferenceMap<
   TValueMaker extends ValueMakers,
@@ -248,16 +245,18 @@ export function checkForCircularDependencies(
 }
 
 function constructSingleModelItemFromJson(
-  valueJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>
+  valueJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>,
+  dependencyNodes: any= {} // I'm getting lazy
+
 ) {
   const Class = ValueMakersConstructorMap[valueJson.valueMaker];
 
   //@ts-ignore - obvs I need to sort this.
-  return new Class(valueJson);
+  return new Class(valueJson, dependencyNodes);
 }
 
 export function constructModelFromJsonArray(
-  json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>
+  json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>, 
 ) {
   checkForCircularDependencies(json);
 
@@ -275,12 +274,14 @@ export function constructModelFromJsonArray(
     return !hasDependencies;
   });
 
-  const map = leafNodes.reduce((acc, cur) => {
+  let map = leafNodes.reduce((acc, cur) => {
     return {
       ...acc,
-      [cur.id]: constructSingleModelItemFromJson(cur),
+      [cur.id]: constructSingleModelItemFromJson(cur, {}),
     };
   }, {} as Record<string, unknown>); // Unknown for now. It's an instance of the class objects
+
+  console.log(map);
 
   let keepProcessing = true;
   let i = 0;
@@ -297,6 +298,7 @@ export function constructModelFromJsonArray(
       }
     });
 
+    
     if (readyToCreate) {
       const dependencies = {};
 
@@ -320,6 +322,15 @@ export function constructModelFromJsonArray(
         {}
       );
 
+      console.log(paramClassInstances);
+
+
+      const newNode = constructSingleModelItemFromJson(valueJson, paramClassInstances);
+      if (map[valueJson.id]){
+        throw new Error ("Something has gone wrong - new node already exists on the map");
+      }
+      map[valueJson.id] = newNode; 
+
       dependantNodes.splice(i, 1);
     }
 
@@ -329,16 +340,20 @@ export function constructModelFromJsonArray(
       i = (i + 1) % dependantNodes.length;
     }
   }
+
+  return map;
 }
 
 // Fair bit of type coercion here, but I think it works
 export function getValue<
   TValueMaker extends ValueMakers,
   TValueType extends ValueMakersMap[TValueMaker],
-  TValueJson extends ValueJson<TValueMaker, TValueType>
+  TValueJson extends ValueJson<TValueMaker, TValueType>,
+  TReferenceNodes extends  NodeReferenceMap<TValueMaker, TValueType, TValueJson>,
 >(
+  valueMakerString: TValueMaker, //- This solves a type issue, but I don't think it should be neccesary. 
   valueJson: TValueJson,
-  referenceNodes: NodeReferenceMap<TValueMaker, TValueType, TValueJson>,
+  referenceNodes:TReferenceNodes,
   paramKey: keyof TValueJson["params"]
 ): ValueTypeMap[TValueType] {
   const param = valueJson.params[paramKey];

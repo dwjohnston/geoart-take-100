@@ -59,7 +59,16 @@ export class AbstractValueMaker<
   }
 
   getControlConfig(): ControlConfigAndUpdateFunction<T>[] {
-    throw new NotImplementedError();
+
+    return Object.values(this.referencedNodes).flatMap((v) => {
+      if (v!== undefined) {
+        // Not sure why the coercion is neccessary.
+        return (v as AbstractValueMaker<any,any,any>).getControlConfig();
+      }
+      else {
+        return []; 
+      }
+    }); 
   }
 
   toJson(): ValueJson<TValueMaker, TValueType> {

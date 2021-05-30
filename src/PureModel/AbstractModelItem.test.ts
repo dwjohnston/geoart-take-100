@@ -291,11 +291,54 @@ describe("constructModelFromJsonArray", () => {
       ])
     ).not.toThrow();
   });
+
+
+  it.only("Return a map of class instances", () => {
+    const result =       constructModelFromJsonArray([
+      {
+        valueType: "position",
+        valueMaker: "StaticPositionMaker",
+        params: {
+          value: {
+            type: "reference",
+            reference: "bar",
+          },
+        },
+        id: "foo",
+      },
+      {
+        valueType: "position",
+        valueMaker: "StaticPositionMaker",
+        params: {
+          value: {
+            type: "reference",
+            reference: "bar",
+          },
+        },
+        id: "foo2",
+      },
+      {
+        valueType: "position",
+        valueMaker: "StaticPositionMaker",
+        params: {
+          value: {
+            x: 1,
+            y: 1,
+          },
+        },
+        id: "bar",
+      },
+    ]); 
+
+    console.log(result);
+    console.log(Object.values(result));
+  }); 
 });
 
 describe("getValue", () => {
   it("returns the right value for a direct primitive", () => {
     const result = getValue(
+      "StaticPositionMaker",
       {
         valueType: "position",
         valueMaker: "StaticPositionMaker",
@@ -313,6 +356,7 @@ describe("getValue", () => {
 
   it("returns the right value for a static refrerence", () => {
     const result = getValue(
+      "StaticPositionMaker",
       {
         valueType: "position",
         valueMaker: "StaticPositionMaker",
@@ -332,7 +376,8 @@ describe("getValue", () => {
   });
 
   it("returns the right value for a node reference", () => {
-    const result = getValue(
+    const result = getValue( 
+      "StaticPositionMaker",
       {
         valueType: "position",
         valueMaker: "StaticPositionMaker",
@@ -345,8 +390,10 @@ describe("getValue", () => {
         id: "foo",
       },
       {
+
         value: new StaticPositionMaker(
           {
+            id: "bar",
             valueType: "position",
             valueMaker: "StaticPositionMaker",
             params: {
@@ -356,7 +403,9 @@ describe("getValue", () => {
               },
             },
           },
-          {}
+          {
+            value: undefined
+          }
         ),
       },
       "value"
@@ -368,6 +417,7 @@ describe("getValue", () => {
   it("throws an error if the reference nodes are not available", () => {
     expect(() =>
       getValue(
+        "StaticPositionMaker",
         {
           valueType: "position",
           valueMaker: "StaticPositionMaker",
@@ -379,6 +429,7 @@ describe("getValue", () => {
           },
           id: "foo",
         },
+        //@ts-expect-error
         {},
         "value"
       )
