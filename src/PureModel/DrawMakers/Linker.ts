@@ -5,7 +5,8 @@ import { AbstractPositionMaker } from "../ValueMakers/PositionMakers";
 export class Linker implements IDrawMaker {
   private p1: AbstractPositionMaker;
   private p2: AbstractPositionMaker;
-  constructor(p1: AbstractPositionMaker, p2: AbstractPositionMaker) {
+  constructor(params: {p1: AbstractPositionMaker, p2: AbstractPositionMaker}) {
+    const {p1, p2} = params; 
     this.p1 = p1;
     this.p2 = p2;
   }

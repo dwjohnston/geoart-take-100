@@ -14,11 +14,13 @@ export class PlanetDrawer implements IDrawMaker {
 
   private position: AbstractPositionMaker;
 
-  constructor(
-    center: AbstractPositionMaker,
-    orbitSize: AbstractNumberMaker,
-    position: AbstractPositionMaker
+  constructor(params: {
+      center: AbstractPositionMaker,
+      orbitSize: AbstractNumberMaker,
+      position: AbstractPositionMaker
+    }
   ) {
+    const {center, orbitSize, position} = params; 
     this._center = center;
     this._orbitSize = orbitSize;
     this.position = position;

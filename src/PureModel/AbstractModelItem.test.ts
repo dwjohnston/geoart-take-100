@@ -220,6 +220,36 @@ describe("checkForCircularDependencies", () => {
       ]);
     }).toThrow();
   });
+
+
+  it ("errors if a reference parameter does not exist", () => {
+    expect(() => {
+      checkForCircularDependencies([
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              type: "reference",
+              reference: "food",
+            },
+          },
+          id: "bar",
+        },
+        {
+          valueType: "position",
+          valueMaker: "StaticPositionMaker",
+          params: {
+            value: {
+              type: "reference",
+              reference: "bar",
+            },
+          },
+          id: "foo",
+        },
+      ]);
+    }).toThrow();
+  }); 
 });
 
 describe("constructModelFromJsonArray", () => {
@@ -292,7 +322,7 @@ describe("constructModelFromJsonArray", () => {
     ).not.toThrow();
   });
 
-  it.only("Return a map of class instances", () => {
+  it("Return a map of class instances", () => {
     const result = constructModelFromJsonArray([
       {
         valueType: "position",
@@ -329,8 +359,9 @@ describe("constructModelFromJsonArray", () => {
       },
     ]);
 
-    console.log(result);
-    console.log(Object.values(result));
+    expect(result["foo"]).toBeInstanceOf(StaticPositionMaker); 
+    expect(result["foo2"]).toBeInstanceOf(StaticPositionMaker); 
+    expect(result["bar"]).toBeInstanceOf(StaticPositionMaker); 
   });
 });
 

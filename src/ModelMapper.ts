@@ -5,48 +5,39 @@ import {
   IDrawable,
   IControllable,
   DrawPackage,
+  ModelMap,
+  ValueJson, 
+  constructModelFromJsonArray,
 } from "./PureModel/AbstractModelItem";
-import { PlanetDrawer } from "./PureModel/DrawMakers/PlanetDrawer";
 import { LinearMover } from "./PureModel/LinearMover";
-import {
-  OrbittingPositionMaker,
-  StaticPositionMaker,
-} from "./PureModel/ValueMakers/PositionMakers";
-import {
-  PhasingNumberMaker,
-  StaticNumberMaker,
-  TickingPhasingNumberMaker,
-} from "./PureModel/ValueMakers/NumberMakers";
-import { Planet } from "./PureModel/Composites/Planet";
-import { Linker } from "./PureModel/DrawMakers/Linker";
-import { GeneralError } from "./Errors/errors";
+
 import {
   AbstractControlId,
   AbstractControlOutput,
   AbstractControlOutputValue,
-  AbstractControlType,
-  ControlConfig,
+
 } from "./Frontend/Controls/Abstractions";
 import { ControlConfigAndUpdateFunction } from "./PureModel/ValueMakers/AbstractValueMaker";
+import { AbstractDrawItem, createDrawMakersFromDrawItems } from './PureModel/AbstractDrawItem';
 
-const modelMap = {
-  "linear-mover": LinearMover,
-  planet: Planet,
-  linker: Linker,
-} as const;
+// const modelMap = {
+//   "linear-mover": LinearMover,
+//   planet: Planet,
+//   linker: Linker,
+// } as const;
 
-type DefinitionItem<T extends keyof typeof modelMap = keyof typeof modelMap> = {
-  [key in T]: {
-    itemKey: T;
-    props: ConstructorParameters<typeof modelMap[T]>;
-  };
-}[T];
+// type DefinitionItem<T extends keyof typeof modelMap = keyof typeof modelMap> = {
+//   [key in T]: {
+//     itemKey: T;
+//     props: ConstructorParameters<typeof modelMap[T]>;
+//   };
+// }[T];
 
 // type PossibleDefinitionItem <T extends keyof typeof modelMap> = {
 //     [key in T]: DefinitionItem<key>;
 // }[T];
 
-type Definition = Array<DefinitionItem>;
+// type Definition = Array<DefinitionItem>;
 
 export class TheWholeModel implements ITheWholeModel {
   private _drawmakers: IDrawMaker[] = [];
@@ -61,13 +52,28 @@ export class TheWholeModel implements ITheWholeModel {
   //private controlFlatMap: Record<string, IControllable<unknown>>;
 
   constructor(
-    tickables: ITickable[],
-    controlConfigs: ControlConfigAndUpdateFunction<unknown>[],
-    drawmakers: IDrawMaker[]
+    modelMap: ModelMap, 
+    drawMakers: Array<IDrawMaker>
   ) {
+
+
+    const tickables = Object.values(modelMap).filter((v) => {
+      //@ts-ignore
+      if (v.tick) {
+        return true; 
+      }
+    }); 
+
+    const controlConfigs = Object.values(modelMap).flatMap((v) => {
+      return v.getControlConfig();
+    }); 
+
+
+    //@ts-ignore
     this._tickables = tickables;
+    //@ts-ignore
     this._controlConfigs = controlConfigs;
-    this._drawmakers = drawmakers;
+    this._drawmakers = drawMakers;
 
     this._updateFns = controlConfigs.reduce((acc, cur) => {
       return {
@@ -120,55 +126,200 @@ export class TheWholeModel implements ITheWholeModel {
 // }
 
 export function getRandomModel(): TheWholeModel {
-  const planet1Center = new StaticPositionMaker({ x: 0.5, y: 0.5 });
-  const planet2Center = new StaticPositionMaker({ x: 0.5, y: 0.5 });
 
-  const planet1Speed = new StaticNumberMaker(0.0025, "p1-speed");
-  const planet1Radius = new StaticNumberMaker(0.15, "p1-radius");
-  const planet1Phase = new TickingPhasingNumberMaker(0, 1, planet1Speed);
 
-  const planet2Speed = new StaticNumberMaker(0.0035, "p2-speed");
-  const planet2Radius = new StaticNumberMaker(0.35, "p2-radius");
-  const planet2Phase = new TickingPhasingNumberMaker(0, 1, planet2Speed);
 
-  const planet1Position = new OrbittingPositionMaker(
-    planet1Center,
-    planet1Radius,
-    planet1Speed,
-    planet1Phase,
-    "planet1"
-  );
-  const planet2Position = new OrbittingPositionMaker(
-    planet2Center,
-    planet2Radius,
-    planet2Speed,
-    planet2Phase,
-    "planet2"
-  );
+  const modelDefinition : Array<ValueJson> = [
+    {
+      valueType: "position",
+      valueMaker: "StaticPositionMaker",
+      params: {
+        value: {
+          x:0.5, 
+          y: 0.5,
+        }
+      },
+      id: "position-center",
+    },
 
-  const planet1Drawmaker = new PlanetDrawer(
-    planet1Center,
-    planet1Radius,
-    planet1Position
-  );
-  const planet2Drawmaker = new PlanetDrawer(
-    planet2Center,
-    planet2Radius,
-    planet2Position
-  );
-  const linker = new Linker(planet1Position, planet2Position);
+    {
+      valueType: "number", 
+      valueMaker: "TickingPhaseMaker", 
+      params: {
+        initialValue: 0, 
+        max: 1, 
+        step: 0.0001,   // NEXT : reference a speed maker
+      }, 
+      id: "planet-phase-1"
+    },
+    {
+      valueType: "number", 
+      valueMaker: "TickingPhaseMaker", 
+      params: {
+        initialValue: 0, 
+        max: 1, 
+        step: 0.0002, 
+      }, 
+      id: "planet-phase-2"
+    },
 
-  const tickables = [
-    ...planet1Position.getTickables(),
-    ...planet2Position.getTickables(),
+    {
+      valueType: "number", 
+      valueMaker: "StaticNumberMaker", 
+      params: {
+        value: 0.3
+      }, 
+      id: 'static-radius', 
+    },
+
+
+
+    {
+      valueType: "position",
+      valueMaker: "OrbitingPositionMaker",
+      params: {
+        center: {
+          type: "reference", 
+          reference: "position-center", 
+
+        }, 
+        radius: 0.5, 
+        speed: 0.5, 
+        phase: {
+          type: "reference", 
+          reference: "planet-phase-1"
+        } 
+      },
+      id: "planet1",
+    },
+    {
+      valueType: "position",
+      valueMaker: "OrbitingPositionMaker",
+      params: {
+        center: {
+          type: "reference", 
+          reference: "position-center", 
+
+        }, 
+        radius: 0.7, 
+        speed: 0.3, 
+        phase: {
+          type: "reference", 
+          reference: "planet-phase-2"
+        } 
+      },
+      id: "planet2",
+    },
   ];
 
-  const controlConfigs = [
-    ...planet1Position.getControlConfig(),
-    ...planet2Position.getControlConfig(),
-  ];
+  const drawMakerConfigs : Array<AbstractDrawItem>= [
+    {
+      drawType: "DrawLinker", 
+      params: {
+        p1: {
+          type: "reference", 
+          reference: "planet1", 
+        }, 
+        p2: {
+          type: "reference", 
+          reference: "planet2", 
+        }, 
+      }
+    }, 
+    {
+      drawType: "DrawPlanet", 
+      params: {
+        center: {
+          type: "reference", 
+          reference: "position-center", 
+        }, 
+        position: {
+          type: "reference", 
+          reference: "planet1", 
+        },  
+        orbitSize: {
+          type: "reference", 
+          reference: "static-radius", 
+        }, 
+      }
+    }, 
+    {
+      drawType: "DrawPlanet", 
+      params: {
+        center: {
+          type: "reference", 
+          reference: "position-center", 
+        }, 
+        position: {
+          type: "reference", 
+          reference: "planet2", 
+        },  
+        orbitSize: {
+          type: "reference", 
+          reference: "static-radius", 
+        }, 
+      }
+    }
+  ]; 
 
-  const drawMakers = [planet1Drawmaker, planet2Drawmaker, linker];
 
-  return new TheWholeModel(tickables, controlConfigs, drawMakers);
+  const modelMap = constructModelFromJsonArray(modelDefinition);
+  const drawMakers = createDrawMakersFromDrawItems(drawMakerConfigs, modelMap); 
+  
+
+  const model = new TheWholeModel(modelMap, drawMakers); 
+
+  return model; 
+
+  // const planet1Center = new StaticPositionMaker({ x: 0.5, y: 0.5 });
+  // const planet2Center = new StaticPositionMaker({ x: 0.5, y: 0.5 });
+
+  // const planet1Speed = new StaticNumberMaker(0.0025, "p1-speed");
+  // const planet1Radius = new StaticNumberMaker(0.15, "p1-radius");
+  // const planet1Phase = new TickingPhasingNumberMaker(0, 1, planet1Speed);
+
+  // const planet2Speed = new StaticNumberMaker(0.0035, "p2-speed");
+  // const planet2Radius = new StaticNumberMaker(0.35, "p2-radius");
+  // const planet2Phase = new TickingPhasingNumberMaker(0, 1, planet2Speed);
+
+  // const planet1Position = new OrbittingPositionMaker(
+  //   planet1Center,
+  //   planet1Radius,
+  //   planet1Speed,
+  //   planet1Phase,
+  //   "planet1"
+  // );
+  // const planet2Position = new OrbittingPositionMaker(
+  //   planet2Center,
+  //   planet2Radius,
+  //   planet2Speed,
+  //   planet2Phase,
+  //   "planet2"
+  // );
+
+  // const planet1Drawmaker = new PlanetDrawer(
+  //   planet1Center,
+  //   planet1Radius,
+  //   planet1Position
+  // );
+  // const planet2Drawmaker = new PlanetDrawer(
+  //   planet2Center,
+  //   planet2Radius,
+  //   planet2Position
+  // );
+  // const linker = new Linker(planet1Position, planet2Position);
+
+  // const tickables = [
+  //   ...planet1Position.getTickables(),
+  //   ...planet2Position.getTickables(),
+  // ];
+
+  // const controlConfigs = [
+  //   ...planet1Position.getControlConfig(),
+  //   ...planet2Position.getControlConfig(),
+  // ];
+
+  // const drawMakers = [planet1Drawmaker, planet2Drawmaker, linker];
+
+  // return new TheWholeModel(tickables, controlConfigs, drawMakers);
 }

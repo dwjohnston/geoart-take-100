@@ -19,8 +19,11 @@ import {
 import { v4 as uuid } from "uuid";
 
 // I need a better way to extract that union type.
+
+export type PossibleNumberMakers = "StaticNumberMaker" | "TickingPhaseMaker";
+
 export class AbstractNumberMaker<
-  T extends "StaticNumberMaker" | "TickingPhaseMaker"
+  T extends PossibleNumberMakers = PossibleNumberMakers,
 > extends AbstractValueMaker<T, "number", number> {}
 
 export class StaticNumberMaker

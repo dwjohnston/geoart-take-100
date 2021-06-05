@@ -18,8 +18,10 @@ import { AbstractNumberMaker } from "./NumberMakers";
 
 import { v4 as uuid } from "uuid";
 
+export type PossiblePositionMakers = "StaticPositionMaker" | "OrbitingPositionMaker"; 
+
 export class AbstractPositionMaker<
-  T extends "StaticPositionMaker" | "OrbitingPositionMaker"
+  T extends  PossiblePositionMakers = PossiblePositionMakers,
 > extends AbstractValueMaker<T, "position", Position> {}
 
 export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMaker"> {
@@ -108,9 +110,9 @@ export class OrbittingPositionMaker
       "center"
     );
 
-    //@ts-ignore - I've obviously fucked up, this is wrong.
     const phase = getValue(
       "StaticNumberMaker",
+     //@ts-ignore - I've obviously fucked up, this is wrong.
       this.valueJson,
       this.referencedNodes,
       "phase"
@@ -118,6 +120,7 @@ export class OrbittingPositionMaker
     //@ts-ignore - I've obviously fucked up, this is wrong.
     const radius = getValue(
       "StaticNumberMaker",
+      //@ts-ignore - I've obviously fucked up, this is wrong.
       this.valueJson,
       this.referencedNodes,
       "radius"
@@ -135,8 +138,4 @@ export class OrbittingPositionMaker
     this.referencedNodes.phase.tick();
   }
 
-  // I don't htink we need to do this anymore!
-  getTickables(): ITickable[] {
-    return [this.phase];
-  }
 }

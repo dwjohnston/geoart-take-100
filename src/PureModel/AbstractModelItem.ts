@@ -3,6 +3,7 @@ import {
   isTypeReferenceNode,
   parseIsolatedEntityName,
 } from "typescript";
+import { GeneralError } from '../Errors/errors';
 import {
   AbstractControlId,
   AbstractControlOutput,
@@ -110,6 +111,8 @@ export type ValueMakersMap = {
   TickingPhaseMaker: "number";
 };
 
+
+
 // A little confusing but note that the types on the left are different to the classes on the right.
 export const ValueMakersConstructorMap = {
   StaticPositionMaker: StaticPositionMaker,
@@ -117,6 +120,8 @@ export const ValueMakersConstructorMap = {
   StaticNumberMaker: StaticNumberMaker,
   TickingPhaseMaker: PhasingNumberMaker,
 };
+
+
 
 export type PossibleValueMakersForValueType<
   T extends ValueMakersMap[TValueMakers],
@@ -152,8 +157,8 @@ export type ParamsWithReferences<T extends Record<string, unknown>> = {
 };
 
 export type ValueJson<
-  TValueMaker extends ValueMakers,
-  TValueType extends ValueMakersMap[TValueMaker]
+  TValueMaker extends ValueMakers = ValueMakers,
+  TValueType extends ValueMakersMap[TValueMaker] = ValueMakersMap[TValueMaker] // TODO we can remove this generic param
 > = {
   valueType: TValueType;
   valueMaker: EnforcedValueMaker<TValueMaker, TValueType>;
@@ -226,6 +231,9 @@ export function checkForCircularDependencies(
     const recursiveCheck = (
       currentJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>
     ) => {
+
+      console.log(currentJson);
+
       const params = Object.values(currentJson.params);
 
       params.forEach((param) => {
@@ -235,6 +243,11 @@ export function checkForCircularDependencies(
           }
           foundIds[param.reference] = true;
           const newReference = map[param.reference];
+
+          if (!newReference) {
+            throw new Error("Referenced node does not exist!");
+          }
+
           recursiveCheck(newReference);
         }
       });
@@ -243,6 +256,10 @@ export function checkForCircularDependencies(
     recursiveCheck(valueJson);
   });
 }
+
+
+// Fairly sure this isn't right.
+export type ModelMap = Record<string, AbstractValueMaker<ValueMakers, ValueMakersMap[ValueMakers], ValueTypeMap[ValueMakersMap[ValueMakers]]>>; 
 
 function constructSingleModelItemFromJson(
   valueJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>,
@@ -256,7 +273,7 @@ function constructSingleModelItemFromJson(
 
 export function constructModelFromJsonArray(
   json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>
-) {
+) : ModelMap {
   checkForCircularDependencies(json);
 
   // Split into dependant nodes and leaf nodes so we can process the leaf nodes first
@@ -279,8 +296,6 @@ export function constructModelFromJsonArray(
       [cur.id]: constructSingleModelItemFromJson(cur, {}),
     };
   }, {} as Record<string, unknown>); // Unknown for now. It's an instance of the class objects
-
-  console.log(map);
 
   let keepProcessing = true;
   let i = 0;
@@ -343,7 +358,7 @@ export function constructModelFromJsonArray(
     }
   }
 
-  return map;
+  return map as ModelMap;
 }
 
 // Fair bit of type coercion here, but I think it works
@@ -376,4 +391,20 @@ export function getValue<
   } else {
     return param as unknown as ValueTypeMap[TValueType];
   }
+}
+
+
+export function getValueMakerFromReferenceNode(referenceNode: NodeValueReference, modelMap: ModelMap) {
+
+    const node = modelMap[referenceNode.reference]; 
+
+    if (!node) {
+      throw new GeneralError("Value maker was not found", {
+        referenceNode, 
+        node, 
+        modelMap,
+      }); 
+    }
+
+    return node; 
 }
