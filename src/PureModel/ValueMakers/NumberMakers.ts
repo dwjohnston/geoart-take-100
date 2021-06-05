@@ -23,7 +23,7 @@ import { v4 as uuid } from "uuid";
 export type PossibleNumberMakers = "StaticNumberMaker" | "TickingPhaseMaker";
 
 export class AbstractNumberMaker<
-  T extends PossibleNumberMakers = PossibleNumberMakers,
+  T extends PossibleNumberMakers = PossibleNumberMakers
 > extends AbstractValueMaker<T, "number", number> {}
 
 export class StaticNumberMaker
@@ -100,21 +100,26 @@ export class PhasingNumberMaker
 
     this.value = getValue(
       "TickingPhaseMaker",
-      valueJson,
+      this.valueJson,
       referencedNodes,
       "initialValue"
     );
   }
 
-  increment(value: number) {
-    this.value =
-      (this.value + value) %
-      getValue(
-        "TickingPhaseMaker",
-        this.valueJson,
-        this.referencedNodes,
-        "max"
-      );
+  increment(step: number) {
+
+
+    const max =  getValue(
+      "TickingPhaseMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "max"
+    );
+
+      
+    this.value =(this.value +  step) % max;
+
+    
   }
 
   tick() {

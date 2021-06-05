@@ -62,7 +62,10 @@ export class TheWholeModel implements ITheWholeModel {
       if (v.tick) {
         return true; 
       }
-    }); 
+    });
+    
+    
+    console.log(tickables);
 
     const controlConfigs = Object.values(modelMap).flatMap((v) => {
       return v.getControlConfig();
@@ -142,37 +145,70 @@ export function getRandomModel(): TheWholeModel {
       id: "position-center",
     },
 
+
+
     {
       valueType: "number", 
       valueMaker: "TickingPhaseMaker", 
       params: {
-        initialValue: 0, 
+        initialValue: 0.9, 
         max: 1, 
-        step: 0.0001,   // NEXT : reference a speed maker
-      }, 
+        step: {
+          type: "reference", 
+          reference: "planet-1-speed",
+        }     
+     }, 
       id: "planet-phase-1"
     },
-    {
-      valueType: "number", 
-      valueMaker: "TickingPhaseMaker", 
-      params: {
-        initialValue: 0, 
-        max: 1, 
-        step: 0.0002, 
-      }, 
-      id: "planet-phase-2"
-    },
+    // {
+    //   valueType: "number", 
+    //   valueMaker: "TickingPhaseMaker", 
+    //   params: {
+    //     initialValue: 0, 
+    //     max: 1, 
+    //     step: {
+    //       type: "reference", 
+    //       reference: "planet-2-speed",
+    //     }
+    //   },
+    //   id: "planet-phase-2"
+    // },
+
 
     {
       valueType: "number", 
       valueMaker: "StaticNumberMaker", 
       params: {
-        value: 0.3
+        value: 0.003
       }, 
-      id: 'static-radius', 
+      id: 'planet-1-speed', 
     },
 
+    // {
+    //   valueType: "number", 
+    //   valueMaker: "StaticNumberMaker", 
+    //   params: {
+    //     value: 0.002
+    //   }, 
+    //   id: 'planet-2-speed', 
+    // },
 
+    {
+      valueType: "number", 
+      valueMaker: "StaticNumberMaker", 
+      params: {
+        value: 0.2
+      }, 
+      id: 'planet-1-radius', 
+    },
+    {
+      valueType: "number", 
+      valueMaker: "StaticNumberMaker", 
+      params: {
+        value: 0.4
+      }, 
+      id: 'planet-2-radius', 
+    },
 
     {
       valueType: "position",
@@ -183,8 +219,11 @@ export function getRandomModel(): TheWholeModel {
           reference: "position-center", 
 
         }, 
-        radius: 0.5, 
-        speed: 0.5, 
+        radius: {
+          type: "reference", 
+          reference: "planet-1-radius", 
+        },
+
         phase: {
           type: "reference", 
           reference: "planet-phase-1"
@@ -201,11 +240,14 @@ export function getRandomModel(): TheWholeModel {
           reference: "position-center", 
 
         }, 
-        radius: 0.7, 
-        speed: 0.3, 
+        radius: {
+          type: "reference", 
+          reference: "planet-2-radius", 
+        },
+
         phase: {
           type: "reference", 
-          reference: "planet-phase-2"
+          reference: "planet-phase-1"
         } 
       },
       id: "planet2",
@@ -239,7 +281,7 @@ export function getRandomModel(): TheWholeModel {
         },  
         orbitSize: {
           type: "reference", 
-          reference: "static-radius", 
+          reference: "planet-1-radius", 
         }, 
       }
     }, 
@@ -256,7 +298,7 @@ export function getRandomModel(): TheWholeModel {
         },  
         orbitSize: {
           type: "reference", 
-          reference: "static-radius", 
+          reference: "planet-2-radius", 
         }, 
       }
     }

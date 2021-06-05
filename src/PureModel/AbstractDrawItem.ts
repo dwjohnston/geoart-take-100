@@ -94,3 +94,5 @@ export function createDrawMakersFromDrawItems(drawItems: Array<AbstractDrawItem>
 
     return drawMakers; 
 }
+
+

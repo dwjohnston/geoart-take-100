@@ -142,7 +142,6 @@ export type ValueMakersParamMap = {
   OrbitingPositionMaker: {
     center: Position;
     radius: number;
-    speed: number;
     phase: number;
   };
   TickingPhaseMaker: {

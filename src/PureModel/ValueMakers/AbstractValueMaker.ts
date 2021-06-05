@@ -25,6 +25,8 @@ export class AbstractValueMaker<
   TValueType extends ValueMakersMap[TValueMaker],
   T extends ValueTypeMap[TValueType]
 > {
+
+  protected id: string; 
   protected valueType: TValueType;
   protected valueMaker: TValueMaker;
 
@@ -45,6 +47,7 @@ export class AbstractValueMaker<
   ) {
     this.valueType = valueJson.valueType;
     this.valueMaker = valueJson.valueMaker;
+    this.id = valueJson.id; 
 
     this.valueJson = valueJson;
     this.referencedNodes = referencedNodes;

@@ -89,7 +89,6 @@ export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMa
 
 export class OrbittingPositionMaker
   extends AbstractPositionMaker<"OrbitingPositionMaker">
-  implements ITickable
 {
   constructor(
     valueJson: ValueJson<"OrbitingPositionMaker", "position">,
@@ -127,15 +126,8 @@ export class OrbittingPositionMaker
     ) as number;
 
     return {
-      x: center.x + Math.cos(Math.PI * 2 * Math.PI * phase) * radius,
-      y: center.y + Math.sin(Math.PI * 2 * Math.PI * phase) * radius,
+      x: center.x + Math.cos(Math.PI * 2 *  phase) * radius,
+      y: center.y + Math.sin(Math.PI * 2 *  phase) * radius,
     };
   }
-
-  tick() {
-    // Argh, this is fucked.
-    //@ts-ignore
-    this.referencedNodes.phase.tick();
-  }
-
 }
