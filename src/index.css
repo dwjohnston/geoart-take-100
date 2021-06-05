@@ -27,3 +27,9 @@ code {
 canvas {
   border: solid 1px black;
 }
+
+
+body {
+  background-color: #000000;
+  color: #dddddd;
+}

@@ -27,11 +27,17 @@ export const StyledCanvas = styled.div`
   }
 `;
 
+const DRAW_RATE_MS = 1000/10; 
+
+
 export const Canvas = (props: CanvasProps) => {
   const { model } = props;
 
   const refPaint = useRef<HTMLCanvasElement>(null);
   const refTemp = useRef<HTMLCanvasElement>(null);
+
+
+  const lastDrawTime = useRef(0);
 
   useEffect(() => {
     if (!refPaint.current) {
@@ -52,22 +58,27 @@ export const Canvas = (props: CanvasProps) => {
       throw new Error("Context doesn't exist");
     }
 
-    const draw = () => {
-      contextTemp.clearRect(0, 0, 500, 500);
+    const draw = (ts :number) => {
 
-      const drawPackage = model.tick();
+      if ((ts - lastDrawTime.current) > DRAW_RATE_MS) {
+        contextTemp.clearRect(0, 0, 500, 500);
 
-      drawPackage.temp.forEach((v) => {
-        v.draw({
-          ctx: contextTemp,
+        const drawPackage = model.tick();
+  
+        drawPackage.temp.forEach((v) => {
+          v.draw({
+            ctx: contextTemp,
+          });
         });
-      });
-
-      drawPackage.paint.forEach((v) => {
-        v.draw({
-          ctx: contextPaint,
+  
+        drawPackage.paint.forEach((v) => {
+          v.draw({
+            ctx: contextPaint,
+          });
         });
-      });
+
+        lastDrawTime.current = ts; 
+      }
 
       window.requestAnimationFrame(draw);
     };

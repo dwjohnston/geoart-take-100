@@ -1,10 +1,6 @@
-import { ValueReference,ValueMakers, ValueMakersMap, ValueMakersConstructorMap, ValueTypes, NodeValueReference, ModelMap ,IDrawMaker, getValue, getValueMakerFromReferenceNode} from './AbstractModelItem';
+import { ValueReference,ValueMakers, ValueMakersMap, ValueMakersConstructorMap, ValueTypes, NodeValueReference, ModelMap ,IDrawMaker, findValueByKey, getValueMakerFromReferenceNode} from './AbstractModelItem';
 import { Linker } from './DrawMakers/Linker'
 import { PlanetDrawer } from './DrawMakers/PlanetDrawer'
-import { AbstractValueMaker } from './ValueMakers/AbstractValueMaker';
-import { AbstractNumberMaker } from './ValueMakers/NumberMakers';
-import {AbstractPositionMaker, PossiblePositionMakers} from "./ValueMakers/PositionMakers";
-
 
 export const DrawMakingMap = {
     "DrawLinker": Linker, 

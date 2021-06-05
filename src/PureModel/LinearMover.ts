@@ -1,5 +1,8 @@
+
 import { ITickable } from "./AbstractModelItem";
 
+
+// NOT CURRENTLY BEING USED
 export class LinearMover implements ITickable {
   private _x: number;
   private _y: number;

@@ -1,5 +1,5 @@
 import {
-  getValue,
+  findValueByKey,
   ValueJson,
   ValueMakers,
   ValueMakersMap,
@@ -367,7 +367,7 @@ describe("constructModelFromJsonArray", () => {
 
 describe("getValue", () => {
   it("returns the right value for a direct primitive", () => {
-    const result = getValue(
+    const result = findValueByKey(
       "StaticPositionMaker",
       {
         valueType: "position",
@@ -385,7 +385,7 @@ describe("getValue", () => {
   });
 
   it("returns the right value for a static refrerence", () => {
-    const result = getValue(
+    const result = findValueByKey(
       "StaticPositionMaker",
       {
         valueType: "position",
@@ -406,7 +406,7 @@ describe("getValue", () => {
   });
 
   it("returns the right value for a node reference", () => {
-    const result = getValue(
+    const result = findValueByKey(
       "StaticPositionMaker",
       {
         valueType: "position",
@@ -445,7 +445,7 @@ describe("getValue", () => {
 
   it("throws an error if the reference nodes are not available", () => {
     expect(() =>
-      getValue(
+      findValueByKey(
         "StaticPositionMaker",
         {
           valueType: "position",

@@ -1,14 +1,8 @@
-import {
-  getPositionOfLineAndCharacter,
-  isTypeReferenceNode,
-  parseIsolatedEntityName,
-} from "typescript";
 import { GeneralError } from '../Errors/errors';
 import {
   AbstractControlId,
   AbstractControlOutput,
-  AbstractControlType,
-  ControlConfig,
+
 } from "../Frontend/Controls/Abstractions";
 import { partition } from "../utils/partition";
 import {
@@ -157,32 +151,29 @@ export type ParamsWithReferences<T extends Record<string, unknown>> = {
 
 export type ValueJson<
   TValueMaker extends ValueMakers = ValueMakers,
-  TValueType extends ValueMakersMap[TValueMaker] = ValueMakersMap[TValueMaker] // TODO we can remove this generic param
 > = {
-  valueType: TValueType;
-  valueMaker: EnforcedValueMaker<TValueMaker, TValueType>;
+  valueType: ValueMakersMap[TValueMaker];
+  valueMaker: EnforcedValueMaker<TValueMaker, ValueMakersMap[TValueMaker]>;
   params: ParamsWithReferences<ValueMakersParamMap[TValueMaker]>;
   id: string;
 };
 
 export type ValueMakerClassInstance<
   TValueMaker extends ValueMakers,
-  TValueType extends ValueMakersMap[TValueMaker]
-> = AbstractValueMaker<TValueMaker, TValueType, ValueTypeMap[TValueType]>;
+> = AbstractValueMaker<TValueMaker>;
 
 export type NodeReferenceMap<
   TValueMaker extends ValueMakers,
-  TValueType extends ValueMakersMap[TValueMaker],
-  TValueJson extends ValueJson<TValueMaker, TValueType>
+  TValueJson extends ValueJson<TValueMaker>
 > = {
   [K in keyof TValueJson["params"]]: TValueJson["params"][K] extends NodeValueReference
-    ? ValueMakerClassInstance<TValueMaker, TValueType>
+    ? ValueMakerClassInstance<TValueMaker>
     : undefined;
 };
 
 export function createMapFromArray(
-  json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>
-): Record<string, ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>> {
+  json: Array<ValueJson>
+): Record<string, ValueJson> {
   return json.reduce((acc, cur) => {
     if (acc[cur.id]) {
       throw new Error("Duplicate key detected");
@@ -191,7 +182,7 @@ export function createMapFromArray(
       ...acc,
       [cur.id]: cur,
     };
-  }, {} as Record<string, ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>);
+  }, {} as Record<string, ValueJson>);
 }
 
 function objectIsValueReference(obj: unknown): obj is ValueReference<unknown> {
@@ -220,7 +211,7 @@ function objectIsReference(obj: unknown): obj is NodeValueReference {
 }
 
 export function checkForCircularDependencies(
-  json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>
+  json: Array<ValueJson>
 ) {
   const map = createMapFromArray(json);
 
@@ -228,7 +219,7 @@ export function checkForCircularDependencies(
     const foundIds: Record<string, boolean> = {};
 
     const recursiveCheck = (
-      currentJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>
+      currentJson: ValueJson
     ) => {
 
       console.log(currentJson);
@@ -258,10 +249,10 @@ export function checkForCircularDependencies(
 
 
 // Fairly sure this isn't right.
-export type ModelMap = Record<string, AbstractValueMaker<ValueMakers, ValueMakersMap[ValueMakers], ValueTypeMap[ValueMakersMap[ValueMakers]]>>; 
+export type ModelMap = Record<string, AbstractValueMaker<ValueMakers>>; 
 
 function constructSingleModelItemFromJson(
-  valueJson: ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>,
+  valueJson: ValueJson,
   dependencyNodes: any = {} // I'm getting lazy
 ) {
   const Class = ValueMakersConstructorMap[valueJson.valueMaker];
@@ -271,7 +262,7 @@ function constructSingleModelItemFromJson(
 }
 
 export function constructModelFromJsonArray(
-  json: Array<ValueJson<ValueMakers, ValueMakersMap[ValueMakers]>>
+  json: Array<ValueJson>
 ) : ModelMap {
   checkForCircularDependencies(json);
 
@@ -312,8 +303,6 @@ export function constructModelFromJsonArray(
     });
 
     if (readyToCreate) {
-      const dependencies = {};
-
       const paramClassInstances = Object.entries(valueJson.params).reduce(
         (acc, [key, param]) => {
           if (objectIsReference(param)) {
@@ -334,7 +323,6 @@ export function constructModelFromJsonArray(
         {}
       );
 
-      console.log(paramClassInstances);
 
       const newNode = constructSingleModelItemFromJson(
         valueJson,
@@ -361,17 +349,18 @@ export function constructModelFromJsonArray(
 }
 
 // Fair bit of type coercion here, but I think it works
-export function getValue<
+export function findValueByKey<
   TValueMaker extends ValueMakers,
-  TValueType extends ValueMakersMap[TValueMaker],
-  TValueJson extends ValueJson<TValueMaker, TValueType>,
-  TReferenceNodes extends NodeReferenceMap<TValueMaker, TValueType, TValueJson>
+  TValueJson extends ValueJson<TValueMaker>,
+  TReferenceNodes extends NodeReferenceMap<TValueMaker, TValueJson>,
+  TParamKey extends keyof TValueJson["params"]
 >(
   valueMakerString: TValueMaker, //- This solves a type issue, but I don't think it should be neccesary.
   valueJson: TValueJson,
   referenceNodes: TReferenceNodes,
-  paramKey: keyof TValueJson["params"]
-): ValueTypeMap[TValueType] {
+  paramKey: TParamKey,
+): ValueMakersParamMap[TValueMaker][TParamKey] {
+
   const param = valueJson.params[paramKey];
 
   if (objectIsValueReference(param)) {
@@ -383,12 +372,17 @@ export function getValue<
           "Something has gone wrong - reference node doesn't exist"
         );
       }
+      //@ts-ignore
       return referencedNode.getValue();
     } else {
-      return (param as StaticReference<ValueTypeMap[TValueType]>).value;
+
+      //@ts-ignore
+      return param.value;
     }
   } else {
-    return param as unknown as ValueTypeMap[TValueType];
+
+    //@ts-ignore
+    return param; 
   }
 }
 

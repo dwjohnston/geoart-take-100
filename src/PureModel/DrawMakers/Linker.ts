@@ -1,11 +1,12 @@
-import { IDrawable, IDrawMaker, Position } from "../AbstractModelItem";
+import {  IDrawMaker } from "../AbstractModelItem";
 import { Line } from "../Drawables/Line";
-import { AbstractPositionMaker } from "../ValueMakers/PositionMakers";
+import { AbstractValueMaker } from '../ValueMakers/AbstractValueMaker';
+import { PossiblePositionMakers } from '../ValueMakers/PositionMakers';
 
 export class Linker implements IDrawMaker {
-  private p1: AbstractPositionMaker;
-  private p2: AbstractPositionMaker;
-  constructor(params: {p1: AbstractPositionMaker, p2: AbstractPositionMaker}) {
+  private p1: AbstractValueMaker<PossiblePositionMakers>;
+  private p2: AbstractValueMaker<PossiblePositionMakers>;
+  constructor(params: {p1: AbstractValueMaker<PossiblePositionMakers>, p2: AbstractValueMaker<PossiblePositionMakers>}) {
     const {p1, p2} = params; 
     this.p1 = p1;
     this.p2 = p2;

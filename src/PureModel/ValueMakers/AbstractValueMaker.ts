@@ -1,4 +1,4 @@
-import { getConstantValue, isThisTypeNode } from "typescript";
+import { getConstantValue, isThisTypeNode, textChangeRangeIsUnchanged } from "typescript";
 import { NotImplementedError } from "../../Errors/errors";
 import {
   AbstractControlType,
@@ -7,10 +7,12 @@ import {
 import {
   EnforcedValueMaker,
   EnforcedValueType,
+  findValueByKey,
   NodeReferenceMap,
   ValueJson,
   ValueMakers,
   ValueMakersMap,
+  ValueMakersParamMap,
   ValueTypeMap,
   ValueTypes,
 } from "../AbstractModelItem";
@@ -22,27 +24,26 @@ export type ControlConfigAndUpdateFunction<T> = {
 
 export class AbstractValueMaker<
   TValueMaker extends ValueMakers,
-  TValueType extends ValueMakersMap[TValueMaker],
-  T extends ValueTypeMap[TValueType]
 > {
 
   protected id: string; 
-  protected valueType: TValueType;
+  protected valueType: ValueJson<TValueMaker>['valueType'];
   protected valueMaker: TValueMaker;
 
-  protected valueJson: ValueJson<TValueMaker, TValueType>;
+  protected valueJson: ValueJson<TValueMaker>;
   protected referencedNodes: NodeReferenceMap<
     TValueMaker,
-    TValueType,
-    ValueJson<TValueMaker, TValueType>
+    ValueJson<TValueMaker>
   >;
 
+
+  protected lookupValueByKey : <K extends keyof ValueMakersParamMap[TValueMaker]>(key: K) => ValueMakersParamMap[TValueMaker][K]
+
   constructor(
-    valueJson: ValueJson<TValueMaker, TValueType>,
+    valueJson: ValueJson<TValueMaker>,
     referencedNodes: NodeReferenceMap<
       TValueMaker,
-      TValueType,
-      ValueJson<TValueMaker, TValueType>
+      ValueJson<TValueMaker>
     >
   ) {
     this.valueType = valueJson.valueType;
@@ -51,28 +52,35 @@ export class AbstractValueMaker<
 
     this.valueJson = valueJson;
     this.referencedNodes = referencedNodes;
+
+
+    this.lookupValueByKey = (key) => {
+      //@ts-ignore
+      const value = findValueByKey(valueJson.valueMaker, valueJson, referencedNodes, key);
+      return value; 
+    }
   }
 
-  getValue(): T {
+  getValue(): ValueTypeMap[ValueMakersMap[TValueMaker]] {
     throw new NotImplementedError();
   }
 
-  updateValue(v: T) {
+  updateValue(v: ValueTypeMap[ValueMakersMap[TValueMaker]]) {
     throw new NotImplementedError();
   }
 
-  getControlConfig(): ControlConfigAndUpdateFunction<T>[] {
+  getControlConfig(): Array<ControlConfigAndUpdateFunction<ValueTypeMap[ValueMakersMap[TValueMaker]]>> {
     return Object.values(this.referencedNodes).flatMap((v) => {
       if (v !== undefined) {
         // Not sure why the coercion is neccessary.
-        return (v as AbstractValueMaker<any, any, any>).getControlConfig();
+        return (v as AbstractValueMaker<any>).getControlConfig();
       } else {
         return [];
       }
     });
   }
 
-  toJson(): ValueJson<TValueMaker, TValueType> {
+  toJson(): ValueJson<TValueMaker> {
     return this.valueJson;
   }
 }

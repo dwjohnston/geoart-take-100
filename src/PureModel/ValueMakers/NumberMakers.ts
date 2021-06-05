@@ -4,7 +4,7 @@ import {
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
 import {
-  getValue,
+  findValueByKey,
   IControllable,
   ITickable,
   NodeReferenceMap,
@@ -21,27 +21,21 @@ import { v4 as uuid } from "uuid";
 // I need a better way to extract that union type.
 
 export type PossibleNumberMakers = "StaticNumberMaker" | "TickingPhaseMaker";
-
-export class AbstractNumberMaker<
-  T extends PossibleNumberMakers = PossibleNumberMakers
-> extends AbstractValueMaker<T, "number", number> {}
-
 export class StaticNumberMaker
-  extends AbstractNumberMaker<"StaticNumberMaker">
+  extends AbstractValueMaker<"StaticNumberMaker">
   implements IControllable<number>
 {
   private value: number;
 
   constructor(
-    valueJson: ValueJson<"StaticNumberMaker", "number">,
+    valueJson: ValueJson<"StaticNumberMaker">,
     referencedNodes: NodeReferenceMap<
       "StaticNumberMaker",
-      "number",
-      ValueJson<"StaticNumberMaker", "number">
+      ValueJson<"StaticNumberMaker">
     >
   ) {
     super(valueJson, referencedNodes);
-    this.value = getValue(
+    this.value = findValueByKey(
       "StaticNumberMaker",
       valueJson,
       referencedNodes,
@@ -68,7 +62,7 @@ export class StaticNumberMaker
             min: 0, // Hard code these for now.  It is not up to the logic model to decide what the mins/maxes are. That is a display overlay question.
             max: 1, // Unless it kind of does makes sense?
             step: 0.01,
-            initialValue: getValue(
+            initialValue: findValueByKey(
               "StaticNumberMaker",
               this.valueJson,
               this.referencedNodes,
@@ -83,22 +77,21 @@ export class StaticNumberMaker
 }
 
 export class PhasingNumberMaker
-  extends AbstractNumberMaker<"TickingPhaseMaker">
+  extends AbstractValueMaker<"TickingPhaseMaker">
   implements ITickable
 {
   private value: number;
 
   constructor(
-    valueJson: ValueJson<"TickingPhaseMaker", "number">,
+    valueJson: ValueJson<"TickingPhaseMaker">,
     referencedNodes: NodeReferenceMap<
       "TickingPhaseMaker",
-      "number",
-      ValueJson<"TickingPhaseMaker", "number">
+      ValueJson<"TickingPhaseMaker">
     >
   ) {
     super(valueJson, referencedNodes);
 
-    this.value = getValue(
+    this.value = findValueByKey(
       "TickingPhaseMaker",
       this.valueJson,
       referencedNodes,
@@ -109,7 +102,7 @@ export class PhasingNumberMaker
   increment(step: number) {
 
 
-    const max =  getValue(
+    const max =  findValueByKey(
       "TickingPhaseMaker",
       this.valueJson,
       this.referencedNodes,
@@ -124,7 +117,7 @@ export class PhasingNumberMaker
 
   tick() {
     this.increment(
-      getValue(
+      findValueByKey(
         "TickingPhaseMaker",
         this.valueJson,
         this.referencedNodes,
@@ -137,27 +130,3 @@ export class PhasingNumberMaker
     return this.value;
   }
 }
-
-// NOTE: I can't remember why I thought I need two here. Possibly over engineering things.
-
-// export class TickingPhasingNumberMaker
-//   extends AbstractNumberMaker
-//   implements ITickable {
-//   private phaser: PhasingNumberMaker;
-
-//   private step: AbstractNumberMaker;
-
-//   constructor(number = 0, max = 1, step: AbstractNumberMaker) {
-//     super();
-//     this.phaser = new PhasingNumberMaker(number, max);
-//     this.step = step;
-//   }
-
-//   tick() {
-//     this.phaser.increment(this.step.getValue());
-//   }
-
-//   getValue(): number {
-//     return this.phaser.getValue();
-//   }
-// }

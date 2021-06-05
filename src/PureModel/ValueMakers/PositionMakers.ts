@@ -8,34 +8,26 @@ import {
   NodeReferenceMap,
   Position,
   ValueJson,
-  getValue,
+  findValueByKey,
 } from "../AbstractModelItem";
 import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
-import { AbstractNumberMaker } from "./NumberMakers";
-
 import { v4 as uuid } from "uuid";
 
-export type PossiblePositionMakers = "StaticPositionMaker" | "OrbitingPositionMaker"; 
-
-export class AbstractPositionMaker<
-  T extends  PossiblePositionMakers = PossiblePositionMakers,
-> extends AbstractValueMaker<T, "position", Position> {}
-
-export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMaker"> {
+export type PossiblePositionMakers = "StaticPositionMaker" | "OrbitingPositionMaker";
+export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker"> {
   private value: Position;
   constructor(
-    valueJson: ValueJson<"StaticPositionMaker", "position">,
+    valueJson: ValueJson<"StaticPositionMaker">,
     referenceNodes: NodeReferenceMap<
       "StaticPositionMaker",
-      "position",
-      ValueJson<"StaticPositionMaker", "position">
+      ValueJson<"StaticPositionMaker">
     >
   ) {
     super(valueJson, referenceNodes);
-    this.value = getValue(
+    this.value = findValueByKey(
       "StaticPositionMaker",
       valueJson,
       referenceNodes,
@@ -88,36 +80,38 @@ export class StaticPositionMaker extends AbstractPositionMaker<"StaticPositionMa
 }
 
 export class OrbittingPositionMaker
-  extends AbstractPositionMaker<"OrbitingPositionMaker">
+  extends AbstractValueMaker<"OrbitingPositionMaker">
 {
+
+  
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    valueJson: ValueJson<"OrbitingPositionMaker", "position">,
+    valueJson: ValueJson<"OrbitingPositionMaker">,
     referenceNodes: NodeReferenceMap<
       "OrbitingPositionMaker",
-      "position",
-      ValueJson<"OrbitingPositionMaker", "position">
+      ValueJson<"OrbitingPositionMaker">
     >
   ) {
     super(valueJson, referenceNodes);
   }
 
   getValue(): Position {
-    const center = getValue(
+    const center = findValueByKey(
       "OrbitingPositionMaker",
       this.valueJson,
       this.referencedNodes,
       "center"
     );
 
-    const phase = getValue(
+    const phase = findValueByKey(
       "StaticNumberMaker",
-     //@ts-ignore - I've obviously fucked up, this is wrong.
+      //@ts-ignore - I've obviously fucked up, this is wrong.
       this.valueJson,
       this.referencedNodes,
       "phase"
     ) as number;
     //@ts-ignore - I've obviously fucked up, this is wrong.
-    const radius = getValue(
+    const radius = findValueByKey(
       "StaticNumberMaker",
       //@ts-ignore - I've obviously fucked up, this is wrong.
       this.valueJson,
@@ -126,8 +120,8 @@ export class OrbittingPositionMaker
     ) as number;
 
     return {
-      x: center.x + Math.cos(Math.PI * 2 *  phase) * radius,
-      y: center.y + Math.sin(Math.PI * 2 *  phase) * radius,
+      x: center.x + Math.cos(Math.PI * 2 * phase) * radius,
+      y: center.y + Math.sin(Math.PI * 2 * phase) * radius,
     };
   }
 }
