@@ -249,7 +249,6 @@ export function checkForCircularDependencies(
       foundIds:  Record<string, boolean>,
     ) => {
 
-      console.log(currentJson);
 
       const params = Object.values(currentJson.params);
 
@@ -287,7 +286,6 @@ function constructSingleModelItemFromJson(
   dependencyNodes: any = {} // I'm getting lazy
 ) {
   const Class = ValueMakersConstructorMap[valueJson.valueMaker];
-  console.log(valueJson);
   //@ts-ignore - obvs I need to sort this.
   return new Class(valueJson, dependencyNodes);
 }

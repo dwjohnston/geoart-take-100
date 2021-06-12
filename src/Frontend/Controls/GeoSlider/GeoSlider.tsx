@@ -34,7 +34,7 @@ export const GeoSlider = (props: SliderProps) => {
   const { min, max, initialValue, step, label } = params;
 
 
-  const [currentValue, setCurrentValue] = useState(initialValue); 
+  const [currentValue, setCurrentValue] = useState(initialValue);
 
 
   return (
@@ -44,7 +44,7 @@ export const GeoSlider = (props: SliderProps) => {
       <div className="body">
         <Slider
           orientation="vertical"
-          defaultValue={initialValue}
+          value={currentValue}
           min={min}
           max={max}
           step={step}

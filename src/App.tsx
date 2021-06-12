@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { Canvas } from "./Frontend/Canvas/Canvas";
 import {
@@ -8,15 +8,23 @@ import {
 } from "./Frontend/Controls/Abstractions";
 import { ControlPanel } from "./Frontend/Controls/ControlPanel/ControlPanel";
 import { Debug } from "./Frontend/DebugTools/Debug";
-import { getRandomModel } from "./ModelMapper";
+import { preBuiltModels, getModel, TheWholeModel } from "./ModelMapper";
+import { MenuItem, Select } from "@material-ui/core";
+
 
 function App() {
-  const model = getRandomModel();
 
-  console.log(model.getControlConfigs());
+  const [selectedModelName, setSelectedModelName] = useState<keyof typeof preBuiltModels>("earth-venus");
+
+
+  const [model, setModel] = useState<TheWholeModel>(getModel(selectedModelName));
+
+  useEffect(() => {
+    resetRef.current();
+    setModel(getModel(selectedModelName));
+  }, [selectedModelName]);
 
   const handleChange = (idList: string[], value: unknown) => {
-    console.log(idList, value);
 
     // model.updateProperty(idList, value);
     setOnChangeDebug({
@@ -28,7 +36,6 @@ function App() {
   const handleChange2 = (
     value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>
   ) => {
-    console.log(value);
 
     model.updateProperty(value);
 
@@ -38,13 +45,13 @@ function App() {
   const [onChangeDebug, setOnChangeDebug] = useState<any>(null);
 
 
-  const resetRef = useRef(() => {}); 
+  const resetRef = useRef(() => { });
 
   const handleCanvasMount = (payload: {
     resetCallback: () => void;
   }) => {
-    resetRef.current = payload.resetCallback; 
-  }; 
+    resetRef.current = payload.resetCallback;
+  };
 
   return (
     <div className="App">
@@ -85,7 +92,17 @@ function App() {
 
       <hr />
       <Debug label="onChange" item={onChangeDebug} />
-      <Canvas model={model} onMount = {handleCanvasMount} />
+      <Canvas model={model} onMount={handleCanvasMount} />
+      <div>
+        <label> Select Algorithm:
+          <Select value={selectedModelName} variant="outlined" onChange={(e) => {
+            setSelectedModelName(e.target.value as keyof typeof preBuiltModels);
+          }}>
+            {Object.keys(preBuiltModels).map(v => <MenuItem value={v} key={v}>{v}</MenuItem>)}
+          </Select>
+        </label>
+
+      </div>
       <ControlPanel
         onChange={handleChange2}
         controls={model.getControlConfigs().map((v) => v.config)}

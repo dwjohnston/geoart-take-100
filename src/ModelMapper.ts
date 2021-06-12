@@ -65,11 +65,9 @@ export class TheWholeModel implements ITheWholeModel {
     });
     
     
-    console.log(tickables);
 
     const controlConfigs = Object.values(modelMap).flatMap((v) => {
-      console.log(v);
-      console.log(v.getControlConfig());
+
       return v.getControlConfig();
     }); 
 
@@ -106,13 +104,11 @@ export class TheWholeModel implements ITheWholeModel {
   }
 
   updateProperty(value: AbstractControlOutput<AbstractControlId, unknown>) {
-    console.log(value);
     this._updateFns[value.id](value.value);
   }
 
   getControlConfigs(): ControlConfigAndUpdateFunction<unknown>[] {
 
-    console.log(this._controlConfigs);
     return this._controlConfigs;
   }
 }
@@ -133,7 +129,7 @@ export class TheWholeModel implements ITheWholeModel {
 // }
 
 
-const preBuiltModels = {
+export const preBuiltModels = {
   "earth-venus": {
     modelDefinition: [
       {
@@ -607,10 +603,10 @@ const preBuiltModels = {
 }
 
 
-export function getRandomModel(): TheWholeModel {
+export function getModel(modelName: keyof typeof preBuiltModels) : TheWholeModel {
 
 
-  const prebuiltModel = preBuiltModels['earth-venus']; 
+  const prebuiltModel = preBuiltModels[modelName]; 
   const {modelDefinition, drawMakers} = prebuiltModel; 
 
 
