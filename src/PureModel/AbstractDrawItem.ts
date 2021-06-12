@@ -1,10 +1,12 @@
 import { ValueReference,ValueMakers, ValueMakersMap, ValueMakersConstructorMap, ValueTypes, NodeValueReference, ModelMap ,IDrawMaker, findValueByKey, getValueMakerFromReferenceNode} from './AbstractModelItem';
+import { DotMaker } from './DrawMakers/DotMaker';
 import { Linker } from './DrawMakers/Linker'
 import { PlanetDrawer } from './DrawMakers/PlanetDrawer'
 
 export const DrawMakingMap = {
     "DrawLinker": Linker, 
-    "DrawPlanet": PlanetDrawer
+    "DrawPlanet": PlanetDrawer, 
+    "DrawDot": DotMaker,
 }; 
 
 export type PossibleDrawTypes = keyof typeof DrawMakingMap; 

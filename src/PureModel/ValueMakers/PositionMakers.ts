@@ -119,7 +119,7 @@ export class OrbittingPositionMaker
 
 export class XYPositionMaker extends AbstractValueMaker<"XYPositionMaker"> {
 
-  getVaLue(): Position {
+  getValue(): Position {
     const x = this.lookupValueByKey("x"); 
     const y = this.lookupValueByKey("y");
     

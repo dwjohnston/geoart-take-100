@@ -140,3 +140,19 @@ export class  SineNumberMaker extends AbstractValueMaker<"SineNumberMaker"> {
     return amplitude * (Math.sin(phase)); 
   }
 }
+
+
+/**
+ * Normalizer is a number maker that converts one number into another, in a linear fashion
+ * This is useful for converting PI into screen paramters (0-1) for example
+ */
+export class Normalizer extends AbstractValueMaker<"Normalizer"> {
+
+  getValue() : number {
+    const inputValue = this.lookupValueByKey("inputValue"); 
+    const ratio = this.lookupValueByKey("ratio"); 
+    const offset = this.lookupValueByKey("offset"); 
+
+    return (inputValue * ratio) + offset; 
+  }
+}

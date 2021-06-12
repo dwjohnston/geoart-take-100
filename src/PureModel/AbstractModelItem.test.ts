@@ -221,6 +221,82 @@ describe("checkForCircularDependencies", () => {
     }).toThrow();
   });
 
+  it ("Does not throw errors on a more complicated Y shaped model", () => {
+    const model=  [
+
+      {
+        valueType: "number", 
+        valueMaker: "StaticNumberMaker", 
+        params: {
+          value: 0.2
+        }, 
+        id: 'frequency', 
+      },
+        
+      {
+        valueType: "number", 
+        valueMaker: "TickingPhaseMaker", 
+        params: {
+          initialValue: 9, 
+          max: 2 * Math.PI, 
+          step: {
+            type: "reference", 
+            reference: "frequency",
+          }     
+       }, 
+        id: "phase"
+      },
+
+      {
+        valueType: "number", 
+        valueMaker: "normalizer", 
+        params: {
+          offset: 0, 
+          ratio: 1 / (Math.PI * 2),
+          inputValue: {
+            type: "reference", 
+            reference: "phase"
+          }
+        }, 
+        id: "x"
+      },
+
+      {
+        valueType: "number", 
+        valueMaker: "SineNumberMaker", 
+        params: {
+          phase: {
+            type: "reference", 
+            reference: "phase"
+          }, 
+          amplitude: 0.5
+        },
+        id: "y",
+      }, 
+      {
+        valueType: "position", 
+        valueMaker: "XYPositionMaker", 
+        params: {
+          x: {
+            type: "reference", 
+            reference: "x"
+          },
+          y: {
+            type: "reference", 
+            reference: "y"
+          },
+        }, 
+        id: "position"
+      }
+      
+    ]; 
+
+    expect(() => {
+      //@ts-ignore
+      checkForCircularDependencies(model);
+    }).not.toThrow();
+  }); 
+
 
   it ("errors if a reference parameter does not exist", () => {
     expect(() => {

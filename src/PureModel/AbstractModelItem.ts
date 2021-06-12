@@ -13,6 +13,7 @@ import {
   StaticNumberMaker,
   PhasingNumberMaker,
   SineNumberMaker,
+  Normalizer,
 } from "./ValueMakers/NumberMakers";
 import {
   StaticPositionMaker,
@@ -100,12 +101,14 @@ export type ValueMakers =
   | "SineNumberMaker"
   | "StaticPositionMaker"
   | "OrbitingPositionMaker"
-  | "XYPositionMaker";
+  | "XYPositionMaker"
+  | "Normalizer";
 
 export type ValueMakersMap = {
   StaticNumberMaker: "number";
   TickingPhaseMaker: "number";
   SineNumberMaker: "number"; 
+  Normalizer: "number";
   StaticPositionMaker: "position";
   OrbitingPositionMaker: "position";
   XYPositionMaker: "position"; 
@@ -121,6 +124,7 @@ export const ValueMakersConstructorMap = {
   StaticNumberMaker: StaticNumberMaker,
   TickingPhaseMaker: PhasingNumberMaker,
   SineNumberMaker: SineNumberMaker,
+  Normalizer: Normalizer,
 };
 
 
@@ -158,6 +162,11 @@ export type ValueMakersParamMap = {
   SineNumberMaker: {
     phase: number; 
     amplitude: number; 
+  }
+  Normalizer: {
+    inputValue: number; 
+    ratio: number;
+    offset:number;  
   }
 };
 
@@ -232,10 +241,12 @@ export function checkForCircularDependencies(
   const map = createMapFromArray(json);
 
   json.forEach((valueJson) => {
-    const foundIds: Record<string, boolean> = {};
+    console.info(`Starting circular dependencies check for: ${valueJson.id}`)
+
 
     const recursiveCheck = (
-      currentJson: ValueJson
+      currentJson: ValueJson, 
+      foundIds:  Record<string, boolean>,
     ) => {
 
       console.log(currentJson);
@@ -245,21 +256,25 @@ export function checkForCircularDependencies(
       params.forEach((param) => {
         if (objectIsReference(param)) {
           if (foundIds[param.reference]) {
-            throw new Error("Circular loop detected!");
+            throw new GeneralError("Circular loop detected!", {foundIds, currentId: param.reference});
           }
-          foundIds[param.reference] = true;
+
+          const newFoundIds = {
+            ...foundIds, 
+            [param.reference]: true, 
+          }
           const newReference = map[param.reference];
 
           if (!newReference) {
             throw new Error("Referenced node does not exist!");
           }
 
-          recursiveCheck(newReference);
+          recursiveCheck(newReference, newFoundIds);
         }
       });
     };
 
-    recursiveCheck(valueJson);
+    recursiveCheck(valueJson, {});
   });
 }
 
@@ -272,7 +287,7 @@ function constructSingleModelItemFromJson(
   dependencyNodes: any = {} // I'm getting lazy
 ) {
   const Class = ValueMakersConstructorMap[valueJson.valueMaker];
-
+  console.log(valueJson);
   //@ts-ignore - obvs I need to sort this.
   return new Class(valueJson, dependencyNodes);
 }
