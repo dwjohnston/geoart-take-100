@@ -16,7 +16,7 @@ import {
 } from "./AbstractValueMaker";
 import { v4 as uuid } from "uuid";
 
-export type PossiblePositionMakers = "StaticPositionMaker" | "OrbitingPositionMaker";
+export type PossiblePositionMakers = "StaticPositionMaker" | "OrbitingPositionMaker" | "XYPositionMaker";
 export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker"> {
   private value: Position;
   constructor(
@@ -84,17 +84,6 @@ export class OrbittingPositionMaker
 {
 
   
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  constructor(
-    valueJson: ValueJson<"OrbitingPositionMaker">,
-    referenceNodes: NodeReferenceMap<
-      "OrbitingPositionMaker",
-      ValueJson<"OrbitingPositionMaker">
-    >
-  ) {
-    super(valueJson, referenceNodes);
-  }
-
   getValue(): Position {
     const center = findValueByKey(
       "OrbitingPositionMaker",
@@ -102,6 +91,7 @@ export class OrbittingPositionMaker
       this.referencedNodes,
       "center"
     );
+
 
     const phase = findValueByKey(
       "StaticNumberMaker",
@@ -124,4 +114,19 @@ export class OrbittingPositionMaker
       y: center.y + Math.sin(Math.PI * 2 * phase) * radius,
     };
   }
+}
+
+
+export class XYPositionMaker extends AbstractValueMaker<"XYPositionMaker"> {
+
+  getVaLue(): Position {
+    const x = this.lookupValueByKey("x"); 
+    const y = this.lookupValueByKey("y");
+    
+    return {
+      x, 
+      y
+    }; 
+  }
+  
 }

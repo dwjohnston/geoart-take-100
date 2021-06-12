@@ -12,10 +12,12 @@ import {
 import {
   StaticNumberMaker,
   PhasingNumberMaker,
+  SineNumberMaker,
 } from "./ValueMakers/NumberMakers";
 import {
   StaticPositionMaker,
   OrbittingPositionMaker,
+  XYPositionMaker,
 } from "./ValueMakers/PositionMakers";
 
 export type Canvas = {
@@ -94,15 +96,19 @@ export type EnforcedValueMaker<T extends ValueMakers, U extends ValueTypes> =
 
 export type ValueMakers =
   | "StaticNumberMaker"
+  | "TickingPhaseMaker"
+  | "SineNumberMaker"
   | "StaticPositionMaker"
   | "OrbitingPositionMaker"
-  | "TickingPhaseMaker";
+  | "XYPositionMaker";
 
 export type ValueMakersMap = {
-  StaticPositionMaker: "position";
-  OrbitingPositionMaker: "position";
   StaticNumberMaker: "number";
   TickingPhaseMaker: "number";
+  SineNumberMaker: "number"; 
+  StaticPositionMaker: "position";
+  OrbitingPositionMaker: "position";
+  XYPositionMaker: "position"; 
 };
 
 
@@ -111,8 +117,10 @@ export type ValueMakersMap = {
 export const ValueMakersConstructorMap = {
   StaticPositionMaker: StaticPositionMaker,
   OrbitingPositionMaker: OrbittingPositionMaker,
+  XYPositionMaker: XYPositionMaker,
   StaticNumberMaker: StaticNumberMaker,
   TickingPhaseMaker: PhasingNumberMaker,
+  SineNumberMaker: SineNumberMaker,
 };
 
 
@@ -143,6 +151,14 @@ export type ValueMakersParamMap = {
     max: number;
     step: number;
   };
+  XYPositionMaker: {
+    x: number; 
+    y: number; 
+  }, 
+  SineNumberMaker: {
+    phase: number; 
+    amplitude: number; 
+  }
 };
 
 export type ParamsWithReferences<T extends Record<string, unknown>> = {

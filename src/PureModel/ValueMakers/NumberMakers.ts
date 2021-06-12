@@ -17,10 +17,11 @@ import {
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
 import { v4 as uuid } from "uuid";
+import { NumberLiteralType } from 'typescript';
 
 // I need a better way to extract that union type.
 
-export type PossibleNumberMakers = "StaticNumberMaker" | "TickingPhaseMaker";
+export type PossibleNumberMakers = "StaticNumberMaker" | "TickingPhaseMaker" | "SineNumberMaker";
 export class StaticNumberMaker
   extends AbstractValueMaker<"StaticNumberMaker">
   implements IControllable<number>
@@ -128,5 +129,14 @@ export class PhasingNumberMaker
 
   getValue(): number {
     return this.value;
+  }
+}
+
+export class  SineNumberMaker extends AbstractValueMaker<"SineNumberMaker"> {
+  getValue(): number {
+    const phase = this.lookupValueByKey("phase"); 
+    const amplitude = this.lookupValueByKey("amplitude"); 
+
+    return amplitude * (Math.sin(phase)); 
   }
 }
