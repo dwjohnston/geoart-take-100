@@ -9,7 +9,7 @@ const randInt = () => {
 export type CanvasProps = {
   model: TheWholeModel;
   onMount: (payload: {
-    resetCallback: () => void; 
+    resetCallback: () => void;
   }) => void;
 };
 
@@ -30,7 +30,7 @@ export const StyledCanvas = styled.div`
   }
 `;
 
-const DRAW_RATE_MS = 1000/30; 
+const DRAW_RATE_MS = 1000 / 30;
 
 
 export const Canvas = (props: CanvasProps) => {
@@ -42,7 +42,18 @@ export const Canvas = (props: CanvasProps) => {
 
   const lastDrawTime = useRef(0);
 
+
+  const animationFrameRef = useRef<number | null>(null);
+
   useEffect(() => {
+
+    console.log("did change");
+    console.log(model);
+
+    if (animationFrameRef.current) {
+      window.cancelAnimationFrame(animationFrameRef.current);
+    }
+
     if (!refPaint.current) {
       throw new Error("Canvas doesn't exist");
     }
@@ -61,32 +72,32 @@ export const Canvas = (props: CanvasProps) => {
       throw new Error("Context doesn't exist");
     }
 
-    const draw = (ts :number) => {
+    const draw = (ts: number) => {
 
       if ((ts - lastDrawTime.current) > DRAW_RATE_MS) {
         contextTemp.clearRect(0, 0, 500, 500);
 
         const drawPackage = model.tick();
-  
+
         drawPackage.temp.forEach((v) => {
           v.draw({
             ctx: contextTemp,
           });
         });
-  
+
         drawPackage.paint.forEach((v) => {
           v.draw({
             ctx: contextPaint,
           });
         });
 
-        lastDrawTime.current = ts; 
+        lastDrawTime.current = ts;
       }
 
-      window.requestAnimationFrame(draw);
+      animationFrameRef.current = window.requestAnimationFrame(draw);
     };
 
-    window.requestAnimationFrame(draw);
+    animationFrameRef.current = window.requestAnimationFrame(draw);
   }, [model]);
 
 
@@ -100,7 +111,7 @@ export const Canvas = (props: CanvasProps) => {
     }
 
     contextPaint.clearRect(0, 0, 500, 500);
-  }); 
+  });
 
   useEffect(() => {
     onMount({

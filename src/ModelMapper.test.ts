@@ -133,7 +133,6 @@ describe("TheWholeModel", () => {
 
       const controlConfigs = model.getControlConfigs(); 
 
-      console.log(controlConfigs); 
       expect (controlConfigs).toHaveLength(4); 
 
       
