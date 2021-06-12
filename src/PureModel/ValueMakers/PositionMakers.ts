@@ -1,83 +1,132 @@
 import { NotImplementedError } from "../../Errors/errors";
-import { AbstractControlType, ControlConfig } from '../../Frontend/Controls/Abstractions';
-import {   ITickable, Position } from "../AbstractModelItem";
-import { AbstractValueMaker, ControlConfigAndUpdateFunction } from './AbstractValueMaker';
-import { AbstractNumberMaker, TickingPhasingNumberMaker } from "./NumberMakers";
+import {
+  AbstractControlType,
+  ControlConfig,
+} from "../../Frontend/Controls/Abstractions";
+import {
+  ITickable,
+  NodeReferenceMap,
+  Position,
+  ValueJson,
+  findValueByKey,
+} from "../AbstractModelItem";
+import {
+  AbstractValueMaker,
+  ControlConfigAndUpdateFunction,
+} from "./AbstractValueMaker";
+import { v4 as uuid } from "uuid";
 
-import { v4 as uuid } from 'uuid';
+export type PossiblePositionMakers = "StaticPositionMaker" | "OrbitingPositionMaker" | "XYPositionMaker";
+export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker"> {
+  private value: Position;
+  constructor(
+    valueJson: ValueJson<"StaticPositionMaker">,
+    referenceNodes: NodeReferenceMap<
+      "StaticPositionMaker",
+      ValueJson<"StaticPositionMaker">
+    >
+  ) {
+    super(valueJson, referenceNodes);
+    this.value = findValueByKey(
+      "StaticPositionMaker",
+      valueJson,
+      referenceNodes,
+      "value"
+    );
+  }
 
-export class AbstractPositionMaker extends AbstractValueMaker<Position>{
+  updateValue(value: Position) {
+    this.value = value;
+  }
 
-}; 
+  getValue() {
+    return this.value;
+  }
 
-export class StaticPositionMaker extends AbstractPositionMaker {
+  getControlConfig(): ControlConfigAndUpdateFunction<Position>[] {
+    // Typings aren't quite right here.
+    // The control config should be allowed to be anything.
 
-
-    private position: Position;
-    constructor(position: Position) {
-        super();
-
-        this.position = position;
-    }
-
-
-    getValue(): Position {
-        return this.position;
-    }
-
-    getTickables() : ITickable[] {
-        return []; 
-    }
+    return [
+      // {
+      //   config: {
+      //     type: "slider",
+      //     id: this.valueJson.id,
+      //     params: {
+      //       label: this.valueJson.id+'-x',
+      //       min: 0,
+      //       max: 1,
+      //       step: 0.1,
+      //       initialValue: this.valueJson.params.value.x
+      //     },
+      //   },
+      //   updateFn: (value) => this.updateValue({...this.value, x: value}),
+      // },
+      // {
+      //   config: {
+      //     type: "slider",
+      //     id: this.valueJson.id,
+      //     params: {
+      //       label: this.valueJson.id+'-y',
+      //       min: 0,
+      //       max: 1,
+      //       step: 0.1,
+      //       initialValue: this.valueJson.params.value.x
+      //     },
+      //   },
+      //   updateFn: (value) => this.updateValue({...this.value, y: value}),      },
+    ];
+  }
 }
 
-export class OrbittingPositionMaker extends AbstractPositionMaker implements ITickable {
+export class OrbittingPositionMaker
+  extends AbstractValueMaker<"OrbitingPositionMaker">
+{
 
-    private center: AbstractPositionMaker;
-
-
-    private radius: AbstractNumberMaker;
-    private speed: AbstractNumberMaker;
-    private id: string; 
-
-
-    private phase: TickingPhasingNumberMaker;
-
-    constructor(center: AbstractPositionMaker, radius: AbstractNumberMaker, speed: AbstractNumberMaker, phase: TickingPhasingNumberMaker, id: string = uuid()) {
-        super();
-        this.center = center;
-        this.radius = radius;
-        this.speed = speed;
-        this.phase = phase;
-
-        this.id = id; 
-
-    }
+  
+  getValue(): Position {
+    const center = findValueByKey(
+      "OrbitingPositionMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "center"
+    );
 
 
-    getValue(): Position {
-        return {
-            x: this.center.getValue().x + (Math.cos((Math.PI * 2 * Math.PI * this.phase.getValue())) * this.radius.getValue()),
-            y: this.center.getValue().y + (Math.sin((Math.PI * 2 * Math.PI * this.phase.getValue())) * this.radius.getValue()),
+    const phase = findValueByKey(
+      "StaticNumberMaker",
+      //@ts-ignore - I've obviously fucked up, this is wrong.
+      this.valueJson,
+      this.referencedNodes,
+      "phase"
+    ) as number;
+    //@ts-ignore - I've obviously fucked up, this is wrong.
+    const radius = findValueByKey(
+      "StaticNumberMaker",
+      //@ts-ignore - I've obviously fucked up, this is wrong.
+      this.valueJson,
+      this.referencedNodes,
+      "radius"
+    ) as number;
 
-        }
-    }
+    return {
+      x: center.x + Math.cos(Math.PI * 2 * phase) * radius,
+      y: center.y + Math.sin(Math.PI * 2 * phase) * radius,
+    };
+  }
+}
 
-    tick() {
-        this.phase.tick();
-    }
 
+export class XYPositionMaker extends AbstractValueMaker<"XYPositionMaker"> {
 
-    getTickables() : ITickable[] {
-        return [
-            this.phase
-        ];
-    }    
-
-    getControlConfig(): Array<ControlConfigAndUpdateFunction<any>> {
-
-        return [
-            ...this.speed.getControlConfig(), 
-            ...this.radius.getControlConfig(),
-        ]
-    }
+  getValue(): Position {
+    const x = this.lookupValueByKey("x"); 
+    const y = this.lookupValueByKey("y");
+    
+    return {
+      x, 
+      y
+    }; 
+  }
+  
 }

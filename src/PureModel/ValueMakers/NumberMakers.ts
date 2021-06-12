@@ -1,114 +1,158 @@
 import { NotImplementedError } from "../../Errors/errors";
-import { AbstractControlType, ControlConfig } from '../../Frontend/Controls/Abstractions';
-import { IControllable, ITickable } from "../AbstractModelItem";
-import { AbstractValueMaker, ControlConfigAndUpdateFunction } from './AbstractValueMaker';
-import { v4 as uuid } from 'uuid';
+import {
+  AbstractControlType,
+  ControlConfig,
+} from "../../Frontend/Controls/Abstractions";
+import {
+  findValueByKey,
+  IControllable,
+  ITickable,
+  NodeReferenceMap,
+  PossibleValueMakersForValueType,
+  ValueJson,
+  ValueMakers,
+} from "../AbstractModelItem";
+import {
+  AbstractValueMaker,
+  ControlConfigAndUpdateFunction,
+} from "./AbstractValueMaker";
+import { v4 as uuid } from "uuid";
+import { NumberLiteralType } from 'typescript';
 
-export class AbstractNumberMaker extends AbstractValueMaker<number>{
+// I need a better way to extract that union type.
 
-};
+export type PossibleNumberMakers = "StaticNumberMaker" | "TickingPhaseMaker" | "SineNumberMaker";
+export class StaticNumberMaker
+  extends AbstractValueMaker<"StaticNumberMaker">
+  implements IControllable<number>
+{
+  private value: number;
+
+  constructor(
+    valueJson: ValueJson<"StaticNumberMaker">,
+    referencedNodes: NodeReferenceMap<
+      "StaticNumberMaker",
+      ValueJson<"StaticNumberMaker">
+    >
+  ) {
+    super(valueJson, referencedNodes);
+    this.value = findValueByKey(
+      "StaticNumberMaker",
+      valueJson,
+      referencedNodes,
+      "value"
+    );
+  }
+
+  updateValue(value: number) {
+    this.value = value;
+  }
+
+  getValue() {
+    return this.value;
+  }
+
+  getControlConfig(): ControlConfigAndUpdateFunction<number>[] {
+    return [
+      {
+        config: {
+          type: "slider",
+          id: this.valueJson.id,
+          params: {
+            label: this.valueJson.id,
+            min: 0, // Hard code these for now.  It is not up to the logic model to decide what the mins/maxes are. That is a display overlay question.
+            max: 1, // Unless it kind of does makes sense?
+            step: 0.01,
+            initialValue: findValueByKey(
+              "StaticNumberMaker",
+              this.valueJson,
+              this.referencedNodes,
+              "value"
+            ),
+          },
+        },
+        updateFn: (value) => this.updateValue(value),
+      },
+    ];
+  }
+}
+
+export class PhasingNumberMaker
+  extends AbstractValueMaker<"TickingPhaseMaker">
+  implements ITickable
+{
+  private value: number;
+
+  constructor(
+    valueJson: ValueJson<"TickingPhaseMaker">,
+    referencedNodes: NodeReferenceMap<
+      "TickingPhaseMaker",
+      ValueJson<"TickingPhaseMaker">
+    >
+  ) {
+    super(valueJson, referencedNodes);
+
+    this.value = findValueByKey(
+      "TickingPhaseMaker",
+      this.valueJson,
+      referencedNodes,
+      "initialValue"
+    );
+  }
+
+  increment(step: number) {
 
 
-export class StaticNumberMaker extends AbstractNumberMaker implements IControllable<number> {
+    const max =  findValueByKey(
+      "TickingPhaseMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "max"
+    );
 
-    private number: number;
+      
+    this.value =(this.value +  step) % max;
 
+    
+  }
 
-    private id: string;
+  tick() {
+    this.increment(
+      findValueByKey(
+        "TickingPhaseMaker",
+        this.valueJson,
+        this.referencedNodes,
+        "step"
+      )
+    );
+  }
 
-    private min: number;
-    private max: number;
-    private step: number;
-    constructor(value: number, id: string = uuid(), min = 0, max = 1, step = 0.01) {
+  getValue(): number {
+    return this.value;
+  }
+}
 
-        super();
-        this.number = value;
-        this.id = id;
+export class  SineNumberMaker extends AbstractValueMaker<"SineNumberMaker"> {
+  getValue(): number {
+    const phase = this.lookupValueByKey("phase"); 
+    const amplitude = this.lookupValueByKey("amplitude"); 
 
-        this.min = min;
-        this.max = max;
-        this.step = step;
-    }
-
-
-    getValue(): number {
-        console.log(this.id,this.number);
-
-        return this.number;
-    }
-
-    updateValue(value: number) {
-
-        console.log(this.id, value);
-        this.number = value;
-    }
-
-    getControlConfig(): ControlConfigAndUpdateFunction<number>[] {
-
-
-        return [
-            {
-                config: {
-                    type: "slider",
-                    id: this.id,
-                    params: {
-                        label: this.id,
-                        min: this.min,
-                        max: this.max,
-                        step: this.step,
-                        initialValue: this.number
-                    }
-                },
-                updateFn: (value) => this.updateValue(value),
-            }
-        ];
-    }
-
-
+    return amplitude * (Math.sin(phase)); 
+  }
 }
 
 
-export class PhasingNumberMaker extends AbstractNumberMaker {
+/**
+ * Normalizer is a number maker that converts one number into another, in a linear fashion
+ * This is useful for converting PI into screen paramters (0-1) for example
+ */
+export class Normalizer extends AbstractValueMaker<"Normalizer"> {
 
-    private number: number;
-    private max: number;
+  getValue() : number {
+    const inputValue = this.lookupValueByKey("inputValue"); 
+    const ratio = this.lookupValueByKey("ratio"); 
+    const offset = this.lookupValueByKey("offset"); 
 
-    constructor(number = 0, max = 1) {
-        super();
-
-        this.number = 0;
-        this.max = 1;
-    }
-
-    increment(value: number) {
-        this.number = (this.number + value) % this.max;
-    }
-
-    getValue(): number {
-        return this.number;
-    }
+    return (inputValue * ratio) + offset; 
+  }
 }
-
-
-export class TickingPhasingNumberMaker extends AbstractNumberMaker implements ITickable {
-
-
-    private phaser: PhasingNumberMaker;
-
-    private step: AbstractNumberMaker;
-
-    constructor(number = 0, max = 1, step: AbstractNumberMaker) {
-        super();
-        this.phaser = new PhasingNumberMaker(number, max);
-        this.step = step;
-    }
-
-    tick() {
-        this.phaser.increment(this.step.getValue());
-    }
-
-    getValue(): number {
-        return this.phaser.getValue();
-    }
-}
-

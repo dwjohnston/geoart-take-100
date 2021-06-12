@@ -1,0 +1,22 @@
+{
+    "better-comments.tags": [
+        {
+          "tag": "NOTE:",
+          "color": "#AAAAFF",
+          "strikethrough": false,
+          "underline": false,
+          "backgroundColor": "transparent",
+          "bold": false,
+          "italic": false
+        },
+        {
+            "tag": "!",
+            "color": "#332D00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+          },
+    ]
+}
