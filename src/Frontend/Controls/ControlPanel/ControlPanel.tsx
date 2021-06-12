@@ -10,6 +10,7 @@ import {
   ControlConfig,
   ControlTypeMap,
 } from "../Abstractions";
+import { ControlContainer } from '../ControlContainer/ControlContainer';
 import { GeoSlider } from "../GeoSlider/GeoSlider";
 export type ControlPanelProps = {
   controls: Array<ControlConfig<AbstractControlType>>;
@@ -48,8 +49,10 @@ export const ControlPanel = (props: ControlPanelProps) => {
 
         const { type, id, params } = v;
 
-        //@ts-ignore
-        return <Component {...{ id, onChange, params }} />;
+
+        return <ControlContainer>
+          <Component {...{ id, onChange, params }} />
+        </ControlContainer>;
       })}
     </StyledControlPanel>
   );

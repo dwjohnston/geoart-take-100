@@ -1,59 +1,25 @@
-import React from "react";
-import { controlMapping } from "../mapping";
+import React from 'react';
+import styled from 'styled-components';
 
-type ControlContainerProps = {
-  // controlConfig: ControllerMap;
-  // depth: number;
-  // label: string;
-  // idList: string[];
-  // onChange: (idList: string[], value: unknown) => void;
-};
+export type ControlContainerProps = {
+    
+}
 
-export const ControlContainer = (props: ControlContainerProps) => {
-  // const { controlConfig, depth, label, onChange, idList } = props;
 
-  // const entries = Object.entries(controlConfig);
+export const StyledControlContainer = styled.div`
+    border: solid 1px #aaf; 
+    padding: 8px; 
+    margin: 4px; 
 
-  // return (
-  //   <div className="control-container">
-  //     <p>{label}</p>
-  //     {entries.map(([key, value]) => {
-  //       //@ts-ignore
-  //       if (value.controlType) {
-  //         //@ts-ignore
-  //         const ControlClass = controlMapping[value.controlType];
+    display: flex; 
+    flex-flow: row nowrap;
+    justify-content: stretch; 
+`;
 
-  //         if (!ControlClass) {
-  //           throw new Error("Control Class not found");
-  //         }
 
-  //         //@ts-ignore
-  //         return (
-  //           <ControlClass
-  //             key={depth + value.id}
-  //             label={value.id}
-  //             id={value.id}
-  //             params={value.params}
-  //             //@ts-ignore
-  //             onChange={(_key, value) => {
-  //               onChange([...idList, key], value);
-  //             }}
-  //           />
-  //         );
-  //       } else {
-  //         //@ts-ignore
-  //         return (
-  //           <ControlContainer
-  //             depth={depth + 1}
-  //             key={depth + value.id}
-  //             controlConfig={value}
-  //             label={key}
-  //             idList={[...idList, key]}
-  //             onChange={onChange}
-  //           />
-  //         );
-  //       }
-  //     })}
-  //   </div>
-  // );
+export const ControlContainer = (props: React.PropsWithChildren<ControlContainerProps>) => {
+  const {children} = props;
+  return <StyledControlContainer>
+      <div>{children}</div>
+  </StyledControlContainer>;
 };

@@ -6,8 +6,11 @@ const randInt = () => {
   return Math.floor(Math.random() * 500);
 };
 
-type CanvasProps = {
+export type CanvasProps = {
   model: TheWholeModel;
+  onMount: (payload: {
+    resetCallback: () => void; 
+  }) => void;
 };
 
 export const StyledCanvas = styled.div`
@@ -27,11 +30,11 @@ export const StyledCanvas = styled.div`
   }
 `;
 
-const DRAW_RATE_MS = 1000/10; 
+const DRAW_RATE_MS = 1000/30; 
 
 
 export const Canvas = (props: CanvasProps) => {
-  const { model } = props;
+  const { model, onMount } = props;
 
   const refPaint = useRef<HTMLCanvasElement>(null);
   const refTemp = useRef<HTMLCanvasElement>(null);
@@ -53,7 +56,7 @@ export const Canvas = (props: CanvasProps) => {
       throw new Error("Context doesn't exist");
     }
 
-    const contextTemp = refPaint.current.getContext("2d");
+    const contextTemp = refTemp.current.getContext("2d");
     if (!contextTemp) {
       throw new Error("Context doesn't exist");
     }
@@ -85,6 +88,25 @@ export const Canvas = (props: CanvasProps) => {
 
     window.requestAnimationFrame(draw);
   }, [model]);
+
+
+  const resetRef = useRef(() => {
+    if (!refPaint.current) {
+      throw new Error("Canvas doesn't exist");
+    }
+    const contextPaint = refPaint.current.getContext("2d");
+    if (!contextPaint) {
+      throw new Error("Context doesn't exist");
+    }
+
+    contextPaint.clearRect(0, 0, 500, 500);
+  }); 
+
+  useEffect(() => {
+    onMount({
+      resetCallback: resetRef.current
+    });
+  }, [onMount])
 
   return (
     <StyledCanvas>

@@ -17,7 +17,9 @@ export class Linker implements IDrawMaker {
       temp: [
         new Line(this.p1.getValue(), this.p2.getValue(), "rgba(255, 0, 0, 1)"),
       ],
-      paint: [],
+      paint: [
+        new Line(this.p1.getValue(), this.p2.getValue(), "rgba(100, 150, 255, 0.2)"),
+      ],
     };
   }
 }

@@ -68,6 +68,8 @@ export class TheWholeModel implements ITheWholeModel {
     console.log(tickables);
 
     const controlConfigs = Object.values(modelMap).flatMap((v) => {
+      console.log(v);
+      console.log(v.getControlConfig());
       return v.getControlConfig();
     }); 
 
@@ -109,6 +111,8 @@ export class TheWholeModel implements ITheWholeModel {
   }
 
   getControlConfigs(): ControlConfigAndUpdateFunction<unknown>[] {
+
+    console.log(this._controlConfigs);
     return this._controlConfigs;
   }
 }
@@ -130,8 +134,8 @@ export class TheWholeModel implements ITheWholeModel {
 
 
 const preBuiltModels = {
-  "earthVenus": {
-    modelDefintion: [
+  "earth-venus": {
+    modelDefinition: [
       {
         valueType: "position",
         valueMaker: "StaticPositionMaker",
@@ -159,19 +163,19 @@ const preBuiltModels = {
        }, 
         id: "planet-phase-1"
       },
-      // {
-      //   valueType: "number", 
-      //   valueMaker: "TickingPhaseMaker", 
-      //   params: {
-      //     initialValue: 0, 
-      //     max: 1, 
-      //     step: {
-      //       type: "reference", 
-      //       reference: "planet-2-speed",
-      //     }
-      //   },
-      //   id: "planet-phase-2"
-      // },
+      {
+        valueType: "number", 
+        valueMaker: "TickingPhaseMaker", 
+        params: {
+          initialValue: 0, 
+          max: 1, 
+          step: {
+            type: "reference", 
+            reference: "planet-2-speed",
+          }
+        },
+        id: "planet-phase-2"
+      },
   
   
       {
@@ -183,14 +187,14 @@ const preBuiltModels = {
         id: 'planet-1-speed', 
       },
   
-      // {
-      //   valueType: "number", 
-      //   valueMaker: "StaticNumberMaker", 
-      //   params: {
-      //     value: 0.002
-      //   }, 
-      //   id: 'planet-2-speed', 
-      // },
+      {
+        valueType: "number", 
+        valueMaker: "StaticNumberMaker", 
+        params: {
+          value: 0.002
+        }, 
+        id: 'planet-2-speed', 
+      },
   
       {
         valueType: "number", 
@@ -246,7 +250,7 @@ const preBuiltModels = {
   
           phase: {
             type: "reference", 
-            reference: "planet-phase-1"
+            reference: "planet-phase-2"
           } 
         },
         id: "planet2",
@@ -606,7 +610,7 @@ const preBuiltModels = {
 export function getRandomModel(): TheWholeModel {
 
 
-  const prebuiltModel = preBuiltModels['double-sine']; 
+  const prebuiltModel = preBuiltModels['earth-venus']; 
   const {modelDefinition, drawMakers} = prebuiltModel; 
 
 

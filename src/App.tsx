@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import { Canvas } from "./Frontend/Canvas/Canvas";
 import {
@@ -6,11 +6,8 @@ import {
   AbstractControlOutput,
   AbstractControlOutputValue,
 } from "./Frontend/Controls/Abstractions";
-import { ControlContainer } from "./Frontend/Controls/ControlContainer/ControlContainer";
 import { ControlPanel } from "./Frontend/Controls/ControlPanel/ControlPanel";
-import { GeoSlider } from "./Frontend/Controls/GeoSlider/GeoSlider";
 import { Debug } from "./Frontend/DebugTools/Debug";
-import { ControlContainer as ControlContainerLayout } from "./Frontend/Layout/ControlContainer";
 import { getRandomModel } from "./ModelMapper";
 
 function App() {
@@ -34,9 +31,20 @@ function App() {
     console.log(value);
 
     model.updateProperty(value);
+
+    resetRef.current();
   };
 
   const [onChangeDebug, setOnChangeDebug] = useState<any>(null);
+
+
+  const resetRef = useRef(() => {}); 
+
+  const handleCanvasMount = (payload: {
+    resetCallback: () => void;
+  }) => {
+    resetRef.current = payload.resetCallback; 
+  }; 
 
   return (
     <div className="App">
@@ -77,7 +85,7 @@ function App() {
 
       <hr />
       <Debug label="onChange" item={onChangeDebug} />
-      <Canvas model={model} />
+      <Canvas model={model} onMount = {handleCanvasMount} />
       <ControlPanel
         onChange={handleChange2}
         controls={model.getControlConfigs().map((v) => v.config)}

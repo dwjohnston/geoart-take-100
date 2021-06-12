@@ -1,6 +1,6 @@
 import { ReactComponent } from "*.svg";
 
-import React from "react";
+import React, { useState } from "react";
 import { Slider } from "@material-ui/core";
 import { AbstractControlId, AbstractControlProps } from "../Abstractions";
 import styled from "styled-components";
@@ -18,6 +18,7 @@ export type SliderProps = AbstractControlProps<
 >;
 
 const StyledGeoSlider = styled.div`
+  height: 100%; // I don't like this. But I dont' want the parent to to have to be flex. 
   display: flex;
   flex-flow: column nowrap;
   .label {
@@ -32,9 +33,13 @@ export const GeoSlider = (props: SliderProps) => {
   const { params, onChange, id } = props;
   const { min, max, initialValue, step, label } = params;
 
+
+  const [currentValue, setCurrentValue] = useState(initialValue); 
+
+
   return (
     <StyledGeoSlider className="geo-slider">
-      <p className="label"> {id}</p>
+      <p className="label"> {label}</p>
 
       <div className="body">
         <Slider
@@ -47,9 +52,13 @@ export const GeoSlider = (props: SliderProps) => {
             if (Array.isArray(value)) {
               throw new Error("We weren't expecting an array");
             }
+            setCurrentValue(value);
             onChange({ id, value });
           }}
         />
+      </div>
+      <div>
+        {currentValue}
       </div>
     </StyledGeoSlider>
   );
