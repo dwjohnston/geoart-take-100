@@ -15,7 +15,7 @@ import { MenuItem, Select } from "@material-ui/core";
 
 function App() {
 
-  const [selectedModelName, setSelectedModelName] = useState<keyof typeof preBuiltModels>("earth-venus");
+  const [selectedModelName, setSelectedModelName] = useState<keyof typeof preBuiltModels>("EarthVenusAlgorithm");
   const [controlHints, setControlHints] = useState<Array<ControlHint>>([]);
 
   const [model, setModel] = useState<TheWholeModel | null>(null);
