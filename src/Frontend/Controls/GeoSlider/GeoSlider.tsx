@@ -1,6 +1,6 @@
 import { ReactComponent } from "*.svg";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Slider } from "@material-ui/core";
 import { AbstractControlId, AbstractControlProps } from "../Abstractions";
 import styled from "styled-components";
@@ -33,8 +33,24 @@ export const GeoSlider = (props: SliderProps) => {
   const { params, onChange, id } = props;
   const { min, max, initialValue, step, label } = params;
 
+  console.log(params);
+
 
   const [currentValue, setCurrentValue] = useState(initialValue);
+
+  // TODO this logic can probably be moved up a layer. 
+  useEffect(() => {
+
+    console.log("change");
+    onChange({
+      id,
+      value: currentValue
+    });
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.log(currentValue);
 
 
   return (

@@ -33,6 +33,7 @@ export const Default = () => {
       <Debug item={value} />
       <ComponentContainer>
         <ControlPanel
+          controlHints={[]}
           onChange={handleChange}
           controls={[
             {

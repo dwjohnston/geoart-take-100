@@ -1,5 +1,5 @@
 import { getConstantValue, isThisTypeNode, textChangeRangeIsUnchanged } from "typescript";
-import { NotImplementedError } from "../../Errors/errors";
+import { GeneralError, NotImplementedError } from "../../Errors/errors";
 import {
   AbstractControlType,
   ControlConfig,
@@ -57,6 +57,10 @@ export class AbstractValueMaker<
     this.lookupValueByKey = (key) => {
       //@ts-ignore
       const value = findValueByKey(valueJson.valueMaker, valueJson, referencedNodes, key);
+
+      if (value === undefined) {
+        throw new GeneralError("Lookup value was not found!", {key, referencedNodes})
+      }      
       return value; 
     }
   }

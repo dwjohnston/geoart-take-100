@@ -165,7 +165,8 @@ export type ValueMakersParamMap = {
   }
   Normalizer: {
     inputValue: number; 
-    ratio: number;
+    numerator: number;
+    denominator: number; 
     offset:number;  
   }
 };
@@ -265,7 +266,7 @@ export function checkForCircularDependencies(
           const newReference = map[param.reference];
 
           if (!newReference) {
-            throw new Error("Referenced node does not exist!");
+            throw new GeneralError("Referenced node does not exist!", {param});
           }
 
           recursiveCheck(newReference, newFoundIds);
@@ -397,8 +398,10 @@ export function findValueByKey<
       const referencedNode = referenceNodes[paramKey];
 
       if (!referencedNode) {
-        throw new Error(
-          "Something has gone wrong - reference node doesn't exist"
+        throw new GeneralError(
+          "Something has gone wrong - reference node doesn't exist", {
+            param
+          }
         );
       }
       //@ts-ignore
