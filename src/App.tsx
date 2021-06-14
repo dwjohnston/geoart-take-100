@@ -5,6 +5,7 @@ import {
   AbstractControlId,
   AbstractControlOutput,
   AbstractControlOutputValue,
+  ControlHint,
 } from "./Frontend/Controls/Abstractions";
 import { ControlPanel } from "./Frontend/Controls/ControlPanel/ControlPanel";
 import { Debug } from "./Frontend/DebugTools/Debug";
@@ -15,13 +16,17 @@ import { MenuItem, Select } from "@material-ui/core";
 function App() {
 
   const [selectedModelName, setSelectedModelName] = useState<keyof typeof preBuiltModels>("earth-venus");
+  const [controlHints, setControlHints] = useState<Array<ControlHint>>([]);
 
-
-  const [model, setModel] = useState<TheWholeModel>(getModel(selectedModelName));
+  const [model, setModel] = useState<TheWholeModel | null>(null);
 
   useEffect(() => {
     resetRef.current();
-    setModel(getModel(selectedModelName));
+
+    const { model, controlHints } = getModel(selectedModelName);
+
+    setModel(model);
+    setControlHints(controlHints);
   }, [selectedModelName]);
 
   const handleChange = (idList: string[], value: unknown) => {
@@ -37,8 +42,9 @@ function App() {
     value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>
   ) => {
 
-    model.updateProperty(value);
-
+    if (model) {
+      model.updateProperty(value);
+    }
     resetRef.current();
   };
 
@@ -92,21 +98,25 @@ function App() {
 
       <hr />
       <Debug label="onChange" item={onChangeDebug} />
-      <Canvas model={model} onMount={handleCanvasMount} />
-      <div>
-        <label> Select Algorithm:
-          <Select value={selectedModelName} variant="outlined" onChange={(e) => {
-            setSelectedModelName(e.target.value as keyof typeof preBuiltModels);
-          }}>
-            {Object.keys(preBuiltModels).map(v => <MenuItem value={v} key={v}>{v}</MenuItem>)}
-          </Select>
-        </label>
 
-      </div>
-      <ControlPanel
-        onChange={handleChange2}
-        controls={model.getControlConfigs().map((v) => v.config)}
-      />
+      {model && <>
+        <Canvas model={model} onMount={handleCanvasMount} />
+        <div>
+          <label> Select Algorithm:
+            <Select value={selectedModelName} variant="outlined" onChange={(e) => {
+              setSelectedModelName(e.target.value as keyof typeof preBuiltModels);
+            }}>
+              {Object.keys(preBuiltModels).map(v => <MenuItem value={v} key={v}>{v}</MenuItem>)}
+            </Select>
+          </label>
+
+        </div>
+        <ControlPanel
+          onChange={handleChange2}
+          controls={model.getControlConfigs().map((v) => v.config)}
+          controlHints={controlHints}
+        />
+      </>}
     </div>
   );
 }

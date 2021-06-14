@@ -8,12 +8,14 @@ import {
   AbstractControlProps,
   AbstractControlType,
   ControlConfig,
+  ControlHint,
   ControlTypeMap,
 } from "../Abstractions";
 import { ControlContainer } from '../ControlContainer/ControlContainer';
 import { GeoSlider } from "../GeoSlider/GeoSlider";
 export type ControlPanelProps = {
   controls: Array<ControlConfig<AbstractControlType>>;
+  controlHints: Array<ControlHint>
   onChange: (
     value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>
   ) => void;
@@ -40,19 +42,32 @@ const StyledControlPanel = styled.div`
 `;
 
 export const ControlPanel = (props: ControlPanelProps) => {
-  const { controls, onChange } = props;
+  const { controls, onChange, controlHints } = props;
+
+  const controlHintMap = controlHints.reduce((acc, cur) => {
+    return {
+      ...acc,
+      [cur.valueMakerId]: cur
+    }
+  }, {} as Record<string, ControlHint>);
 
   return (
     <StyledControlPanel>
       {controls.map((v) => {
-        const Component = controlMap[v.type];
 
         const { type, id, params } = v;
 
+        const Component = controlMap[type];
 
-        return <ControlContainer>
-          <Component {...{ id, onChange, params }} />
-        </ControlContainer>;
+        const controlHint = controlHintMap[v.id];
+        
+        const paramsToUse = (controlHint && controlHint.params) || params; 
+        const doDisplayControl = controlHint ? controlHint.visible : true; 
+
+
+        return doDisplayControl ? <ControlContainer key ={id}>
+          <Component {...{ id, onChange, params: paramsToUse }} />
+        </ControlContainer> : null;
       })}
     </StyledControlPanel>
   );

@@ -150,9 +150,11 @@ export class Normalizer extends AbstractValueMaker<"Normalizer"> {
 
   getValue() : number {
     const inputValue = this.lookupValueByKey("inputValue"); 
-    const ratio = this.lookupValueByKey("ratio"); 
+    const numerator = this.lookupValueByKey("numerator");
+    const denominator = this.lookupValueByKey("denominator");
+
     const offset = this.lookupValueByKey("offset"); 
 
-    return (inputValue * ratio) + offset; 
+    return (inputValue * (numerator/denominator))+ offset; 
   }
 }

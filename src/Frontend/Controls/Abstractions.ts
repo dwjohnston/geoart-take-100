@@ -47,3 +47,11 @@ export type ControlConfig<T extends AbstractControlType> = {
   id: AbstractControlId;
   params: ControlTypeMap[T]["input"];
 };
+
+
+export type ControlHint<TId extends AbstractControlId = AbstractControlId, T extends AbstractControlType = AbstractControlType> = {
+  valueMakerId: TId;
+  controlType: T;  
+  params: ControlTypeMap[T]['input']
+  visible: boolean; 
+}

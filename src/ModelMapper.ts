@@ -6,7 +6,7 @@ import {
   IControllable,
   DrawPackage,
   ModelMap,
-  ValueJson, 
+  ValueJson,
   constructModelFromJsonArray,
 } from "./PureModel/AbstractModelItem";
 import { LinearMover } from "./PureModel/LinearMover";
@@ -15,6 +15,7 @@ import {
   AbstractControlId,
   AbstractControlOutput,
   AbstractControlOutputValue,
+  ControlHint,
 
 } from "./Frontend/Controls/Abstractions";
 import { ControlConfigAndUpdateFunction } from "./PureModel/ValueMakers/AbstractValueMaker";
@@ -52,7 +53,7 @@ export class TheWholeModel implements ITheWholeModel {
   //private controlFlatMap: Record<string, IControllable<unknown>>;
 
   constructor(
-    modelMap: ModelMap, 
+    modelMap: ModelMap,
     drawMakers: Array<IDrawMaker>
   ) {
 
@@ -60,16 +61,16 @@ export class TheWholeModel implements ITheWholeModel {
     const tickables = Object.values(modelMap).filter((v) => {
       //@ts-ignore
       if (v.tick) {
-        return true; 
+        return true;
       }
     });
-    
-    
+
+
 
     const controlConfigs = Object.values(modelMap).flatMap((v) => {
 
       return v.getControlConfig();
-    }); 
+    });
 
 
     //@ts-ignore
@@ -129,7 +130,14 @@ export class TheWholeModel implements ITheWholeModel {
 // }
 
 
-export const preBuiltModels = {
+type ModelPackage = {
+  modelDefinition: Array<any>;
+  drawMakers: Array<any>;
+  controlHints: Array<ControlHint>;
+}
+
+
+export const preBuiltModels: Record<string, ModelPackage> = {
   "earth-venus": {
     modelDefinition: [
       {
@@ -137,96 +145,96 @@ export const preBuiltModels = {
         valueMaker: "StaticPositionMaker",
         params: {
           value: {
-            x:0.5, 
+            x: 0.5,
             y: 0.5,
           }
         },
         id: "position-center",
       },
-  
-  
-  
+
+
+
       {
-        valueType: "number", 
-        valueMaker: "TickingPhaseMaker", 
+        valueType: "number",
+        valueMaker: "TickingPhaseMaker",
         params: {
-          initialValue: 0.9, 
-          max: 1, 
+          initialValue: 0.9,
+          max: 1,
           step: {
-            type: "reference", 
+            type: "reference",
             reference: "planet-1-speed",
-          }     
-       }, 
+          }
+        },
         id: "planet-phase-1"
       },
       {
-        valueType: "number", 
-        valueMaker: "TickingPhaseMaker", 
+        valueType: "number",
+        valueMaker: "TickingPhaseMaker",
         params: {
-          initialValue: 0, 
-          max: 1, 
+          initialValue: 0,
+          max: 1,
           step: {
-            type: "reference", 
+            type: "reference",
             reference: "planet-2-speed",
           }
         },
         id: "planet-phase-2"
       },
-  
-  
+
+
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
         params: {
           value: 0.003
-        }, 
-        id: 'planet-1-speed', 
+        },
+        id: 'planet-1-speed',
       },
-  
+
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
         params: {
           value: 0.002
-        }, 
-        id: 'planet-2-speed', 
+        },
+        id: 'planet-2-speed',
       },
-  
+
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
         params: {
           value: 0.2
-        }, 
-        id: 'planet-1-radius', 
+        },
+        id: 'planet-1-radius',
       },
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
         params: {
           value: 0.4
-        }, 
-        id: 'planet-2-radius', 
+        },
+        id: 'planet-2-radius',
       },
-  
+
       {
         valueType: "position",
         valueMaker: "OrbitingPositionMaker",
         params: {
           center: {
-            type: "reference", 
-            reference: "position-center", 
-  
-          }, 
-          radius: {
-            type: "reference", 
-            reference: "planet-1-radius", 
+            type: "reference",
+            reference: "position-center",
+
           },
-  
+          radius: {
+            type: "reference",
+            reference: "planet-1-radius",
+          },
+
           phase: {
-            type: "reference", 
+            type: "reference",
             reference: "planet-phase-1"
-          } 
+          }
         },
         id: "planet1",
       },
@@ -235,389 +243,522 @@ export const preBuiltModels = {
         valueMaker: "OrbitingPositionMaker",
         params: {
           center: {
-            type: "reference", 
-            reference: "position-center", 
-  
-          }, 
-          radius: {
-            type: "reference", 
-            reference: "planet-2-radius", 
+            type: "reference",
+            reference: "position-center",
+
           },
-  
+          radius: {
+            type: "reference",
+            reference: "planet-2-radius",
+          },
+
           phase: {
-            type: "reference", 
+            type: "reference",
             reference: "planet-phase-2"
-          } 
+          }
         },
         id: "planet2",
       },
-    ], 
+    ],
     drawMakers: [
       {
-        drawType: "DrawLinker", 
+        drawType: "DrawLinker",
         params: {
           p1: {
-            type: "reference", 
-            reference: "planet1", 
-          }, 
+            type: "reference",
+            reference: "planet1",
+          },
           p2: {
-            type: "reference", 
-            reference: "planet2", 
-          }, 
+            type: "reference",
+            reference: "planet2",
+          },
         }
-      }, 
+      },
       {
-        drawType: "DrawPlanet", 
+        drawType: "DrawPlanet",
         params: {
           center: {
-            type: "reference", 
-            reference: "position-center", 
-          }, 
+            type: "reference",
+            reference: "position-center",
+          },
           position: {
-            type: "reference", 
-            reference: "planet1", 
-          },  
+            type: "reference",
+            reference: "planet1",
+          },
           orbitSize: {
-            type: "reference", 
-            reference: "planet-1-radius", 
-          }, 
+            type: "reference",
+            reference: "planet-1-radius",
+          },
         }
-      }, 
+      },
       {
-        drawType: "DrawPlanet", 
+        drawType: "DrawPlanet",
         params: {
           center: {
-            type: "reference", 
-            reference: "position-center", 
-          }, 
+            type: "reference",
+            reference: "position-center",
+          },
           position: {
-            type: "reference", 
-            reference: "planet2", 
-          },  
+            type: "reference",
+            reference: "planet2",
+          },
           orbitSize: {
-            type: "reference", 
-            reference: "planet-2-radius", 
-          }, 
+            type: "reference",
+            reference: "planet-2-radius",
+          },
         }
       }
-    ]
-  }, 
-  "simple-sine" : {
+    ],
+    controlHints: [
+      {
+        valueMakerId: "planet-1-speed",
+        controlType: "slider",
+        params: {
+          label: "Planet 1 Speed",
+          min: -0.01,
+          max: 0.01,
+          step: 0.001,
+          initialValue: 0.01,
+
+        },
+        visible: true,
+
+      },
+      {
+        valueMakerId: "planet-2-speed",
+        controlType: "slider",
+        params: {
+          label: "Planet 2 Speed",
+          min: -0.01,
+          max: 0.01,
+          step: 0.001,
+          initialValue: -0.01,
+
+        },
+        visible: true,
+      },
+      {
+        valueMakerId: "planet-1-radius",
+        controlType: "slider",
+        params: {
+          label: "Planet 1 Radius",
+          min: 0,
+          max: 0.5,
+          step: 0.01,
+          initialValue: 0.3,
+
+        },
+        visible: true,
+
+      },
+      {
+        valueMakerId: "planet-2-radius",
+        controlType: "slider",
+        params: {
+          label: "Planet 2 Radius",
+          min: 0,
+          max: 0.5,
+          step: 0.01,
+          initialValue: 0.5,
+
+        },
+        visible: true,
+      },
+
+
+
+    ],
+
+  },
+  "simple-sine": {
     modelDefinition: [
 
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "TickingPhaseMaker",
         params: {
-          value: 0.2
-        }, 
-        id: 'frequency', 
-      },
-        
-      {
-        valueType: "number", 
-        valueMaker: "TickingPhaseMaker", 
-        params: {
-          initialValue: 9, 
-          max: 2 * Math.PI, 
-          step: {
-            type: "reference", 
-            reference: "frequency",
-          }     
-       }, 
+          initialValue: 0,
+          max: 1,
+          step: 0.015,
+        },
         id: "phase"
       },
 
       {
-        valueType: "number", 
-        valueMaker: "Normalizer", 
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
         params: {
-          offset: 0, 
-          ratio: 1 / (Math.PI * 2),
-          inputValue: {
-            type: "reference", 
-            reference: "phase"
-          }
-        }, 
-        id: "x"
+          value: 0.2
+        },
+        id: 'frequency',
       },
 
       {
-        valueType: "number", 
-        valueMaker: "SineNumberMaker", 
+        valueType: "number",
+        valueMaker: "Normalizer",
+        params: {
+          offset: 0,
+          numerator: {
+            type: "reference",
+            reference: "phase"
+          },
+          denominator: 1,
+          inputValue: {
+            type: "reference",
+            reference: "frequency"
+          }
+        },
+        id: "adjusted-phase-a"
+      },
+
+      {
+        valueType: "number",
+        valueMaker: "Normalizer",
+        params: {
+          offset: 0,
+          numerator: Math.PI *2,
+          denominator: 1,
+          inputValue: {
+            type: "reference",
+            reference: "adjusted-phase-a"
+          }
+        },
+        id: "adjusted-phase-b"
+      },
+      
+
+      {
+        valueType: "number",
+        valueMaker: "SineNumberMaker",
         params: {
           phase: {
-            type: "reference", 
-            reference: "phase"
-          }, 
+            type: "reference",
+            reference: "adjusted-phase-b"
+          },
           amplitude: 0.5
         },
         id: "sine-value",
-      }, 
+      },
 
       {
-        valueType: "number", 
-        valueMaker: "Normalizer", 
+        valueType: "number",
+        valueMaker: "Normalizer",
         params: {
-          offset: 0.5, 
-          ratio: 1,
+          offset: 0.5,
+          numerator: 1,
+          denominator: 1,
           inputValue: {
-            type: "reference", 
+            type: "reference",
             reference: "sine-value"
           }
-        }, 
+        },
         id: "y"
       },
 
       {
-        valueType: "position", 
-        valueMaker: "XYPositionMaker", 
+        valueType: "position",
+        valueMaker: "XYPositionMaker",
         params: {
           x: {
-            type: "reference", 
-            reference: "x"
+            type: "reference",
+            reference: "phase"
           },
           y: {
-            type: "reference", 
+            type: "reference",
             reference: "y"
           },
-        }, 
+        },
         id: "position"
       }
-      
-    ], 
-    drawMakers: [      {
-      drawType: "DrawDot", 
+
+    ],
+    drawMakers: [{
+      drawType: "DrawDot",
       params: {
         p1: {
-          type: "reference", 
-          reference: "position", 
-        }, 
+          type: "reference",
+          reference: "position",
+        },
 
       }
-    }, ],
+    },],
+    controlHints: [
+      {
+        valueMakerId: "frequency",
+        controlType: "slider",
+        params: {
+          label: "Frequency",
+          min: 0.01,
+          max: 10,
+          step: 0.1,
+          initialValue: 1,
+
+        },
+        visible: true,
+
+      },
+    ],
+
   },
-  "double-sine" : {
+  "double-sine": {
     modelDefinition: [
 
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
         params: {
           value: 0.2
-        }, 
-        id: 'frequency-1', 
+        },
+        id: 'frequency-1',
       },
-        
+
       {
-        valueType: "number", 
-        valueMaker: "TickingPhaseMaker", 
+        valueType: "number",
+        valueMaker: "TickingPhaseMaker",
         params: {
-          initialValue: Math.PI, 
-          max: 2 * Math.PI, 
-          step: {
-            type: "reference", 
-            reference: "frequency-1",
-          }     
-       }, 
+          initialValue: 0,
+          max: 1,
+          step: 0.01
+        },
         id: "phase-1"
       },
 
       {
-        valueType: "number", 
-        valueMaker: "Normalizer", 
+        valueType: "number",
+        valueMaker: "Normalizer",
         params: {
-          offset: 0, 
-          ratio: 1 / (Math.PI * 2),
-          inputValue: {
+          offset: 0,
+          numerator: {
             type: "reference", 
+            reference: "frequency-1"
+          },
+          denominator: 1/(Math.PI * 2),
+          inputValue: {
+            type: "reference",
             reference: "phase-1"
           }
-        }, 
-        id: "x-1"
+        },
+        id: "adjusted-phase-1"
       },
 
+
       {
-        valueType: "number", 
-        valueMaker: "SineNumberMaker", 
+        valueType: "number",
+        valueMaker: "SineNumberMaker",
         params: {
           phase: {
-            type: "reference", 
-            reference: "phase-1"
-          }, 
+            type: "reference",
+            reference: "adjusted-phase-1"
+          },
           amplitude: 0.5
         },
         id: "sine-value-1",
-      }, 
+      },
 
       {
-        valueType: "number", 
-        valueMaker: "Normalizer", 
+        valueType: "number",
+        valueMaker: "Normalizer",
         params: {
-          offset: 0.5, 
-          ratio: 1,
+          offset: 0.5,
+          numerator: 1, 
+          denominator: 1, 
           inputValue: {
-            type: "reference", 
+            type: "reference",
             reference: "sine-value-1"
           }
-        }, 
+        },
         id: "y-1"
       },
 
       {
-        valueType: "position", 
-        valueMaker: "XYPositionMaker", 
+        valueType: "position",
+        valueMaker: "XYPositionMaker",
         params: {
           x: {
-            type: "reference", 
-            reference: "x-1"
+            type: "reference",
+            reference: "phase-1"
           },
           y: {
-            type: "reference", 
+            type: "reference",
             reference: "y-1"
           },
-        }, 
+        },
         id: "position-1"
       },
 
 
       // Number 2
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
         params: {
           value: 0.3
-        }, 
-        id: 'frequency-2', 
+        },
+        id: 'frequency-2',
       },
-        
+
       {
-        valueType: "number", 
-        valueMaker: "TickingPhaseMaker", 
+        valueType: "number",
+        valueMaker: "TickingPhaseMaker",
         params: {
-          initialValue: 0, 
-          max: 2 * Math.PI, 
-          step: {
-            type: "reference", 
-            reference: "frequency-2",
-          }     
-       }, 
+          initialValue: 0,
+          max: 1,
+          step: 0.01
+        },
         id: "phase-2"
       },
 
       {
-        valueType: "number", 
-        valueMaker: "Normalizer", 
+        valueType: "number",
+        valueMaker: "Normalizer",
         params: {
-          offset: 0, 
-          ratio: 1 / (Math.PI * 2),
-          inputValue: {
+          offset: 0,
+          numerator: {
             type: "reference", 
+            reference: "frequency-2"
+          },
+          denominator: 1/(Math.PI * 2),
+          inputValue: {
+            type: "reference",
             reference: "phase-2"
           }
-        }, 
-        id: "x-2"
+        },
+        id: "adjusted-phase-2"
       },
-
       {
-        valueType: "number", 
-        valueMaker: "SineNumberMaker", 
+        valueType: "number",
+        valueMaker: "SineNumberMaker",
         params: {
           phase: {
-            type: "reference", 
-            reference: "phase-2"
-          }, 
+            type: "reference",
+            reference: "adjusted-phase-2"
+          },
           amplitude: 0.5
         },
         id: "sine-value-2",
-      }, 
+      },
 
       {
-        valueType: "number", 
-        valueMaker: "Normalizer", 
+        valueType: "number",
+        valueMaker: "Normalizer",
         params: {
-          offset: 0.5, 
-          ratio: 1,
+          offset: 0.5,
+          numerator: 1, 
+          denominator: 1, 
           inputValue: {
-            type: "reference", 
+            type: "reference",
             reference: "sine-value-2"
           }
-        }, 
+        },
         id: "y-2"
       },
 
       {
-        valueType: "position", 
-        valueMaker: "XYPositionMaker", 
+        valueType: "position",
+        valueMaker: "XYPositionMaker",
         params: {
           x: {
-            type: "reference", 
-            reference: "x-2"
+            type: "reference",
+            reference: "phase-2"
           },
           y: {
-            type: "reference", 
+            type: "reference",
             reference: "y-2"
           },
-        }, 
+        },
         id: "position-2"
       }
-      
-    ], 
-    drawMakers: [      {
-      drawType: "DrawDot", 
+
+    ],
+    drawMakers: [{
+      drawType: "DrawDot",
       params: {
         p1: {
-          type: "reference", 
-          reference: "position-1", 
-        }, 
+          type: "reference",
+          reference: "position-1",
+        },
 
       }
     },
-  
+
     {
-      drawType: "DrawDot", 
+      drawType: "DrawDot",
       params: {
         p1: {
-          type: "reference", 
-          reference: "position-2", 
-        }, 
+          type: "reference",
+          reference: "position-2",
+        },
 
       }
-    }, 
+    },
 
     {
-      drawType: "DrawLinker", 
+      drawType: "DrawLinker",
       params: {
         p1: {
-          type: "reference", 
-          reference: "position-1", 
-        }, 
+          type: "reference",
+          reference: "position-1",
+        },
         p2: {
-          type: "reference", 
-          reference: "position-2", 
-        }, 
+          type: "reference",
+          reference: "position-2",
+        },
       }
-    }, 
-  ],
+    },
+    ],
+    controlHints: [
+      {
+        valueMakerId: "frequency-1",
+        controlType: "slider",
+        params: {
+          label: "Frequency",
+          min: 0.01,
+          max: 10,
+          step: 0.1,
+          initialValue: 1,
+
+        },
+        visible: true,
+
+      },
+      {
+        valueMakerId: "frequency-2",
+        controlType: "slider",
+        params: {
+          label: "Frequency",
+          min: 0.01,
+          max: 10,
+          step: 0.1,
+          initialValue: 1,
+
+        },
+        visible: true,
+
+      },
+    ],
+
   }
 }
 
 
-export function getModel(modelName: keyof typeof preBuiltModels) : TheWholeModel {
+export function getModel(modelName: keyof typeof preBuiltModels): {
+  model: TheWholeModel,
+  controlHints: Array<ControlHint>
+} {
 
 
-  const prebuiltModel = preBuiltModels[modelName]; 
-  const {modelDefinition, drawMakers} = prebuiltModel; 
+  const prebuiltModel = preBuiltModels[modelName];
+  const { modelDefinition, drawMakers, controlHints } = prebuiltModel;
 
 
   //@ts-ignore
   const modelMap = constructModelFromJsonArray(modelDefinition);
   //@ts-ignore
-  const drawMakersObjects = createDrawMakersFromDrawItems(drawMakers, modelMap); 
-  
+  const drawMakersObjects = createDrawMakersFromDrawItems(drawMakers, modelMap);
 
-  const model = new TheWholeModel(modelMap, drawMakersObjects); 
 
-  return model; 
+  const model = new TheWholeModel(modelMap, drawMakersObjects);
+
+  return { model, controlHints };
 
 }
