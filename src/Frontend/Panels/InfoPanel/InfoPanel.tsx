@@ -1,7 +1,8 @@
-import { IconButton } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import React from 'react';
 import { useUserPreferences } from '../../Providers/UserPreferencesProvider';
 import CloseIcon from '@material-ui/icons/Close';
+import { StyledInfoPanel } from './InfoPanel.styles';
 
 export type InfoPanelProps = {
 
@@ -13,19 +14,18 @@ export const InfoPanel = (props: InfoPanelProps): React.ReactElement => {
     const { getPreference, setPreference } = useUserPreferences();
     const showPanel = getPreference("showInfoPanel");
 
-    console.log(showPanel);
+    return <> {showPanel && <StyledInfoPanel>
 
-    return <> {showPanel && <div>
-
-        <IconButton aria-label="close" style = {{marginLeft: "auto"}} onClick = {() => {
-            console.log("click");
-            setPreference("showInfoPanel", false); 
-        }}>
-            <CloseIcon />
-        </IconButton>
-
+        <div>
+            <IconButton aria-label="close" className="close-button" onClick={() => {
+                console.log("click");
+                setPreference("showInfoPanel", false);
+            }}>
+                <CloseIcon />
+            </IconButton>
+        </div>
         <strong> I'm rebuilding this!</strong>
-        <p>
+        <Typography variant="body2">
             The{" "}
             <a
                 href="https://github.com/dwjohnston/geoart-v4"
@@ -34,19 +34,18 @@ export const InfoPanel = (props: InfoPanelProps): React.ReactElement => {
             >
                 original
             </a>{" "}
-            project died as it was running on an old version of node (6) using GCP
-            Firebase, which they discontinued support on.{" "}
-        </p>
-        <p>
-            THat project was my first real foray in to React development, and I'm
+            project is still there, but a lot of the features have rotted. 
+        </Typography>
+        <Typography variant="body2">
+            That project was my first real foray in to React development, and I'm
             since a lot better developer
-        </p>
-        <p>
+        </Typography>
+        <Typography variant="body2">
             The focus this time around is to allow more declarative creation of
             models, and that will enable users to create their own models
-        </p>
+        </Typography>
 
-        <p>
+        <Typography variant="body2">
             Follow along with the{" "}
             <a
                 href="https://github.com/dwjohnston/geoart-take-100/tree/master/blog"
@@ -56,6 +55,6 @@ export const InfoPanel = (props: InfoPanelProps): React.ReactElement => {
                 blog
             </a>{" "}
             if you're interested
-        </p>
-    </div>}</>;
+        </Typography>
+    </StyledInfoPanel>}</>;
 };
