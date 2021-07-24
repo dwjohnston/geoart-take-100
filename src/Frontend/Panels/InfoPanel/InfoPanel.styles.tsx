@@ -11,5 +11,6 @@ export const StyledInfoPanel = styled.div`
         display: block; 
     }
 
+    padding: 1em; 
 
 `;

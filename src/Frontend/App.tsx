@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
 import { Canvas } from "./Canvas/Canvas";
 import {
   AbstractControlId,
@@ -12,6 +11,9 @@ import { Debug } from "./DebugTools/Debug";
 import { preBuiltModels, getModel, TheWholeModel } from "../ModelMapper";
 import { MenuItem, Select } from "@material-ui/core";
 import { InfoPanel } from './Panels/InfoPanel/InfoPanel';
+import { Header } from './Panels/Header/Header';
+import { DebugPanel } from './Panels/DebugPanel/DebugPanel';
+import { StyledApp } from './App.styles';
 
 
 function App() {
@@ -61,32 +63,31 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1>GeoPlanets - interactive geometric art</h1>
-      <InfoPanel/>
+    <StyledApp>
+      <Header />
+      <InfoPanel />
+      <DebugPanel onChangeValue={onChangeDebug} />
+      <main>
+        {model && <>
+          <Canvas model={model} onMount={handleCanvasMount} />
+          <div>
+            <label> Select Algorithm:
+              <Select value={selectedModelName} variant="outlined" onChange={(e) => {
+                setSelectedModelName(e.target.value as keyof typeof preBuiltModels);
+              }}>
+                {Object.keys(preBuiltModels).map(v => <MenuItem value={v} key={v}>{v}</MenuItem>)}
+              </Select>
+            </label>
 
-      <hr />
-      <Debug label="onChange" item={onChangeDebug} />
-
-      {model && <>
-        <Canvas model={model} onMount={handleCanvasMount} />
-        <div>
-          <label> Select Algorithm:
-            <Select value={selectedModelName} variant="outlined" onChange={(e) => {
-              setSelectedModelName(e.target.value as keyof typeof preBuiltModels);
-            }}>
-              {Object.keys(preBuiltModels).map(v => <MenuItem value={v} key={v}>{v}</MenuItem>)}
-            </Select>
-          </label>
-
-        </div>
-        <ControlPanel
-          onChange={handleChange2}
-          controls={model.getControlConfigs().map((v) => v.config)}
-          controlHints={controlHints}
-        />
-      </>}
-    </div>
+          </div>
+          <ControlPanel
+            onChange={handleChange2}
+            controls={model.getControlConfigs().map((v) => v.config)}
+            controlHints={controlHints}
+          />
+        </>}
+      </main>
+    </StyledApp>
   );
 }
 

@@ -10,6 +10,12 @@ const theme = createMuiTheme({
   palette: {
     type: 'dark',
   },
+  typography: {
+    h1: {
+      fontSize: "4rem", 
+      textAlign: "center"
+    }
+  }
 });
 
 ReactDOM.render(
