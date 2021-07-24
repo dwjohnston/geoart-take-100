@@ -1,21 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+import App from "./Frontend/App";
 import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { UserPreferencesContextProvider } from './Frontend/Providers/UserPreferencesProvider';
 
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
   },
-}); 
+});
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
+      <UserPreferencesContextProvider initialPreferences={{
+        showDebug: false,
+        showInfoPanel: true,
+      }}>
 
-    <App />
+        <App />
+      </UserPreferencesContextProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
