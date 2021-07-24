@@ -24,6 +24,7 @@ ReactDOM.render(
       <UserPreferencesContextProvider initialPreferences={{
         showDebug: false,
         showInfoPanel: true,
+        isPaused: false, 
       }}>
 
         <App />

@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 type UserPreferences = {
     showInfoPanel: boolean; 
     showDebug: boolean; 
+    isPaused: boolean; 
 }
 
 type UserPreferencesContextProps = {
