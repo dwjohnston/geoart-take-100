@@ -5,6 +5,7 @@ import App from "./Frontend/App";
 import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { UserPreferencesContextProvider } from './Frontend/Providers/UserPreferencesProvider';
+import { GlobalControlsContextProvider } from './Frontend/Providers/GlobalControlsProvider';
 
 const theme = createMuiTheme({
   palette: {
@@ -12,7 +13,7 @@ const theme = createMuiTheme({
   },
   typography: {
     h1: {
-      fontSize: "4rem", 
+      fontSize: "4rem",
       textAlign: "center"
     }
   }
@@ -24,10 +25,11 @@ ReactDOM.render(
       <UserPreferencesContextProvider initialPreferences={{
         showDebug: false,
         showInfoPanel: true,
-        isPaused: false, 
+        isPaused: false,
       }}>
-
-        <App />
+        <GlobalControlsContextProvider>
+          <App />
+        </GlobalControlsContextProvider>
       </UserPreferencesContextProvider>
     </ThemeProvider>
   </React.StrictMode>,

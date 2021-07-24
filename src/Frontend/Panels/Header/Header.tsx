@@ -1,6 +1,7 @@
 import { IconButton, Typography } from '@material-ui/core';
 import BugReport from "@material-ui/icons/BugReport";
 import Pause from "@material-ui/icons/Pause";
+import Play from "@material-ui/icons/PlayArrow";
 import React from 'react';
 import { useUserPreferences } from '../../Providers/UserPreferencesProvider';
 import { StyledHeader } from './Header.styles';
@@ -36,7 +37,7 @@ export const Header = (props: HeaderProps) => {
     <div className="buttons">
       {/* TODO: better toggle styling */}
       <IconButton aria-label="toggle pause" onClick={handlePauseClick}>
-        <Pause />
+        {isPaused? <Play/> : <Pause/>}
       </IconButton>
       <IconButton aria-label="toggle debug panel" onClick={handleDebugClick}>
         <BugReport />
