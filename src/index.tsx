@@ -1,21 +1,36 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+import App from "./Frontend/App";
 import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { UserPreferencesContextProvider } from './Frontend/Providers/UserPreferencesProvider';
+import { GlobalControlsContextProvider } from './Frontend/Providers/GlobalControlsProvider';
 
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
   },
-}); 
+  typography: {
+    h1: {
+      fontSize: "4rem",
+      textAlign: "center"
+    }
+  }
+});
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-
-    <App />
+      <UserPreferencesContextProvider initialPreferences={{
+        showDebug: false,
+        showInfoPanel: true,
+        isPaused: false,
+      }}>
+        <GlobalControlsContextProvider>
+          <App />
+        </GlobalControlsContextProvider>
+      </UserPreferencesContextProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")

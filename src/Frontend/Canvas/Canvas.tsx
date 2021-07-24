@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { TheWholeModel } from "../../ModelMapper";
 import styled from "styled-components";
+import { useGlobalControls } from '../Providers/GlobalControlsProvider';
 
 const randInt = () => {
   return Math.floor(Math.random() * 500);
@@ -41,7 +42,13 @@ export const Canvas = (props: CanvasProps) => {
 
 
   const lastDrawTime = useRef(0);
+  
 
+  const {isPaused} = useGlobalControls();
+
+  useEffect(() => {
+
+  }, [isPaused]); 
 
   const animationFrameRef = useRef<number | null>(null);
 
@@ -72,33 +79,36 @@ export const Canvas = (props: CanvasProps) => {
       throw new Error("Context doesn't exist");
     }
 
-    const draw = (ts: number) => {
+    if (!isPaused) {
+      const draw = (ts: number) => {
 
-      if ((ts - lastDrawTime.current) > DRAW_RATE_MS) {
-        contextTemp.clearRect(0, 0, 500, 500);
-
-        const drawPackage = model.tick();
-
-        drawPackage.temp.forEach((v) => {
-          v.draw({
-            ctx: contextTemp,
+        if ((ts - lastDrawTime.current) > DRAW_RATE_MS) {
+          contextTemp.clearRect(0, 0, 500, 500);
+  
+          const drawPackage = model.tick();
+  
+          drawPackage.temp.forEach((v) => {
+            v.draw({
+              ctx: contextTemp,
+            });
           });
-        });
-
-        drawPackage.paint.forEach((v) => {
-          v.draw({
-            ctx: contextPaint,
+  
+          drawPackage.paint.forEach((v) => {
+            v.draw({
+              ctx: contextPaint,
+            });
           });
-        });
-
-        lastDrawTime.current = ts;
-      }
-
+  
+          lastDrawTime.current = ts;
+        }
+  
+        animationFrameRef.current = window.requestAnimationFrame(draw);
+      };
+  
       animationFrameRef.current = window.requestAnimationFrame(draw);
-    };
+    }
 
-    animationFrameRef.current = window.requestAnimationFrame(draw);
-  }, [model]);
+  }, [model, isPaused]);
 
 
   const resetRef = useRef(() => {
