@@ -1,7 +1,11 @@
+import { Color } from '../../PureModel/AbstractModelItem';
+import { controlMapping } from './mapping';
+
 export type AbstractControlId = string;
-export type AbstractControlType = "slider"; //TODO probably use a typeof to find all the possible values, or similar.
+export type AbstractControlType = keyof typeof controlMapping;
 export type AbstractControlInputParams = Record<string, unknown>;
 export type AbstractControlOutputValue = unknown;
+
 
 export type ControlTypeMap = {
   slider: {
@@ -14,7 +18,14 @@ export type ControlTypeMap = {
     };
     output: number;
   };
-};
+  "color-control": {
+    input: {
+      label: string; 
+      initialValue: Color; 
+    }, 
+    output: Color; 
+  }
+}  ;
 
 // not currently needed.
 // export type AbstractControlInput<TId extends AbstractControlId, TInputParams extends AbstractControlInputParams> = {

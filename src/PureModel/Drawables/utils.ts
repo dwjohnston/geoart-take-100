@@ -1,4 +1,4 @@
-import { Position } from "../AbstractModelItem";
+import { Color,  Position } from "../AbstractModelItem";
 
 export function adjustX(context: CanvasRenderingContext2D, value: number) {
   let sizeX = context.canvas.width;
@@ -22,4 +22,20 @@ export function adjustPosition(
   position: Position
 ): Position {
   return { x: adjustX(context, position.x), y: adjustY(context, position.y) };
+}
+
+
+export function colorToString(color: Color): string {
+  return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
+}
+
+/**
+ * Check if a Position definitely has color
+ * @param ;
+ * @returns 
+ */
+export function isColorPoint(position: Position ) : position is (Position & {
+  color: Color
+}) {
+  return !!(position).color; 
 }

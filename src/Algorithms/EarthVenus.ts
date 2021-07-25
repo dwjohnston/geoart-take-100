@@ -1,6 +1,6 @@
 import { Algorithm } from './_Algorithm';
 
-export const EarthVenusAlgorithm : Algorithm = {
+export const EarthVenusAlgorithm: Algorithm = {
     name: "Earth Venus",
     modelDefinition: [
         {
@@ -16,6 +16,32 @@ export const EarthVenusAlgorithm : Algorithm = {
         },
 
 
+        //PLANET 1 RGBA
+        {
+            valueType: "color",
+            valueMaker: "StaticColorMaker",
+            params: {
+                r: 255,
+                g: 0,
+                b: 0,
+                a: 1
+            },
+            id: "planet-1-color"
+        },
+
+
+        //PLANET 1 RGBA
+        {
+            valueType: "color",
+            valueMaker: "StaticColorMaker",
+            params: {
+                r: 0,
+                g: 0,
+                b: 255,
+                a: 1
+            },
+            id: "planet-2-color"
+        },
 
         {
             valueType: "number",
@@ -97,6 +123,10 @@ export const EarthVenusAlgorithm : Algorithm = {
                 phase: {
                     type: "reference",
                     reference: "planet-phase-1"
+                }, 
+                color: {
+                    type: "reference", 
+                    reference: "planet-1-color"
                 }
             },
             id: "planet1",
@@ -118,6 +148,10 @@ export const EarthVenusAlgorithm : Algorithm = {
                 phase: {
                     type: "reference",
                     reference: "planet-phase-2"
+                },
+                color: {
+                    type: "reference", 
+                    reference: "planet-2-color"
                 }
             },
             id: "planet2",
@@ -135,6 +169,7 @@ export const EarthVenusAlgorithm : Algorithm = {
                     type: "reference",
                     reference: "planet2",
                 },
+
             }
         },
         {
@@ -187,6 +222,56 @@ export const EarthVenusAlgorithm : Algorithm = {
             visible: true,
 
         },
+
+
+        {
+            valueMakerId: "planet-1-color",
+            controlType: "color-control",
+            params: {
+                label: "Planet 1 Color",
+                initialValue: {
+                    r: 255, 
+                    b: 255, 
+                    g: 0, 
+                    a: 0.5
+                }
+
+            },
+            visible: true,
+
+        },
+        {
+            valueMakerId: "planet-2-color",
+            controlType: "color-control",
+            params: {
+                label: "Planet 1 Color",
+                initialValue: {
+                    r: 0, 
+                    b: 255, 
+                    g: 255, 
+                    a: 0.5
+                }
+
+            },
+            visible: true,
+
+        },
+
+        {
+            valueMakerId: "planet-1-speed",
+            controlType: "slider",
+            params: {
+                label: "Planet 1 Speed",
+                min: -0.01,
+                max: 0.01,
+                step: 0.001,
+                initialValue: 0.01,
+
+            },
+            visible: true,
+
+        },
+
         {
             valueMakerId: "planet-2-speed",
             controlType: "slider",
@@ -227,9 +312,5 @@ export const EarthVenusAlgorithm : Algorithm = {
             },
             visible: true,
         },
-
-
-
     ],
-
 };

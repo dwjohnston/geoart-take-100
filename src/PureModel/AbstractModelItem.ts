@@ -9,6 +9,7 @@ import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
 } from "./ValueMakers/AbstractValueMaker";
+import { StaticColorMaker } from './ValueMakers/ColorMakers';
 import {
   StaticNumberMaker,
   PhasingNumberMaker,
@@ -25,9 +26,18 @@ export type Canvas = {
   ctx: CanvasRenderingContext2D;
 };
 
+export type Color = {
+  r: number; 
+  g: number; 
+  b: number; 
+  a: number; 
+}
+
 export type Position = {
   x: number; // 0 - 1
   y: number; // 0 - 1
+  
+  color?:  Color; 
 };
 
 /** A drawable object.
@@ -87,7 +97,7 @@ export type ValueTypes = "number" | "position" | "color";
 
 export type ValueTypeMap = {
   number: number;
-  color: string;
+  color: Color;
   position: Position;
 };
 
@@ -102,7 +112,8 @@ export type ValueMakers =
   | "StaticPositionMaker"
   | "OrbitingPositionMaker"
   | "XYPositionMaker"
-  | "Normalizer";
+  | "Normalizer"
+  | "StaticColorMaker";
 
 export type ValueMakersMap = {
   StaticNumberMaker: "number";
@@ -112,6 +123,7 @@ export type ValueMakersMap = {
   StaticPositionMaker: "position";
   OrbitingPositionMaker: "position";
   XYPositionMaker: "position"; 
+  StaticColorMaker: "color"; 
 };
 
 
@@ -125,6 +137,7 @@ export const ValueMakersConstructorMap = {
   TickingPhaseMaker: PhasingNumberMaker,
   SineNumberMaker: SineNumberMaker,
   Normalizer: Normalizer,
+  StaticColorMaker: StaticColorMaker,
 };
 
 
@@ -168,6 +181,12 @@ export type ValueMakersParamMap = {
     numerator: number;
     denominator: number; 
     offset:number;  
+  }, 
+  StaticColorMaker: {
+    r: number; 
+    g: number; 
+    b: number; 
+    a: number; 
   }
 };
 
@@ -385,7 +404,7 @@ export function findValueByKey<
   TReferenceNodes extends NodeReferenceMap<TValueMaker, TValueJson>,
   TParamKey extends keyof TValueJson["params"]
 >(
-  valueMakerString: TValueMaker, //- This solves a type issue, but I don't think it should be neccesary.
+  valueMakerString: TValueMaker, // !important - This solves a type issue, but I don't think it should be necessary.
   valueJson: TValueJson,
   referenceNodes: TReferenceNodes,
   paramKey: TParamKey,
