@@ -15,6 +15,27 @@
   // 	],
   // 	"description": "Log output to console"
   // }
+
+  "Create algorithm": {
+    "prefix": "djalgo",
+    "body": [
+      "import { Algorithm } from './_Algorithm';",
+      "",
+      "export const $1: Algorithm = {",
+      "    name: \"$2\",",
+      "    modelDefinition: [",
+      "",
+      "    ],",
+      "    drawMakers: [",
+      "",
+      "    ],",
+      "    controlHints: [",
+      "",
+      "    ],",
+      "};"
+    ],
+    "description": "Create algorithm"
+  },
   "Create context provider": {
     "prefix": "djcontext",
     "body": [
