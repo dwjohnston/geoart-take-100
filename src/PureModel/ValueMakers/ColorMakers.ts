@@ -1,4 +1,3 @@
-
 import {
   Color,
   findValueByKey,
@@ -11,9 +10,7 @@ import {
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
 
-
 export type PossibleColorMakers = "StaticColorMaker";
-
 
 export class StaticColorMaker
   extends AbstractValueMaker<"StaticColorMaker">
@@ -23,7 +20,6 @@ export class StaticColorMaker
   private g: number;
   private b: number;
   private a: number;
-
 
   constructor(
     valueJson: ValueJson<"StaticColorMaker">,
@@ -63,31 +59,26 @@ export class StaticColorMaker
   }
 
   updateValue(color: Color) {
-
-    const {
-      r, g, b, a
-    } = color;
+    const { r, g, b, a } = color;
     this.r = r;
     this.g = g;
     this.b = b;
     this.a = a;
-
   }
 
   getValue() {
     return {
-      r: this.r, 
-      g: this.g, 
-      b: this.b, 
-      a: this.a
+      r: this.r,
+      g: this.g,
+      b: this.b,
+      a: this.a,
     };
   }
 
   getControlConfig(): ControlConfigAndUpdateFunction<Color>[] {
-
     // I'm just going to comment this out for this
     // I forget what this function is for
-    // Is it the default control config? 
+    // Is it the default control config?
     // I don't think it makes sense for that to live in this model
     return [
       {
@@ -125,8 +116,7 @@ export class StaticColorMaker
                 this.referencedNodes,
                 "a"
               ),
-
-            }
+            },
           },
         },
         updateFn: (value) => this.updateValue(value),

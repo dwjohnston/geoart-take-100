@@ -221,84 +221,81 @@ describe("checkForCircularDependencies", () => {
     }).toThrow();
   });
 
-  it ("Does not throw errors on a more complicated Y shaped model", () => {
-    const model=  [
+  it("Does not throw errors on a more complicated Y shaped model", () => {
+    const model = [
+      {
+        valueType: "number",
+        valueMaker: "StaticNumberMaker",
+        params: {
+          value: 0.2,
+        },
+        id: "frequency",
+      },
 
       {
-        valueType: "number", 
-        valueMaker: "StaticNumberMaker", 
+        valueType: "number",
+        valueMaker: "TickingPhaseMaker",
         params: {
-          value: 0.2
-        }, 
-        id: 'frequency', 
-      },
-        
-      {
-        valueType: "number", 
-        valueMaker: "TickingPhaseMaker", 
-        params: {
-          initialValue: 9, 
-          max: 2 * Math.PI, 
+          initialValue: 9,
+          max: 2 * Math.PI,
           step: {
-            type: "reference", 
+            type: "reference",
             reference: "frequency",
-          }     
-       }, 
-        id: "phase"
+          },
+        },
+        id: "phase",
       },
 
       {
-        valueType: "number", 
-        valueMaker: "normalizer", 
+        valueType: "number",
+        valueMaker: "normalizer",
         params: {
-          offset: 0, 
+          offset: 0,
           ratio: 1 / (Math.PI * 2),
           inputValue: {
-            type: "reference", 
-            reference: "phase"
-          }
-        }, 
-        id: "x"
+            type: "reference",
+            reference: "phase",
+          },
+        },
+        id: "x",
       },
 
       {
-        valueType: "number", 
-        valueMaker: "SineNumberMaker", 
+        valueType: "number",
+        valueMaker: "SineNumberMaker",
         params: {
           phase: {
-            type: "reference", 
-            reference: "phase"
-          }, 
-          amplitude: 0.5
+            type: "reference",
+            reference: "phase",
+          },
+          amplitude: 0.5,
         },
         id: "y",
-      }, 
+      },
       {
-        valueType: "position", 
-        valueMaker: "XYPositionMaker", 
+        valueType: "position",
+        valueMaker: "XYPositionMaker",
         params: {
           x: {
-            type: "reference", 
-            reference: "x"
+            type: "reference",
+            reference: "x",
           },
           y: {
-            type: "reference", 
-            reference: "y"
+            type: "reference",
+            reference: "y",
           },
-        }, 
-        id: "position"
-      }
-      
-    ]; 
+        },
+        id: "position",
+      },
+    ];
 
     expect(() => {
       //@ts-ignore
       checkForCircularDependencies(model);
     }).not.toThrow();
-  }); 
+  });
 
-
-  it ("errors if a reference parameter does not exist", () => {
+  it("errors if a reference parameter does not exist", () => {
     expect(() => {
       checkForCircularDependencies([
         {
@@ -325,7 +322,7 @@ describe("checkForCircularDependencies", () => {
         },
       ]);
     }).toThrow();
-  }); 
+  });
 });
 
 describe("constructModelFromJsonArray", () => {
@@ -435,9 +432,9 @@ describe("constructModelFromJsonArray", () => {
       },
     ]);
 
-    expect(result["foo"]).toBeInstanceOf(StaticPositionMaker); 
-    expect(result["foo2"]).toBeInstanceOf(StaticPositionMaker); 
-    expect(result["bar"]).toBeInstanceOf(StaticPositionMaker); 
+    expect(result["foo"]).toBeInstanceOf(StaticPositionMaker);
+    expect(result["foo2"]).toBeInstanceOf(StaticPositionMaker);
+    expect(result["bar"]).toBeInstanceOf(StaticPositionMaker);
   });
 });
 

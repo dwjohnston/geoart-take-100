@@ -2,9 +2,9 @@ import { COLOR_ORBIT_GREY, COLOR_PLANET_DEFAULT } from "../../Contants/colors";
 import { SIZE_PLANET } from "../../Contants/sizes";
 import { IDrawMaker, Position } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
-import { AbstractValueMaker } from '../ValueMakers/AbstractValueMaker';
-import { PossibleNumberMakers } from '../ValueMakers/NumberMakers';
-import { PossiblePositionMakers } from '../ValueMakers/PositionMakers';
+import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
+import { PossibleNumberMakers } from "../ValueMakers/NumberMakers";
+import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
 
 export class PlanetDrawer implements IDrawMaker {
   private _center: AbstractValueMaker<PossiblePositionMakers>;
@@ -13,12 +13,11 @@ export class PlanetDrawer implements IDrawMaker {
   private position: AbstractValueMaker<PossiblePositionMakers>;
 
   constructor(params: {
-      center: AbstractValueMaker<PossiblePositionMakers>,
-      orbitSize: AbstractValueMaker<PossibleNumberMakers>,
-      position: AbstractValueMaker<PossiblePositionMakers>
-    }
-  ) {
-    const {center, orbitSize, position} = params; 
+    center: AbstractValueMaker<PossiblePositionMakers>;
+    orbitSize: AbstractValueMaker<PossibleNumberMakers>;
+    position: AbstractValueMaker<PossiblePositionMakers>;
+  }) {
+    const { center, orbitSize, position } = params;
     this._center = center;
     this._orbitSize = orbitSize;
     this.position = position;

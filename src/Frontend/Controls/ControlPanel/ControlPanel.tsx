@@ -11,12 +11,12 @@ import {
   ControlHint,
   ControlTypeMap,
 } from "../Abstractions";
-import { ControlContainer } from '../ControlContainer/ControlContainer';
-import { GeoColorControl } from '../GeoColorControl/GeoColorControl';
+import { ControlContainer } from "../ControlContainer/ControlContainer";
+import { GeoColorControl } from "../GeoColorControl/GeoColorControl";
 import { GeoSlider } from "../GeoSlider/GeoSlider";
 export type ControlPanelProps = {
   controls: Array<ControlConfig<AbstractControlType>>;
-  controlHints: Array<ControlHint>
+  controlHints: Array<ControlHint>;
   onChange: (
     value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>
   ) => void;
@@ -49,17 +49,15 @@ export const ControlPanel = (props: ControlPanelProps) => {
   const controlHintMap = controlHints.reduce((acc, cur) => {
     return {
       ...acc,
-      [cur.valueMakerId]: cur
-    }
+      [cur.valueMakerId]: cur,
+    };
   }, {} as Record<string, ControlHint>);
-
 
   console.log(controls);
 
   return (
     <StyledControlPanel>
       {controls.map((v) => {
-
         const { type, id, params } = v;
 
         const Component = controlMap[type];
@@ -69,11 +67,12 @@ export const ControlPanel = (props: ControlPanelProps) => {
         const paramsToUse = (controlHint && controlHint.params) || params;
         const doDisplayControl = controlHint ? controlHint.visible : true;
 
-
-        return doDisplayControl ? <ControlContainer key={id}>
-          {/* @ts-ignore - I think we need generic typings */}
-          <Component {...{ id, onChange, params: paramsToUse }} />
-        </ControlContainer> : null;
+        return doDisplayControl ? (
+          <ControlContainer key={id}>
+            {/* @ts-ignore - I think we need generic typings */}
+            <Component {...{ id, onChange, params: paramsToUse }} />
+          </ControlContainer>
+        ) : null;
       })}
     </StyledControlPanel>
   );

@@ -17,7 +17,10 @@ import {
 } from "./AbstractValueMaker";
 import { v4 as uuid } from "uuid";
 
-export type PossiblePositionMakers = "StaticPositionMaker" | "OrbitingPositionMaker" | "XYPositionMaker";
+export type PossiblePositionMakers =
+  | "StaticPositionMaker"
+  | "OrbitingPositionMaker"
+  | "XYPositionMaker";
 export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker"> {
   private value: Position;
   constructor(
@@ -80,11 +83,7 @@ export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker
   }
 }
 
-export class OrbittingPositionMaker
-  extends AbstractValueMaker<"OrbitingPositionMaker">
-{
-
-  
+export class OrbittingPositionMaker extends AbstractValueMaker<"OrbitingPositionMaker"> {
   getValue(): Position {
     const center = findValueByKey(
       "OrbitingPositionMaker",
@@ -92,7 +91,6 @@ export class OrbittingPositionMaker
       this.referencedNodes,
       "center"
     );
-
 
     const phase = findValueByKey(
       "StaticNumberMaker",
@@ -110,39 +108,35 @@ export class OrbittingPositionMaker
       "radius"
     ) as number;
 
-
     const color = findValueByKey(
       "StaticColorMaker",
       //@ts-ignore
       this.valueJson,
       this.referencedNodes,
       "color"
-    ) as unknown as Color | null ; 
+    ) as unknown as Color | null;
 
     return {
       x: center.x + Math.cos(Math.PI * 2 * phase) * radius,
       y: center.y + Math.sin(Math.PI * 2 * phase) * radius,
       color: color || {
-        r: 255, 
-        g: 255, 
-        b: 255, 
+        r: 255,
+        g: 255,
+        b: 255,
         a: 1,
-      }
+      },
     };
   }
 }
 
-
 export class XYPositionMaker extends AbstractValueMaker<"XYPositionMaker"> {
-
   getValue(): Position {
-    const x = this.lookupValueByKey("x"); 
+    const x = this.lookupValueByKey("x");
     const y = this.lookupValueByKey("y");
-    
+
     return {
-      x, 
-      y
-    }; 
+      x,
+      y,
+    };
   }
-  
 }

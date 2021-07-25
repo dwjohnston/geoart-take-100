@@ -1,10 +1,10 @@
-import { ControlHint } from '../Frontend/Controls/Abstractions';
+import { ControlHint } from "../Frontend/Controls/Abstractions";
 
 export type Algorithm = {
-    name: string; 
-        //TODO tighten these
+  name: string;
+  //TODO tighten these
 
-    modelDefinition: Array<any>;
-    drawMakers: Array<any>;
-    controlHints: Array<ControlHint>;
-}
+  modelDefinition: Array<any>;
+  drawMakers: Array<any>;
+  controlHints: Array<ControlHint>;
+};

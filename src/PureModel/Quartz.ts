@@ -1,7 +1,5 @@
 import { ITickable } from "./AbstractModelItem";
 
-
-
 // NOT CURRENTLY BEING USED
 /**
  * You only want a single one of these.

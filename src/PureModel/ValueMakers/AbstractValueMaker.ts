@@ -1,4 +1,8 @@
-import { getConstantValue, isThisTypeNode, textChangeRangeIsUnchanged } from "typescript";
+import {
+  getConstantValue,
+  isThisTypeNode,
+  textChangeRangeIsUnchanged,
+} from "typescript";
 import { GeneralError, NotImplementedError } from "../../Errors/errors";
 import {
   AbstractControlType,
@@ -22,12 +26,9 @@ export type ControlConfigAndUpdateFunction<T> = {
   updateFn: (value: T) => void;
 };
 
-export class AbstractValueMaker<
-  TValueMaker extends ValueMakers,
-> {
-
-  protected id: string; 
-  protected valueType: ValueJson<TValueMaker>['valueType'];
+export class AbstractValueMaker<TValueMaker extends ValueMakers> {
+  protected id: string;
+  protected valueType: ValueJson<TValueMaker>["valueType"];
   protected valueMaker: TValueMaker;
 
   protected valueJson: ValueJson<TValueMaker>;
@@ -36,33 +37,40 @@ export class AbstractValueMaker<
     ValueJson<TValueMaker>
   >;
 
-
-  protected lookupValueByKey : <K extends keyof ValueMakersParamMap[TValueMaker]>(key: K) => ValueMakersParamMap[TValueMaker][K]
+  protected lookupValueByKey: <
+    K extends keyof ValueMakersParamMap[TValueMaker]
+  >(
+    key: K
+  ) => ValueMakersParamMap[TValueMaker][K];
 
   constructor(
     valueJson: ValueJson<TValueMaker>,
-    referencedNodes: NodeReferenceMap<
-      TValueMaker,
-      ValueJson<TValueMaker>
-    >
+    referencedNodes: NodeReferenceMap<TValueMaker, ValueJson<TValueMaker>>
   ) {
     this.valueType = valueJson.valueType;
     this.valueMaker = valueJson.valueMaker;
-    this.id = valueJson.id; 
+    this.id = valueJson.id;
 
     this.valueJson = valueJson;
     this.referencedNodes = referencedNodes;
 
-
     this.lookupValueByKey = (key) => {
       //@ts-ignore
-      const value = findValueByKey(valueJson.valueMaker, valueJson, referencedNodes, key);
+      const value = findValueByKey(
+        valueJson.valueMaker,
+        valueJson,
+        referencedNodes,
+        key
+      );
 
       if (value === undefined) {
-        throw new GeneralError("Lookup value was not found!", {key, referencedNodes})
-      }      
-      return value; 
-    }
+        throw new GeneralError("Lookup value was not found!", {
+          key,
+          referencedNodes,
+        });
+      }
+      return value;
+    };
   }
 
   getValue(): ValueTypeMap[ValueMakersMap[TValueMaker]] {
@@ -73,8 +81,10 @@ export class AbstractValueMaker<
     throw new NotImplementedError();
   }
 
-  getControlConfig(): Array<ControlConfigAndUpdateFunction<ValueTypeMap[ValueMakersMap[TValueMaker]]>> {
-    return []; 
+  getControlConfig(): Array<
+    ControlConfigAndUpdateFunction<ValueTypeMap[ValueMakersMap[TValueMaker]]>
+  > {
+    return [];
   }
 
   toJson(): ValueJson<TValueMaker> {

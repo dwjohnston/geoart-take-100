@@ -11,7 +11,7 @@ import {
 } from "./PureModel/AbstractModelItem";
 import { LinearMover } from "./PureModel/LinearMover";
 
-import { Algorithm } from './Algorithms/_Algorithm';
+import { Algorithm } from "./Algorithms/_Algorithm";
 import * as algorithms from "./Algorithms/_index";
 
 import {
@@ -19,10 +19,12 @@ import {
   AbstractControlOutput,
   AbstractControlOutputValue,
   ControlHint,
-
 } from "./Frontend/Controls/Abstractions";
 import { ControlConfigAndUpdateFunction } from "./PureModel/ValueMakers/AbstractValueMaker";
-import { AbstractDrawItem, createDrawMakersFromDrawItems } from './PureModel/AbstractDrawItem';
+import {
+  AbstractDrawItem,
+  createDrawMakersFromDrawItems,
+} from "./PureModel/AbstractDrawItem";
 
 // const modelMap = {
 //   "linear-mover": LinearMover,
@@ -55,12 +57,7 @@ export class TheWholeModel implements ITheWholeModel {
 
   //private controlFlatMap: Record<string, IControllable<unknown>>;
 
-  constructor(
-    modelMap: ModelMap,
-    drawMakers: Array<IDrawMaker>
-  ) {
-
-
+  constructor(modelMap: ModelMap, drawMakers: Array<IDrawMaker>) {
     const tickables = Object.values(modelMap).filter((v) => {
       //@ts-ignore
       if (v.tick) {
@@ -68,13 +65,9 @@ export class TheWholeModel implements ITheWholeModel {
       }
     });
 
-
-
     const controlConfigs = Object.values(modelMap).flatMap((v) => {
-
       return v.getControlConfig();
     });
-
 
     //@ts-ignore
     this._tickables = tickables;
@@ -112,7 +105,6 @@ export class TheWholeModel implements ITheWholeModel {
   }
 
   getControlConfigs(): ControlConfigAndUpdateFunction<unknown>[] {
-
     return this._controlConfigs;
   }
 }
@@ -132,30 +124,21 @@ export class TheWholeModel implements ITheWholeModel {
 
 // }
 
-
-
-
-
-export const preBuiltModels: Record<string, Algorithm> = algorithms; 
+export const preBuiltModels: Record<string, Algorithm> = algorithms;
 
 export function getModel(modelName: keyof typeof preBuiltModels): {
-  model: TheWholeModel,
-  controlHints: Array<ControlHint>
+  model: TheWholeModel;
+  controlHints: Array<ControlHint>;
 } {
-
-
   const prebuiltModel = preBuiltModels[modelName];
   const { modelDefinition, drawMakers, controlHints } = prebuiltModel;
-
 
   //@ts-ignore
   const modelMap = constructModelFromJsonArray(modelDefinition);
   //@ts-ignore
   const drawMakersObjects = createDrawMakersFromDrawItems(drawMakers, modelMap);
 
-
   const model = new TheWholeModel(modelMap, drawMakersObjects);
 
   return { model, controlHints };
-
 }
