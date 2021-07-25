@@ -9,6 +9,7 @@ import {
   Position,
   ValueJson,
   findValueByKey,
+  Color,
 } from "../AbstractModelItem";
 import {
   AbstractValueMaker,
@@ -109,9 +110,24 @@ export class OrbittingPositionMaker
       "radius"
     ) as number;
 
+
+    const color = findValueByKey(
+      "StaticColorMaker",
+      //@ts-ignore
+      this.valueJson,
+      this.referencedNodes,
+      "color"
+    ) as unknown as Color | null ; 
+
     return {
       x: center.x + Math.cos(Math.PI * 2 * phase) * radius,
       y: center.y + Math.sin(Math.PI * 2 * phase) * radius,
+      color: color || {
+        r: 255, 
+        g: 255, 
+        b: 255, 
+        a: 1,
+      }
     };
   }
 }

@@ -13,6 +13,7 @@ export type SliderProps = AbstractControlProps<
     max: number;
     initialValue: number;
     step: number;
+    
   },
   number
 >;
@@ -21,11 +22,16 @@ const StyledGeoSlider = styled.div`
   height: 100%; // I don't like this. But I dont' want the parent to to have to be flex. 
   display: flex;
   flex-flow: column nowrap;
+  align-items: center; 
   .label {
   }
 
   .body {
     flex: 1 0 auto;
+    display: flex; 
+    flex-flow: row nowrap; 
+    justify-content: center; 
+    margin-bottom: 1em;
   }
 `;
 
