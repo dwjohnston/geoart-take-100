@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { TheWholeModel } from "../../ModelMapper";
+import { TheWholeModel } from "../../PureModel/ModelEntryPoint";
 import styled from "styled-components";
 import { useGlobalControls } from "../Providers/GlobalControlsProvider";
 

@@ -5,38 +5,23 @@ import {
   DrawPackage,
   ModelMap,
   constructModelFromJsonArray,
-} from "./PureModel/AbstractModelItem";
+} from "./AbstractModelItem";
 
-import { Algorithm } from "./Algorithms/_Algorithm";
-import * as algorithms from "./Algorithms/_index";
+import { Algorithm } from "../Algorithms/_Algorithm";
+import * as algorithms from "../Algorithms/_index";
 
 import {
   AbstractControlId,
   AbstractControlOutput,
   AbstractControlOutputValue,
   ControlHint,
-} from "./Frontend/Controls/Abstractions";
-import { ControlConfigAndUpdateFunction } from "./PureModel/ValueMakers/AbstractValueMaker";
-import { createDrawMakersFromDrawItems } from "./PureModel/AbstractDrawItem";
+} from "../Frontend/Controls/Abstractions";
+import { ControlConfigAndUpdateFunction } from "./ValueMakers/AbstractValueMaker";
+import { createDrawMakersFromDrawItems } from "./AbstractDrawItem";
 
-// const modelMap = {
-//   "linear-mover": LinearMover,
-//   planet: Planet,
-//   linker: Linker,
-// } as const;
-
-// type DefinitionItem<T extends keyof typeof modelMap = keyof typeof modelMap> = {
-//   [key in T]: {
-//     itemKey: T;
-//     props: ConstructorParameters<typeof modelMap[T]>;
-//   };
-// }[T];
-
-// type PossibleDefinitionItem <T extends keyof typeof modelMap> = {
-//     [key in T]: DefinitionItem<key>;
-// }[T];
-
-// type Definition = Array<DefinitionItem>;
+/**
+ * This file is the main entry point into the pure javascript model. ie. All frontend interactions should be through methods exposed here.
+ */
 
 export class TheWholeModel implements ITheWholeModel {
   private _drawmakers: IDrawMaker[] = [];
@@ -47,8 +32,6 @@ export class TheWholeModel implements ITheWholeModel {
     AbstractControlId,
     (value: AbstractControlOutputValue) => void
   > = {};
-
-  //private controlFlatMap: Record<string, IControllable<unknown>>;
 
   constructor(modelMap: ModelMap, drawMakers: Array<IDrawMaker>) {
     const tickables = Object.values(modelMap).filter((v) => {
@@ -101,21 +84,6 @@ export class TheWholeModel implements ITheWholeModel {
     return this._controlConfigs;
   }
 }
-
-/**
- * The thing that is returned from this, needs to: 
- * 
- *  1. Regularly tick the quartz
- *  2. After each tick, retrieve the drawables
- *  3. Declare a list of controllers to put on the FE.  
- *  4. Respond to property update events. 
- * @param definition 
-//  */
-// export function createModelFromDefinition(definition: Definition) : TheWholeModel{
-
-//     return new TheWholeModel(definition);
-
-// }
 
 export const preBuiltModels: Record<string, Algorithm> = algorithms;
 
