@@ -44,20 +44,38 @@ describe("createDrawMakersFromDrawItems", () => {
   ]);
 
   it("returns a list of draw maker class instances", () => {
+    /**
+     * TODO - fix the typings so that they'll fail if reference type is wrong!
+     */
     const drawItems: Array<AbstractDrawItem> = [
       {
         drawType: "DrawLinker",
         params: {
-          p1: "foo",
-          p2: "foo2",
+          p1: {
+            type: "reference",
+            reference: "foo",
+          },
+          p2: {
+            type: "reference",
+            reference: "foo2",
+          },
         },
       },
       {
         drawType: "DrawPlanet",
         params: {
-          center: "foo",
-          orbitSize: "bar",
-          position: "foo2",
+          center: {
+            type: "reference",
+            reference: "foo",
+          },
+          orbitSize: {
+            type: "reference",
+            reference: "bar",
+          },
+          position: {
+            type: "reference",
+            reference: "foo2",
+          },
         },
       },
     ];
@@ -91,10 +109,7 @@ describe("createDrawMakersFromDrawItems", () => {
     expect(() => createDrawMakersFromDrawItems(drawItems, modelMap)).toThrow();
   });
 
-  it.todo("Expect type errors if not all params are defined", () => {});
+  it.todo("Expect type errors if not all params are defined");
 
-  it.todo(
-    "Throw errors if not all params are defined/are defined wrong",
-    () => {}
-  );
+  it.todo("Throw errors if not all params are defined/are defined wrong");
 });

@@ -144,6 +144,8 @@ export type PossibleValueMakersForValueType<
   ? ValueMakersMap[TValueMakers]
   : never;
 
+/** TODO
+ * This is implementation - move it */
 export type ValueMakersParamMap = {
   StaticPositionMaker: {
     value: Position;
