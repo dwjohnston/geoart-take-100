@@ -1,15 +1,14 @@
-import { GeneralError } from '../Errors/errors';
+import { GeneralError } from "../Errors/errors";
 import {
   AbstractControlId,
   AbstractControlOutput,
-
 } from "../Frontend/Controls/Abstractions";
 import { partition } from "../utils/partition";
 import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
 } from "./ValueMakers/AbstractValueMaker";
-import { StaticColorMaker } from './ValueMakers/ColorMakers';
+import { StaticColorMaker } from "./ValueMakers/ColorMakers";
 import {
   StaticNumberMaker,
   PhasingNumberMaker,
@@ -27,17 +26,17 @@ export type Canvas = {
 };
 
 export type Color = {
-  r: number; 
-  g: number; 
-  b: number; 
-  a: number; 
-}
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};
 
 export type Position = {
   x: number; // 0 - 1
   y: number; // 0 - 1
-  
-  color?:  Color; 
+
+  color?: Color;
 };
 
 /** A drawable object.
@@ -118,15 +117,13 @@ export type ValueMakers =
 export type ValueMakersMap = {
   StaticNumberMaker: "number";
   TickingPhaseMaker: "number";
-  SineNumberMaker: "number"; 
+  SineNumberMaker: "number";
   Normalizer: "number";
   StaticPositionMaker: "position";
   OrbitingPositionMaker: "position";
-  XYPositionMaker: "position"; 
-  StaticColorMaker: "color"; 
+  XYPositionMaker: "position";
+  StaticColorMaker: "color";
 };
-
-
 
 // A little confusing but note that the types on the left are different to the classes on the right.
 export const ValueMakersConstructorMap = {
@@ -139,8 +136,6 @@ export const ValueMakersConstructorMap = {
   Normalizer: Normalizer,
   StaticColorMaker: StaticColorMaker,
 };
-
-
 
 export type PossibleValueMakersForValueType<
   T extends ValueMakersMap[TValueMakers],
@@ -169,43 +164,40 @@ export type ValueMakersParamMap = {
     step: number;
   };
   XYPositionMaker: {
-    x: number; 
-    y: number; 
-  }, 
+    x: number;
+    y: number;
+  };
   SineNumberMaker: {
-    phase: number; 
-    amplitude: number; 
-  }
+    phase: number;
+    amplitude: number;
+  };
   Normalizer: {
-    inputValue: number; 
+    inputValue: number;
     numerator: number;
-    denominator: number; 
-    offset:number;  
-  }, 
+    denominator: number;
+    offset: number;
+  };
   StaticColorMaker: {
-    r: number; 
-    g: number; 
-    b: number; 
-    a: number; 
-  }
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  };
 };
 
 export type ParamsWithReferences<T extends Record<string, unknown>> = {
   [K in keyof T]: T[K] | ValueReference<T[K]>;
 };
 
-export type ValueJson<
-  TValueMaker extends ValueMakers = ValueMakers,
-> = {
+export type ValueJson<TValueMaker extends ValueMakers = ValueMakers> = {
   valueType: ValueMakersMap[TValueMaker];
   valueMaker: EnforcedValueMaker<TValueMaker, ValueMakersMap[TValueMaker]>;
   params: ParamsWithReferences<ValueMakersParamMap[TValueMaker]>;
   id: string;
 };
 
-export type ValueMakerClassInstance<
-  TValueMaker extends ValueMakers,
-> = AbstractValueMaker<TValueMaker>;
+export type ValueMakerClassInstance<TValueMaker extends ValueMakers> =
+  AbstractValueMaker<TValueMaker>;
 
 export type NodeReferenceMap<
   TValueMaker extends ValueMakers,
@@ -255,37 +247,37 @@ function objectIsReference(obj: unknown): obj is NodeValueReference {
   return false;
 }
 
-export function checkForCircularDependencies(
-  json: Array<ValueJson>
-) {
+export function checkForCircularDependencies(json: Array<ValueJson>) {
   const map = createMapFromArray(json);
 
   json.forEach((valueJson) => {
-    console.info(`Starting circular dependencies check for: ${valueJson.id}`)
-
+    console.info(`Starting circular dependencies check for: ${valueJson.id}`);
 
     const recursiveCheck = (
-      currentJson: ValueJson, 
-      foundIds:  Record<string, boolean>,
+      currentJson: ValueJson,
+      foundIds: Record<string, boolean>
     ) => {
-
-
       const params = Object.values(currentJson.params);
 
       params.forEach((param) => {
         if (objectIsReference(param)) {
           if (foundIds[param.reference]) {
-            throw new GeneralError("Circular loop detected!", {foundIds, currentId: param.reference});
+            throw new GeneralError("Circular loop detected!", {
+              foundIds,
+              currentId: param.reference,
+            });
           }
 
           const newFoundIds = {
-            ...foundIds, 
-            [param.reference]: true, 
-          }
+            ...foundIds,
+            [param.reference]: true,
+          };
           const newReference = map[param.reference];
 
           if (!newReference) {
-            throw new GeneralError("Referenced node does not exist!", {param});
+            throw new GeneralError("Referenced node does not exist!", {
+              param,
+            });
           }
 
           recursiveCheck(newReference, newFoundIds);
@@ -297,9 +289,8 @@ export function checkForCircularDependencies(
   });
 }
 
-
 // Fairly sure this isn't right.
-export type ModelMap = Record<string, AbstractValueMaker<ValueMakers>>; 
+export type ModelMap = Record<string, AbstractValueMaker<ValueMakers>>;
 
 function constructSingleModelItemFromJson(
   valueJson: ValueJson,
@@ -310,9 +301,7 @@ function constructSingleModelItemFromJson(
   return new Class(valueJson, dependencyNodes);
 }
 
-export function constructModelFromJsonArray(
-  json: Array<ValueJson>
-) : ModelMap {
+export function constructModelFromJsonArray(json: Array<ValueJson>): ModelMap {
   checkForCircularDependencies(json);
 
   // Split into dependant nodes and leaf nodes so we can process the leaf nodes first
@@ -372,7 +361,6 @@ export function constructModelFromJsonArray(
         {}
       );
 
-
       const newNode = constructSingleModelItemFromJson(
         valueJson,
         paramClassInstances
@@ -407,9 +395,8 @@ export function findValueByKey<
   valueMakerString: TValueMaker, // !important - This solves a type issue, but I don't think it should be necessary.
   valueJson: TValueJson,
   referenceNodes: TReferenceNodes,
-  paramKey: TParamKey,
+  paramKey: TParamKey
 ): ValueMakersParamMap[TValueMaker][TParamKey] {
-
   const param = valueJson.params[paramKey];
 
   if (objectIsValueReference(param)) {
@@ -418,37 +405,37 @@ export function findValueByKey<
 
       if (!referencedNode) {
         throw new GeneralError(
-          "Something has gone wrong - reference node doesn't exist", {
-            param
+          "Something has gone wrong - reference node doesn't exist",
+          {
+            param,
           }
         );
       }
       //@ts-ignore
       return referencedNode.getValue();
     } else {
-
       //@ts-ignore
       return param.value;
     }
   } else {
-
     //@ts-ignore
-    return param; 
+    return param;
   }
 }
 
+export function getValueMakerFromReferenceNode(
+  referenceNode: NodeValueReference,
+  modelMap: ModelMap
+) {
+  const node = modelMap[referenceNode.reference];
 
-export function getValueMakerFromReferenceNode(referenceNode: NodeValueReference, modelMap: ModelMap) {
+  if (!node) {
+    throw new GeneralError("Value maker was not found", {
+      referenceNode,
+      node,
+      modelMap,
+    });
+  }
 
-    const node = modelMap[referenceNode.reference]; 
-
-    if (!node) {
-      throw new GeneralError("Value maker was not found", {
-        referenceNode, 
-        node, 
-        modelMap,
-      }); 
-    }
-
-    return node; 
+  return node;
 }

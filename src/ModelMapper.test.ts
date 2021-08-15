@@ -1,14 +1,9 @@
 import { TheWholeModel } from "./ModelMapper";
-import { constructModelFromJsonArray } from './PureModel/AbstractModelItem';
+import { constructModelFromJsonArray } from "./PureModel/AbstractModelItem";
 
 describe("TheWholeModel", () => {
-
-
-
   describe("getControlConfigs", () => {
-
     it("returns the correct configs for a given model definition", () => {
-
       const modelMap = constructModelFromJsonArray([
         {
           valueType: "position",
@@ -17,7 +12,7 @@ describe("TheWholeModel", () => {
             value: {
               x: 0.5,
               y: 0.5,
-            }
+            },
           },
           id: "position-center",
         },
@@ -31,9 +26,9 @@ describe("TheWholeModel", () => {
             step: {
               type: "reference",
               reference: "planet-1-speed",
-            }
+            },
           },
-          id: "planet-phase-1"
+          id: "planet-phase-1",
         },
         {
           valueType: "number",
@@ -44,45 +39,44 @@ describe("TheWholeModel", () => {
             step: {
               type: "reference",
               reference: "planet-2-speed",
-            }
+            },
           },
-          id: "planet-phase-2"
-        },
-
-
-        {
-          valueType: "number",
-          valueMaker: "StaticNumberMaker",
-          params: {
-            value: 0.003
-          },
-          id: 'planet-1-speed',
+          id: "planet-phase-2",
         },
 
         {
           valueType: "number",
           valueMaker: "StaticNumberMaker",
           params: {
-            value: 0.002
+            value: 0.003,
           },
-          id: 'planet-2-speed',
+          id: "planet-1-speed",
         },
 
         {
           valueType: "number",
           valueMaker: "StaticNumberMaker",
           params: {
-            value: 0.2
+            value: 0.002,
           },
-          id: 'planet-1-radius',
+          id: "planet-2-speed",
+        },
+
+        {
+          valueType: "number",
+          valueMaker: "StaticNumberMaker",
+          params: {
+            value: 0.2,
+          },
+          id: "planet-1-radius",
         },
         {
           valueType: "number",
           valueMaker: "StaticNumberMaker",
           params: {
-            value: 0.4
+            value: 0.4,
           },
-          id: 'planet-2-radius',
+          id: "planet-2-radius",
         },
 
         {
@@ -92,7 +86,6 @@ describe("TheWholeModel", () => {
             center: {
               type: "reference",
               reference: "position-center",
-
             },
             radius: {
               type: "reference",
@@ -101,8 +94,8 @@ describe("TheWholeModel", () => {
 
             phase: {
               type: "reference",
-              reference: "planet-phase-1"
-            }
+              reference: "planet-phase-1",
+            },
           },
           id: "planet1",
         },
@@ -113,7 +106,6 @@ describe("TheWholeModel", () => {
             center: {
               type: "reference",
               reference: "position-center",
-
             },
             radius: {
               type: "reference",
@@ -122,22 +114,18 @@ describe("TheWholeModel", () => {
 
             phase: {
               type: "reference",
-              reference: "planet-phase-2"
-            }
+              reference: "planet-phase-2",
+            },
           },
           id: "planet2",
         },
       ]);
 
-      const model = new TheWholeModel(modelMap, []); 
+      const model = new TheWholeModel(modelMap, []);
 
-      const controlConfigs = model.getControlConfigs(); 
+      const controlConfigs = model.getControlConfigs();
 
-      expect (controlConfigs).toHaveLength(4); 
-
-      
-
-
+      expect(controlConfigs).toHaveLength(4);
     });
   });
-})
+});

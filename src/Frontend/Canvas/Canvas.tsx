@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { TheWholeModel } from "../../ModelMapper";
 import styled from "styled-components";
-import { useGlobalControls } from '../Providers/GlobalControlsProvider';
+import { useGlobalControls } from "../Providers/GlobalControlsProvider";
 
 const randInt = () => {
   return Math.floor(Math.random() * 500);
@@ -9,9 +9,7 @@ const randInt = () => {
 
 export type CanvasProps = {
   model: TheWholeModel;
-  onMount: (payload: {
-    resetCallback: () => void;
-  }) => void;
+  onMount: (payload: { resetCallback: () => void }) => void;
 };
 
 export const StyledCanvas = styled.div`
@@ -33,27 +31,21 @@ export const StyledCanvas = styled.div`
 
 const DRAW_RATE_MS = 1000 / 30;
 
-
 export const Canvas = (props: CanvasProps) => {
   const { model, onMount } = props;
 
   const refPaint = useRef<HTMLCanvasElement>(null);
   const refTemp = useRef<HTMLCanvasElement>(null);
 
-
   const lastDrawTime = useRef(0);
-  
 
-  const {isPaused} = useGlobalControls();
+  const { isPaused } = useGlobalControls();
 
-  useEffect(() => {
-
-  }, [isPaused]); 
+  useEffect(() => {}, [isPaused]);
 
   const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-
     console.log("did change");
     console.log(model);
 
@@ -81,35 +73,32 @@ export const Canvas = (props: CanvasProps) => {
 
     if (!isPaused) {
       const draw = (ts: number) => {
-
-        if ((ts - lastDrawTime.current) > DRAW_RATE_MS) {
+        if (ts - lastDrawTime.current > DRAW_RATE_MS) {
           contextTemp.clearRect(0, 0, 500, 500);
-  
+
           const drawPackage = model.tick();
-  
+
           drawPackage.temp.forEach((v) => {
             v.draw({
               ctx: contextTemp,
             });
           });
-  
+
           drawPackage.paint.forEach((v) => {
             v.draw({
               ctx: contextPaint,
             });
           });
-  
+
           lastDrawTime.current = ts;
         }
-  
+
         animationFrameRef.current = window.requestAnimationFrame(draw);
       };
-  
+
       animationFrameRef.current = window.requestAnimationFrame(draw);
     }
-
   }, [model, isPaused]);
-
 
   const resetRef = useRef(() => {
     if (!refPaint.current) {
@@ -125,9 +114,9 @@ export const Canvas = (props: CanvasProps) => {
 
   useEffect(() => {
     onMount({
-      resetCallback: resetRef.current
+      resetCallback: resetRef.current,
     });
-  }, [onMount])
+  }, [onMount]);
 
   return (
     <StyledCanvas>

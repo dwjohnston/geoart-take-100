@@ -17,11 +17,14 @@ import {
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
 import { v4 as uuid } from "uuid";
-import { NumberLiteralType } from 'typescript';
+import { NumberLiteralType } from "typescript";
 
 // I need a better way to extract that union type.
 
-export type PossibleNumberMakers = "StaticNumberMaker" | "TickingPhaseMaker" | "SineNumberMaker";
+export type PossibleNumberMakers =
+  | "StaticNumberMaker"
+  | "TickingPhaseMaker"
+  | "SineNumberMaker";
 export class StaticNumberMaker
   extends AbstractValueMaker<"StaticNumberMaker">
   implements IControllable<number>
@@ -101,19 +104,14 @@ export class PhasingNumberMaker
   }
 
   increment(step: number) {
-
-
-    const max =  findValueByKey(
+    const max = findValueByKey(
       "TickingPhaseMaker",
       this.valueJson,
       this.referencedNodes,
       "max"
     );
 
-      
-    this.value =(this.value +  step) % max;
-
-    
+    this.value = (this.value + step) % max;
   }
 
   tick() {
@@ -132,29 +130,27 @@ export class PhasingNumberMaker
   }
 }
 
-export class  SineNumberMaker extends AbstractValueMaker<"SineNumberMaker"> {
+export class SineNumberMaker extends AbstractValueMaker<"SineNumberMaker"> {
   getValue(): number {
-    const phase = this.lookupValueByKey("phase"); 
-    const amplitude = this.lookupValueByKey("amplitude"); 
+    const phase = this.lookupValueByKey("phase");
+    const amplitude = this.lookupValueByKey("amplitude");
 
-    return amplitude * (Math.sin(phase)); 
+    return amplitude * Math.sin(phase);
   }
 }
-
 
 /**
  * Normalizer is a number maker that converts one number into another, in a linear fashion
  * This is useful for converting PI into screen paramters (0-1) for example
  */
 export class Normalizer extends AbstractValueMaker<"Normalizer"> {
-
-  getValue() : number {
-    const inputValue = this.lookupValueByKey("inputValue"); 
+  getValue(): number {
+    const inputValue = this.lookupValueByKey("inputValue");
     const numerator = this.lookupValueByKey("numerator");
     const denominator = this.lookupValueByKey("denominator");
 
-    const offset = this.lookupValueByKey("offset"); 
+    const offset = this.lookupValueByKey("offset");
 
-    return (inputValue * (numerator/denominator))+ offset; 
+    return inputValue * (numerator / denominator) + offset;
   }
 }

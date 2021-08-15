@@ -10,15 +10,15 @@ import { ControlPanel } from "./Controls/ControlPanel/ControlPanel";
 import { Debug } from "./DebugTools/Debug";
 import { preBuiltModels, getModel, TheWholeModel } from "../ModelMapper";
 import { MenuItem, Select } from "@material-ui/core";
-import { InfoPanel } from './Panels/InfoPanel/InfoPanel';
-import { Header } from './Panels/Header/Header';
-import { DebugPanel } from './Panels/DebugPanel/DebugPanel';
-import { StyledApp } from './App.styles';
-
+import { InfoPanel } from "./Panels/InfoPanel/InfoPanel";
+import { Header } from "./Panels/Header/Header";
+import { DebugPanel } from "./Panels/DebugPanel/DebugPanel";
+import { StyledApp } from "./App.styles";
 
 function App() {
-
-  const [selectedModelName, setSelectedModelName] = useState<keyof typeof preBuiltModels>("EarthVenusAlgorithm");
+  const [selectedModelName, setSelectedModelName] = useState<
+    keyof typeof preBuiltModels
+  >("EarthVenusAlgorithm");
   const [controlHints, setControlHints] = useState<Array<ControlHint>>([]);
 
   const [model, setModel] = useState<TheWholeModel | null>(null);
@@ -33,7 +33,6 @@ function App() {
   }, [selectedModelName]);
 
   const handleChange = (idList: string[], value: unknown) => {
-
     // model.updateProperty(idList, value);
     setOnChangeDebug({
       idList,
@@ -44,7 +43,6 @@ function App() {
   const handleChange2 = (
     value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>
   ) => {
-
     if (model) {
       model.updateProperty(value);
     }
@@ -53,12 +51,9 @@ function App() {
 
   const [onChangeDebug, setOnChangeDebug] = useState<any>(null);
 
+  const resetRef = useRef(() => {});
 
-  const resetRef = useRef(() => { });
-
-  const handleCanvasMount = (payload: {
-    resetCallback: () => void;
-  }) => {
+  const handleCanvasMount = (payload: { resetCallback: () => void }) => {
     resetRef.current = payload.resetCallback;
   };
 
@@ -68,24 +63,37 @@ function App() {
       <InfoPanel />
       <DebugPanel onChangeValue={onChangeDebug} />
       <main>
-        {model && <>
-          <Canvas model={model} onMount={handleCanvasMount} />
-          <div>
-            <label> Select Algorithm:
-              <Select value={selectedModelName} variant="outlined" onChange={(e) => {
-                setSelectedModelName(e.target.value as keyof typeof preBuiltModels);
-              }}>
-                {Object.keys(preBuiltModels).map(v => <MenuItem value={v} key={v}>{v}</MenuItem>)}
-              </Select>
-            </label>
-
-          </div>
-          <ControlPanel
-            onChange={handleChange2}
-            controls={model.getControlConfigs().map((v) => v.config)}
-            controlHints={controlHints}
-          />
-        </>}
+        {model && (
+          <>
+            <Canvas model={model} onMount={handleCanvasMount} />
+            <div>
+              <label>
+                {" "}
+                Select Algorithm:
+                <Select
+                  value={selectedModelName}
+                  variant="outlined"
+                  onChange={(e) => {
+                    setSelectedModelName(
+                      e.target.value as keyof typeof preBuiltModels
+                    );
+                  }}
+                >
+                  {Object.keys(preBuiltModels).map((v) => (
+                    <MenuItem value={v} key={v}>
+                      {v}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </label>
+            </div>
+            <ControlPanel
+              onChange={handleChange2}
+              controls={model.getControlConfigs().map((v) => v.config)}
+              controlHints={controlHints}
+            />
+          </>
+        )}
       </main>
     </StyledApp>
   );
