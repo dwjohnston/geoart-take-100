@@ -59,6 +59,11 @@ export class TheWholeModel implements ITheWholeModel {
     }, {});
   }
 
+  /**
+   * An external source will control when the tick happens
+   * eg. setInterval, or drawAnimationFrame
+   * * @returns
+   */
   tick() {
     this._tickables.forEach((v) => {
       v.tick();
@@ -76,10 +81,18 @@ export class TheWholeModel implements ITheWholeModel {
     );
   }
 
+  /**
+   * Provide updates in to the model values
+   * @param value
+   */
   updateProperty(value: AbstractControlOutput<AbstractControlId, unknown>) {
     this._updateFns[value.id](value.value);
   }
 
+  /**
+   * Get hints about how the model should be displayed
+   * @returns
+   */
   getControlConfigs(): ControlConfigAndUpdateFunction<unknown>[] {
     return this._controlConfigs;
   }
