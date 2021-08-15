@@ -32,6 +32,8 @@ function App() {
     setControlHints(controlHints);
   }, [selectedModelName]);
 
+  // @tidy tidyup required here
+
   const handleChange = (idList: string[], value: unknown) => {
     // model.updateProperty(idList, value);
     setOnChangeDebug({

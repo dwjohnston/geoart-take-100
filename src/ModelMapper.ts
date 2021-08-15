@@ -2,14 +2,10 @@ import {
   ITheWholeModel,
   IDrawMaker,
   ITickable,
-  IDrawable,
-  IControllable,
   DrawPackage,
   ModelMap,
-  ValueJson,
   constructModelFromJsonArray,
 } from "./PureModel/AbstractModelItem";
-import { LinearMover } from "./PureModel/LinearMover";
 
 import { Algorithm } from "./Algorithms/_Algorithm";
 import * as algorithms from "./Algorithms/_index";
@@ -21,10 +17,7 @@ import {
   ControlHint,
 } from "./Frontend/Controls/Abstractions";
 import { ControlConfigAndUpdateFunction } from "./PureModel/ValueMakers/AbstractValueMaker";
-import {
-  AbstractDrawItem,
-  createDrawMakersFromDrawItems,
-} from "./PureModel/AbstractDrawItem";
+import { createDrawMakersFromDrawItems } from "./PureModel/AbstractDrawItem";
 
 // const modelMap = {
 //   "linear-mover": LinearMover,
