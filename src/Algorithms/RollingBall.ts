@@ -15,17 +15,20 @@ export const RollingBall: Algorithm = {
     },
 
     {
-      valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueType: "number",
+      valueMaker: "StaticNumberMaker",
       params: {
-        value: {
-          x: 0.5,
-          y: 0.5,
-          dx: 1,
-          dy: 0,
-        },
+        value: 1,
       },
-      id: "center",
+      id: "deltaX",
+    },
+    {
+      valueType: "number",
+      valueMaker: "StaticNumberMaker",
+      params: {
+        value: 0.1,
+      },
+      id: "deltaY",
     },
 
     {
@@ -34,7 +37,10 @@ export const RollingBall: Algorithm = {
       valueMaker: "Normalizer",
       params: {
         offset: 0,
-        numerator: 1,
+        numerator: {
+          type: "reference",
+          reference: "deltaX",
+        },
         denominator: 1,
         inputValue: {
           type: "reference",
@@ -49,7 +55,10 @@ export const RollingBall: Algorithm = {
       valueMaker: "Normalizer",
       params: {
         offset: 0.25,
-        numerator: 0,
+        numerator: {
+          type: "reference",
+          reference: "deltaY",
+        },
         denominator: 1,
         inputValue: {
           type: "reference",
@@ -72,11 +81,11 @@ export const RollingBall: Algorithm = {
         },
         dx: {
           type: "reference",
-          reference: "x",
+          reference: "deltaX",
         },
         dy: {
           type: "reference",
-          reference: "y",
+          reference: "deltaY",
         },
       },
       id: "plane-position",
@@ -86,7 +95,7 @@ export const RollingBall: Algorithm = {
       valueType: "number",
       valueMaker: "StaticNumberMaker",
       params: {
-        value: 0.3,
+        value: 0.2,
       },
       id: "radius",
     },
@@ -95,7 +104,7 @@ export const RollingBall: Algorithm = {
       valueType: "number",
       valueMaker: "StaticNumberMaker",
       params: {
-        value: 0.1,
+        value: 0.3,
       },
       id: "drawDistance",
     },
@@ -121,6 +130,26 @@ export const RollingBall: Algorithm = {
           reference: "phase",
         },
       },
+      id: "ballCenter",
+    },
+    {
+      valueType: "position",
+      valueMaker: "OrbitingPositionMaker",
+      params: {
+        center: {
+          type: "reference",
+          reference: "ballCenter",
+        },
+        radius: {
+          type: "reference",
+          reference: "drawDistance",
+        },
+
+        phase: {
+          type: "reference",
+          reference: "phase",
+        },
+      },
       id: "ballDrawPoint",
     },
   ],
@@ -135,11 +164,11 @@ export const RollingBall: Algorithm = {
       },
     },
     {
-      drawType: "DrawPlanet",
+      drawType: "DrawBall",
       params: {
         center: {
           type: "reference",
-          reference: "plane-position",
+          reference: "ballCenter",
         },
         position: {
           type: "reference",

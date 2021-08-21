@@ -4,6 +4,7 @@ import {
   IDrawMaker,
   getValueMakerFromReferenceNode,
 } from "./AbstractModelItem";
+import { BallDrawer } from "./DrawMakers/BallDrawer";
 import { DotMaker } from "./DrawMakers/DotMaker";
 import { Linker } from "./DrawMakers/Linker";
 import { PlanetDrawer } from "./DrawMakers/PlanetDrawer";
@@ -15,6 +16,7 @@ export const DrawMakingMap = {
   DrawLinker: Linker,
   DrawPlanet: PlanetDrawer,
   DrawDot: DotMaker,
+  DrawBall: BallDrawer,
 };
 
 export type PossibleDrawTypes = keyof typeof DrawMakingMap;

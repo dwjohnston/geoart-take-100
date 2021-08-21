@@ -18,8 +18,7 @@ export function getCenterFromTangent(
   const pTangent = getPerpendicularTangent(tangent);
 
   const { x, y, dx, dy } = pTangent;
-
-  const angle = Math.atan(dy / dx);
+  const angle = Math.atan(dx / dy);
 
   const xOffset = Math.sin(angle) * radius;
   const yOffset = Math.cos(angle) * radius;

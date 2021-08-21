@@ -179,14 +179,7 @@ export class RollingBallPositionMaker extends AbstractValueMaker<"RollingBallPos
       "drawDistance"
     );
 
-    console.log(tangent);
-
     const center = getCenterFromTangent(tangent, radius);
-
-    const drawPosition = getPositionOnCircle(center, drawDistance, phase);
-
-    console.log({ tangent, center, drawPosition });
-
-    return drawPosition;
+    return center;
   }
 }
