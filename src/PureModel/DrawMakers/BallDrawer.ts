@@ -37,7 +37,7 @@ export class BallDrawer implements IDrawMaker {
           this._orbitSize.getValue(),
           colorToString(this.color || COLOR_ORBIT_GREY)
         ),
-        new Tangent(this.position.getValue()),
+        // new Tangent(this.position.getValue()),
 
         new Line(
           this._center.getValue(),

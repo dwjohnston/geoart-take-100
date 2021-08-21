@@ -4,14 +4,80 @@ export const RollingBall2: Algorithm = {
   name: "RollingBall2",
   modelDefinition: [
     {
+      id: "center",
+      valueType: "position",
+      valueMaker: "StaticPositionMaker",
+      params: {
+        value: {
+          x: 0.5,
+          y: 0.5,
+        },
+      },
+    },
+    {
+      valueType: "number",
+      valueMaker: "StaticNumberMaker",
+      params: {
+        value: 0.002,
+      },
+      id: "planet-1-speed",
+    },
+
+    {
+      valueType: "number",
+      valueMaker: "StaticNumberMaker",
+      params: {
+        value: 0.2,
+      },
+      id: "planet-1-radius",
+    },
+    {
       valueType: "number",
       valueMaker: "TickingPhaseMaker",
       params: {
-        initialValue: 0.4,
+        initialValue: 0,
         max: 1,
-        step: 0.00575,
+        step: {
+          type: "reference",
+          reference: "planet-1-speed",
+        },
       },
-      id: "phase",
+      id: "planet-phase-1",
+    },
+    {
+      valueType: "position",
+      valueMaker: "OrbitingPositionMaker",
+      params: {
+        center: {
+          type: "reference",
+          reference: "center",
+        },
+        radius: {
+          type: "reference",
+          reference: "planet-1-radius",
+        },
+
+        phase: {
+          type: "reference",
+          reference: "planet-phase-1",
+        },
+        color: {
+          type: "reference",
+          reference: "color",
+        },
+      },
+      id: "planet1",
+    },
+    {
+      valueType: "color",
+      valueMaker: "StaticColorMaker",
+      params: {
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 0.3,
+      },
+      id: "color",
     },
     {
       valueType: "number",
@@ -19,7 +85,72 @@ export const RollingBall2: Algorithm = {
       params: {
         initialValue: 0.4,
         max: 1,
-        step: 0.0125,
+        step: {
+          type: "reference",
+          reference: "mid-speed",
+        },
+      },
+      id: "phase",
+    },
+
+    {
+      valueType: "number",
+      valueMaker: "Normalizer",
+      params: {
+        offset: 0,
+        numerator: Math.PI * 2,
+        denominator: 1,
+        inputValue: {
+          type: "reference",
+          reference: "planet-1-radius",
+        },
+      },
+      id: "planet-circumference",
+    },
+
+    {
+      valueType: "number",
+      valueMaker: "Normalizer",
+      params: {
+        offset: 0,
+        numerator: Math.PI * 2,
+        denominator: 1,
+        inputValue: {
+          type: "reference",
+          reference: "radius",
+        },
+      },
+      id: "mid-circumference",
+    },
+
+    {
+      valueType: "number",
+      valueMaker: "Normalizer",
+      params: {
+        offset: 0,
+        numerator: {
+          type: "reference",
+          reference: "planet-1-speed",
+        },
+        denominator: {
+          type: "reference",
+          reference: "mid-circumference",
+        },
+        inputValue: {
+          type: "reference",
+          reference: "planet-circumference",
+        },
+      },
+      id: "mid-speed",
+    },
+
+    {
+      valueType: "number",
+      valueMaker: "TickingPhaseMaker",
+      params: {
+        initialValue: 0.4,
+        max: 1,
+        step: 0.0225,
       },
       id: "phase2",
     },
@@ -134,7 +265,7 @@ export const RollingBall2: Algorithm = {
       params: {
         tangent: {
           type: "reference",
-          reference: "plane-position",
+          reference: "planet1",
         },
         radius: {
           type: "reference",
@@ -273,13 +404,20 @@ export const RollingBall2: Algorithm = {
         },
       },
     },
-
     {
-      drawType: "DrawDot",
+      drawType: "DrawPlanet",
       params: {
-        p1: {
+        center: {
           type: "reference",
-          reference: "plane-position",
+          reference: "center",
+        },
+        position: {
+          type: "reference",
+          reference: "planet1",
+        },
+        orbitSize: {
+          type: "reference",
+          reference: "planet-1-radius",
         },
       },
     },
