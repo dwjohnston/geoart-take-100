@@ -2,6 +2,7 @@ import { COLOR_ORBIT_GREY, COLOR_PLANET_DEFAULT } from "../../Contants/colors";
 import { SIZE_PLANET } from "../../Contants/sizes";
 import { IDrawMaker, Position } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
+import { Tangent } from "../Drawables/Tangent";
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
 import { PossibleNumberMakers } from "../ValueMakers/NumberMakers";
 import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
@@ -31,6 +32,8 @@ export class PlanetDrawer implements IDrawMaker {
           this._orbitSize.getValue(),
           COLOR_ORBIT_GREY
         ),
+
+        new Tangent(this.position.getValue()),
 
         new Circle(this.position.getValue(), SIZE_PLANET, COLOR_PLANET_DEFAULT),
       ],

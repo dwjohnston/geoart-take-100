@@ -30,7 +30,11 @@ export function adjustPosition(
   };
 }
 
-export function colorToString(color: Color): string {
+export function colorToString(color: Color | string): string {
+  if (typeof color === "string") {
+    return color;
+  }
+
   return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
 }
 

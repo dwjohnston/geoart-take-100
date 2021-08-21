@@ -86,6 +86,8 @@ export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker
   }
 }
 
+let i = 0;
+
 export class OrbittingPositionMaker extends AbstractValueMaker<"OrbitingPositionMaker"> {
   getValue(): Position {
     const center = findValueByKey(
@@ -119,7 +121,7 @@ export class OrbittingPositionMaker extends AbstractValueMaker<"OrbitingPosition
       "color"
     ) as unknown as Color | null;
 
-    return getPositionOnCircle(
+    const position = getPositionOnCircle(
       center,
       radius,
       phase,
@@ -130,6 +132,8 @@ export class OrbittingPositionMaker extends AbstractValueMaker<"OrbitingPosition
         a: 1,
       }
     );
+
+    return position;
   }
 }
 
@@ -149,35 +153,13 @@ export class XYPositionMaker extends AbstractValueMaker<"XYPositionMaker"> {
   }
 }
 
+// Todo rename this is remove unused params
+
 export class RollingBallPositionMaker extends AbstractValueMaker<"RollingBallPositionMaker"> {
   getValue(): Position {
-    const tangent = findValueByKey(
-      "RollingBallPositionMaker",
-      this.valueJson,
-      this.referencedNodes,
-      "tangent"
-    );
+    const tangent = this.lookupValueByKey("tangent");
 
-    const radius = findValueByKey(
-      "RollingBallPositionMaker",
-      this.valueJson,
-      this.referencedNodes,
-      "radius"
-    );
-
-    const phase = findValueByKey(
-      "RollingBallPositionMaker",
-      this.valueJson,
-      this.referencedNodes,
-      "phase"
-    );
-
-    const drawDistance = findValueByKey(
-      "RollingBallPositionMaker",
-      this.valueJson,
-      this.referencedNodes,
-      "drawDistance"
-    );
+    const radius = this.lookupValueByKey("radius");
 
     const center = getCenterFromTangent(tangent, radius);
     return center;

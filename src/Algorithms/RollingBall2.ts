@@ -1,21 +1,27 @@
 import { Algorithm } from "./_Algorithm";
 
-/**
- * This one just showing the basics of a rolling ball against a tangent
- */
-
-export const RollingBall: Algorithm = {
-  name: "RollingBall",
+export const RollingBall2: Algorithm = {
+  name: "RollingBall2",
   modelDefinition: [
     {
       valueType: "number",
       valueMaker: "TickingPhaseMaker",
       params: {
-        initialValue: 0,
+        initialValue: 0.4,
         max: 1,
-        step: 0.015,
+        step: 0.00575,
       },
       id: "phase",
+    },
+    {
+      valueType: "number",
+      valueMaker: "TickingPhaseMaker",
+      params: {
+        initialValue: 0.4,
+        max: 1,
+        step: 0.0125,
+      },
+      id: "phase2",
     },
 
     {
@@ -40,7 +46,7 @@ export const RollingBall: Algorithm = {
       valueType: "number",
       valueMaker: "Normalizer",
       params: {
-        offset: 0.5,
+        offset: 0,
         numerator: {
           type: "reference",
           reference: "deltaX",
@@ -99,7 +105,7 @@ export const RollingBall: Algorithm = {
       valueType: "number",
       valueMaker: "StaticNumberMaker",
       params: {
-        value: 0.1,
+        value: 0.065,
       },
       id: "radius",
     },
@@ -108,9 +114,18 @@ export const RollingBall: Algorithm = {
       valueType: "number",
       valueMaker: "StaticNumberMaker",
       params: {
-        value: 0.3,
+        value: 0.1,
       },
       id: "drawDistance",
+    },
+
+    {
+      valueType: "number",
+      valueMaker: "StaticNumberMaker",
+      params: {
+        value: 0.05,
+      },
+      id: "radius2",
     },
 
     {
@@ -136,6 +151,7 @@ export const RollingBall: Algorithm = {
       },
       id: "ballCenter",
     },
+
     {
       valueType: "position",
       valueMaker: "OrbitingPositionMaker",
@@ -155,6 +171,51 @@ export const RollingBall: Algorithm = {
         },
       },
       id: "ballDrawPoint",
+    },
+
+    {
+      valueType: "position",
+      valueMaker: "RollingBallPositionMaker",
+      params: {
+        tangent: {
+          type: "reference",
+          reference: "ballDrawPoint",
+        },
+        radius: {
+          type: "reference",
+          reference: "radius2",
+        },
+        drawDistance: {
+          type: "reference",
+          reference: "radius2",
+        },
+        phase: {
+          type: "reference",
+          reference: "phase2",
+        },
+      },
+      id: "ballCenter2",
+    },
+
+    {
+      valueType: "position",
+      valueMaker: "OrbitingPositionMaker",
+      params: {
+        center: {
+          type: "reference",
+          reference: "ballCenter2",
+        },
+        radius: {
+          type: "reference",
+          reference: "radius2",
+        },
+
+        phase: {
+          type: "reference",
+          reference: "phase2",
+        },
+      },
+      id: "ballDrawPoint2",
     },
   ],
   drawMakers: [
@@ -184,6 +245,35 @@ export const RollingBall: Algorithm = {
         },
       },
     },
+
+    {
+      drawType: "DrawBall",
+      params: {
+        center: {
+          type: "reference",
+          reference: "ballCenter2",
+        },
+        position: {
+          type: "reference",
+          reference: "ballDrawPoint2",
+        },
+        orbitSize: {
+          type: "reference",
+          reference: "radius2",
+        },
+      },
+    },
+
+    {
+      drawType: "DrawDot",
+      params: {
+        p1: {
+          type: "reference",
+          reference: "ballDrawPoint2",
+        },
+      },
+    },
+
     {
       drawType: "DrawDot",
       params: {
@@ -194,30 +284,5 @@ export const RollingBall: Algorithm = {
       },
     },
   ],
-  controlHints: [
-    {
-      valueMakerId: "deltaX",
-      controlType: "slider",
-      params: {
-        label: "Delta X",
-        min: -1,
-        max: 1,
-        step: 0.01,
-        initialValue: 0.5,
-      },
-      visible: true,
-    },
-    {
-      valueMakerId: "deltaY",
-      controlType: "slider",
-      params: {
-        label: "Delta Y",
-        min: -1,
-        max: 1,
-        step: 0.01,
-        initialValue: 0.5,
-      },
-      visible: true,
-    },
-  ],
+  controlHints: [],
 };
