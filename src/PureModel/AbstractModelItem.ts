@@ -8,17 +8,23 @@ import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
 } from "./ValueMakers/AbstractValueMaker";
-import { StaticColorMaker } from "./ValueMakers/ColorMakers";
+import {
+  PossibleColorMakers,
+  StaticColorMaker,
+} from "./ValueMakers/ColorMakers";
 import {
   StaticNumberMaker,
   PhasingNumberMaker,
   SineNumberMaker,
   Normalizer,
+  PossibleNumberMakers,
 } from "./ValueMakers/NumberMakers";
 import {
   StaticPositionMaker,
   OrbittingPositionMaker,
   XYPositionMaker,
+  PossiblePositionMakers,
+  RollingBallPositionMaker,
 } from "./ValueMakers/PositionMakers";
 
 export type Canvas = {
@@ -36,8 +42,19 @@ export type Position = {
   x: number; // 0 - 1
   y: number; // 0 - 1
 
+  // Tangent information
+  dx: number;
+  dy: number;
+
   color?: Color;
 };
+
+// export type Tangent = {
+//   x: number;
+//   y: number;
+//   dx: number;
+//   dy: number;
+// }
 
 /** A drawable object.
  *
@@ -92,12 +109,13 @@ export type NodeValueReference = {
   reference: string;
 };
 
-export type ValueTypes = "number" | "position" | "color";
+export type ValueTypes = "number" | "position" | "color"; //"tangent"
 
 export type ValueTypeMap = {
   number: number;
   color: Color;
   position: Position;
+  // tangent: Tangent;
 };
 
 export type EnforcedValueType<T, U extends ValueTypes> = ValueTypeMap[U] & T;
@@ -105,14 +123,9 @@ export type EnforcedValueMaker<T extends ValueMakers, U extends ValueTypes> =
   ValueMakersMap[T] extends U ? T : never;
 
 export type ValueMakers =
-  | "StaticNumberMaker"
-  | "TickingPhaseMaker"
-  | "SineNumberMaker"
-  | "StaticPositionMaker"
-  | "OrbitingPositionMaker"
-  | "XYPositionMaker"
-  | "Normalizer"
-  | "StaticColorMaker";
+  | PossibleNumberMakers
+  | PossiblePositionMakers
+  | PossibleColorMakers;
 
 export type ValueMakersMap = {
   StaticNumberMaker: "number";
@@ -123,6 +136,7 @@ export type ValueMakersMap = {
   OrbitingPositionMaker: "position";
   XYPositionMaker: "position";
   StaticColorMaker: "color";
+  RollingBallPositionMaker: "position";
 };
 
 // A little confusing but note that the types on the left are different to the classes on the right.
@@ -135,6 +149,7 @@ export const ValueMakersConstructorMap = {
   SineNumberMaker: SineNumberMaker,
   Normalizer: Normalizer,
   StaticColorMaker: StaticColorMaker,
+  RollingBallPositionMaker: RollingBallPositionMaker,
 };
 
 export type PossibleValueMakersForValueType<
@@ -168,6 +183,8 @@ export type ValueMakersParamMap = {
   XYPositionMaker: {
     x: number;
     y: number;
+    dx: number;
+    dy: number;
   };
   SineNumberMaker: {
     phase: number;
@@ -184,6 +201,12 @@ export type ValueMakersParamMap = {
     g: number;
     b: number;
     a: number;
+  };
+  RollingBallPositionMaker: {
+    tangent: Position;
+    radius: number; // The distance from the tangent to the center of the ball
+    drawDistance: number; // The distance from the center of the ball to the provided value
+    phase: number;
   };
 };
 
@@ -298,9 +321,13 @@ function constructSingleModelItemFromJson(
   valueJson: ValueJson,
   dependencyNodes: any = {} // I'm getting lazy
 ) {
-  const Class = ValueMakersConstructorMap[valueJson.valueMaker];
-  //@ts-ignore - obvs I need to sort this.
-  return new Class(valueJson, dependencyNodes);
+  try {
+    const Class = ValueMakersConstructorMap[valueJson.valueMaker];
+    //@ts-ignore - obvs I need to sort this.
+    return new Class(valueJson, dependencyNodes);
+  } catch (err) {
+    throw new GeneralError(err.message, { valueJson });
+  }
 }
 
 export function constructModelFromJsonArray(json: Array<ValueJson>): ModelMap {

@@ -16,11 +16,14 @@ import {
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
 import { v4 as uuid } from "uuid";
+import { getCenterFromTangent, getPositionOnCircle } from "../../Math";
+import { createImportSpecifier } from "typescript";
 
 export type PossiblePositionMakers =
   | "StaticPositionMaker"
   | "OrbitingPositionMaker"
-  | "XYPositionMaker";
+  | "XYPositionMaker"
+  | "RollingBallPositionMaker";
 export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker"> {
   private value: Position;
   constructor(
@@ -116,16 +119,17 @@ export class OrbittingPositionMaker extends AbstractValueMaker<"OrbitingPosition
       "color"
     ) as unknown as Color | null;
 
-    return {
-      x: center.x + Math.cos(Math.PI * 2 * phase) * radius,
-      y: center.y + Math.sin(Math.PI * 2 * phase) * radius,
-      color: color || {
+    return getPositionOnCircle(
+      center,
+      radius,
+      phase,
+      color || {
         r: 255,
         g: 255,
         b: 255,
         a: 1,
-      },
-    };
+      }
+    );
   }
 }
 
@@ -133,10 +137,56 @@ export class XYPositionMaker extends AbstractValueMaker<"XYPositionMaker"> {
   getValue(): Position {
     const x = this.lookupValueByKey("x");
     const y = this.lookupValueByKey("y");
+    const dx = this.lookupValueByKey("dx");
+    const dy = this.lookupValueByKey("dy");
 
     return {
       x,
       y,
+      dx,
+      dy,
     };
+  }
+}
+
+export class RollingBallPositionMaker extends AbstractValueMaker<"RollingBallPositionMaker"> {
+  getValue(): Position {
+    const tangent = findValueByKey(
+      "RollingBallPositionMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "tangent"
+    );
+
+    const radius = findValueByKey(
+      "RollingBallPositionMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "radius"
+    );
+
+    const phase = findValueByKey(
+      "RollingBallPositionMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "phase"
+    );
+
+    const drawDistance = findValueByKey(
+      "RollingBallPositionMaker",
+      this.valueJson,
+      this.referencedNodes,
+      "drawDistance"
+    );
+
+    console.log(tangent);
+
+    const center = getCenterFromTangent(tangent, radius);
+
+    const drawPosition = getPositionOnCircle(center, drawDistance, phase);
+
+    console.log({ tangent, center, drawPosition });
+
+    return drawPosition;
   }
 }

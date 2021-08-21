@@ -24,7 +24,8 @@ import { NumberLiteralType } from "typescript";
 export type PossibleNumberMakers =
   | "StaticNumberMaker"
   | "TickingPhaseMaker"
-  | "SineNumberMaker";
+  | "SineNumberMaker"
+  | "Normalizer";
 export class StaticNumberMaker
   extends AbstractValueMaker<"StaticNumberMaker">
   implements IControllable<number>
