@@ -12,6 +12,8 @@ describe("TheWholeModel", () => {
             value: {
               x: 0.5,
               y: 0.5,
+              dx: 0,
+              dy: 0,
             },
           },
           id: "position-center",

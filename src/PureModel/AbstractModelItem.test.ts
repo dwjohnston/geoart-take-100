@@ -9,10 +9,9 @@ import {
 import { StaticNumberMaker } from "./ValueMakers/NumberMakers";
 import { StaticPositionMaker } from "./ValueMakers/PositionMakers";
 
-function testFunction<
-  TValueMaker extends ValueMakers,
-  TValueType extends ValueMakersMap[TValueMaker]
->(value: ValueJson<TValueMaker, TValueType>) {}
+function testFunction<TValueMaker extends ValueMakers>(
+  value: ValueJson<TValueMaker>
+) {}
 
 describe("Typings", () => {
   it("They have errors in the right places", () => {
@@ -29,6 +28,8 @@ describe("Typings", () => {
         value: {
           x: 1,
           y: 1,
+          dx: 0,
+          dy: 0,
         },
       },
       id: "foo",
@@ -56,6 +57,8 @@ describe("Typings", () => {
         value: {
           x: 1,
           y: 1,
+          dx: 0,
+          dy: 0,
         },
       },
       id: "foo",
@@ -88,6 +91,8 @@ describe("checkForCircularDependencies", () => {
             value: {
               x: 1,
               y: 1,
+              dx: 0,
+              dy: 0,
             },
           },
           id: "foo",
@@ -99,6 +104,8 @@ describe("checkForCircularDependencies", () => {
             value: {
               x: 1,
               y: 1,
+              dx: 0,
+              dy: 0,
             },
           },
           id: "bar",
@@ -127,6 +134,8 @@ describe("checkForCircularDependencies", () => {
             value: {
               x: 1,
               y: 1,
+              dx: 0,
+              dy: 0,
             },
           },
           id: "bar",
@@ -166,6 +175,8 @@ describe("checkForCircularDependencies", () => {
             value: {
               x: 1,
               y: 1,
+              dx: 0,
+              dy: 0,
             },
           },
           id: "bar",
@@ -387,6 +398,8 @@ describe("constructModelFromJsonArray", () => {
             value: {
               x: 1,
               y: 1,
+              dx: 0,
+              dy: 0,
             },
           },
           id: "bar",
@@ -426,6 +439,8 @@ describe("constructModelFromJsonArray", () => {
           value: {
             x: 1,
             y: 1,
+            dx: 0,
+            dy: 0,
           },
         },
         id: "bar",
@@ -446,7 +461,12 @@ describe("getValue", () => {
         valueType: "position",
         valueMaker: "StaticPositionMaker",
         params: {
-          value: { x: 1, y: 1 },
+          value: {
+            x: 1,
+            y: 1,
+            dx: 0,
+            dy: 0,
+          },
         },
         id: "foo",
       },
@@ -454,7 +474,7 @@ describe("getValue", () => {
       "value"
     );
 
-    expect(result).toEqual({ x: 1, y: 1 });
+    expect(result).toEqual({ x: 1, y: 1, dx: 0, dy: 0 });
   });
 
   it("returns the right value for a static refrerence", () => {
@@ -466,7 +486,7 @@ describe("getValue", () => {
         params: {
           value: {
             type: "static",
-            value: { x: 1, y: 1 },
+            value: { x: 1, y: 1, dx: 0, dy: 0 },
           },
         },
         id: "foo",
@@ -475,7 +495,7 @@ describe("getValue", () => {
       "value"
     );
 
-    expect(result).toEqual({ x: 1, y: 1 });
+    expect(result).toEqual({ x: 1, y: 1, dx: 0, dy: 0 });
   });
 
   it("returns the right value for a node reference", () => {
@@ -502,6 +522,8 @@ describe("getValue", () => {
               value: {
                 x: 2,
                 y: 2,
+                dx: 0,
+                dy: 0,
               },
             },
           },
@@ -513,7 +535,7 @@ describe("getValue", () => {
       "value"
     );
 
-    expect(result).toEqual({ x: 2, y: 2 });
+    expect(result).toEqual({ x: 2, y: 2, dx: 0, dy: 0 });
   });
 
   it("throws an error if the reference nodes are not available", () => {
