@@ -9,15 +9,17 @@ import {
 import { ControlPanel } from "./Controls/ControlPanel/ControlPanel";
 import { Debug } from "./DebugTools/Debug";
 import {
-  preBuiltModels,
   getModel,
   TheWholeModel,
+  getNonBrokenAlgorithms,
 } from "../PureModel/ModelEntryPoint";
 import { MenuItem, Select } from "@material-ui/core";
 import { InfoPanel } from "./Panels/InfoPanel/InfoPanel";
 import { Header } from "./Panels/Header/Header";
 import { DebugPanel } from "./Panels/DebugPanel/DebugPanel";
 import { StyledApp } from "./App.styles";
+
+const preBuiltModels = getNonBrokenAlgorithms();
 
 function App() {
   const [selectedModelName, setSelectedModelName] = useState<

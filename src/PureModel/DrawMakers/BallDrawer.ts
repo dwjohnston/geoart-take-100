@@ -1,5 +1,6 @@
 import { COLOR_ORBIT_GREY, COLOR_PLANET_DEFAULT } from "../../Contants/colors";
 import { SIZE_PLANET } from "../../Contants/sizes";
+import { createOptionalArrayItem } from "../../utils/createOptionalArrayItem";
 import { Color, IDrawMaker, Position } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
 import { Line } from "../Drawables/Line";
@@ -29,7 +30,7 @@ export class BallDrawer implements IDrawMaker {
     this.color = color;
   }
 
-  getDrawables() {
+  getDrawables(debugMode?: boolean) {
     return {
       temp: [
         new Circle(
@@ -37,7 +38,10 @@ export class BallDrawer implements IDrawMaker {
           this._orbitSize.getValue(),
           colorToString(this.color || COLOR_ORBIT_GREY)
         ),
-        // new Tangent(this.position.getValue()),
+        ...createOptionalArrayItem(
+          debugMode,
+          new Tangent(this.position.getValue())
+        ),
 
         new Line(
           this._center.getValue(),

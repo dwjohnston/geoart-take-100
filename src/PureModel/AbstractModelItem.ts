@@ -74,7 +74,7 @@ export type DrawPackage = {
 
 /** An object that returns a list of Drawables */
 export interface IDrawMaker {
-  getDrawables: () => DrawPackage;
+  getDrawables: (debugMode?: boolean) => DrawPackage;
 }
 
 /** A object that can respond to ticks */

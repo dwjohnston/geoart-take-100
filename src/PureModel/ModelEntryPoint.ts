@@ -64,14 +64,14 @@ export class TheWholeModel implements ITheWholeModel {
    * eg. setInterval, or drawAnimationFrame
    * * @returns
    */
-  tick() {
+  tick(debugMode?: boolean) {
     this._tickables.forEach((v) => {
       v.tick();
     });
 
     return this._drawmakers.reduce(
       (acc, cur) => {
-        const drawPackage = cur.getDrawables();
+        const drawPackage = cur.getDrawables(debugMode);
         return {
           temp: [...acc.temp, ...drawPackage.temp],
           paint: [...acc.paint, ...drawPackage.paint],
@@ -115,4 +115,27 @@ export function getModel(modelName: keyof typeof preBuiltModels): {
   const model = new TheWholeModel(modelMap, drawMakersObjects);
 
   return { model, controlHints };
+}
+
+/**
+ * Util function for the frontend, just so we don't try provide any broken algorithms
+ * @returns
+ */
+export function getNonBrokenAlgorithms(): Record<string, Algorithm> {
+  const workingAlgoMap = Object.entries(preBuiltModels).reduce(
+    (acc, [key, value]) => {
+      try {
+        getModel(key);
+        return {
+          ...acc,
+          [key]: value,
+        };
+      } catch (err) {
+        return acc;
+      }
+    },
+    {}
+  );
+
+  return workingAlgoMap;
 }
