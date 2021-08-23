@@ -150,7 +150,7 @@ export const RollingBall2: Algorithm = {
       params: {
         initialValue: 0.4,
         max: 1,
-        step: 0.0225,
+        step: 0.0125,
       },
       id: "phase2",
     },
