@@ -12,13 +12,15 @@ describe("Normalizer", () => {
           valueMaker: "Normalizer",
           valueType: "number",
           params: {
-            ratio: 1 / (Math.PI * 2),
+            numerator: 1,
+            denominator: Math.PI * 2,
             inputValue: Math.PI * 2,
             offset: 0,
           },
         },
         {
-          ratio: undefined,
+          numerator: undefined,
+          denominator: undefined,
           inputValue: undefined,
           offset: undefined,
         }
@@ -36,13 +38,15 @@ describe("Normalizer", () => {
           valueMaker: "Normalizer",
           valueType: "number",
           params: {
-            ratio: 1 / (Math.PI * 2),
+            numerator: 1,
+            denominator: Math.PI * 2,
             inputValue: Math.PI,
             offset: 0,
           },
         },
         {
-          ratio: undefined,
+          numerator: undefined,
+          denominator: undefined,
           inputValue: undefined,
           offset: undefined,
         }
@@ -60,13 +64,15 @@ describe("Normalizer", () => {
           valueMaker: "Normalizer",
           valueType: "number",
           params: {
-            ratio: 1 / (Math.PI * 2),
+            numerator: 1,
+            denominator: Math.PI * 2,
             inputValue: 0,
             offset: 0,
           },
         },
         {
-          ratio: undefined,
+          numerator: undefined,
+          denominator: undefined,
           inputValue: undefined,
           offset: undefined,
         }

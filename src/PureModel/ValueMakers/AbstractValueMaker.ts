@@ -1,16 +1,9 @@
-import {
-  getConstantValue,
-  isThisTypeNode,
-  textChangeRangeIsUnchanged,
-} from "typescript";
 import { GeneralError, NotImplementedError } from "../../Errors/errors";
 import {
   AbstractControlType,
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
 import {
-  EnforcedValueMaker,
-  EnforcedValueType,
   findValueByKey,
   NodeReferenceMap,
   ValueJson,
@@ -18,7 +11,6 @@ import {
   ValueMakersMap,
   ValueMakersParamMap,
   ValueTypeMap,
-  ValueTypes,
 } from "../AbstractModelItem";
 
 export type ControlConfigAndUpdateFunction<T> = {
@@ -55,9 +47,9 @@ export class AbstractValueMaker<TValueMaker extends ValueMakers> {
     this.referencedNodes = referencedNodes;
 
     this.lookupValueByKey = (key) => {
-      //@ts-ignore
       const value = findValueByKey(
         valueJson.valueMaker,
+        //@ts-ignore - Put a TS ignore here, for some reason the error isn't showing up in the IDE :(
         valueJson,
         referencedNodes,
         key

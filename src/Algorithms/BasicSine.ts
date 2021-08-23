@@ -96,6 +96,8 @@ export const SimpleSineAlgorithm: Algorithm = {
           type: "reference",
           reference: "y",
         },
+        dx: 0, // It would be nice if I could refer to phase.dx
+        dy: 0,
       },
       id: "position",
     },

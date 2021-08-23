@@ -1,27 +1,32 @@
 import { COLOR_ORBIT_GREY, COLOR_PLANET_DEFAULT } from "../../Contants/colors";
 import { SIZE_PLANET } from "../../Contants/sizes";
-import { IDrawMaker, Position } from "../AbstractModelItem";
+import { Color, IDrawMaker, Position } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
+import { Line } from "../Drawables/Line";
 import { Tangent } from "../Drawables/Tangent";
+import { colorToString } from "../Drawables/utils";
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
 import { PossibleNumberMakers } from "../ValueMakers/NumberMakers";
 import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
 
-export class PlanetDrawer implements IDrawMaker {
+export class BallDrawer implements IDrawMaker {
   private _center: AbstractValueMaker<PossiblePositionMakers>;
   private _orbitSize: AbstractValueMaker<PossibleNumberMakers>;
 
   private position: AbstractValueMaker<PossiblePositionMakers>;
-
+  private color?: Color;
   constructor(params: {
     center: AbstractValueMaker<PossiblePositionMakers>;
     orbitSize: AbstractValueMaker<PossibleNumberMakers>;
     position: AbstractValueMaker<PossiblePositionMakers>;
+    color?: Color;
   }) {
-    const { center, orbitSize, position } = params;
+    const { center, orbitSize, position, color } = params;
     this._center = center;
     this._orbitSize = orbitSize;
     this.position = position;
+
+    this.color = color;
   }
 
   getDrawables() {
@@ -30,12 +35,15 @@ export class PlanetDrawer implements IDrawMaker {
         new Circle(
           this._center.getValue(),
           this._orbitSize.getValue(),
+          colorToString(this.color || COLOR_ORBIT_GREY)
+        ),
+        // new Tangent(this.position.getValue()),
+
+        new Line(
+          this._center.getValue(),
+          this.position.getValue(),
           COLOR_ORBIT_GREY
         ),
-
-        new Tangent(this.position.getValue()),
-
-        new Circle(this.position.getValue(), SIZE_PLANET, COLOR_PLANET_DEFAULT),
       ],
       paint: [],
     };

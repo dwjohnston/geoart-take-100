@@ -8,7 +8,11 @@ import {
 } from "./Controls/Abstractions";
 import { ControlPanel } from "./Controls/ControlPanel/ControlPanel";
 import { Debug } from "./DebugTools/Debug";
-import { preBuiltModels, getModel, TheWholeModel } from "../ModelMapper";
+import {
+  preBuiltModels,
+  getModel,
+  TheWholeModel,
+} from "../PureModel/ModelEntryPoint";
 import { MenuItem, Select } from "@material-ui/core";
 import { InfoPanel } from "./Panels/InfoPanel/InfoPanel";
 import { Header } from "./Panels/Header/Header";
@@ -31,6 +35,8 @@ function App() {
     setModel(model);
     setControlHints(controlHints);
   }, [selectedModelName]);
+
+  // @tidy tidyup required here
 
   const handleChange = (idList: string[], value: unknown) => {
     // model.updateProperty(idList, value);

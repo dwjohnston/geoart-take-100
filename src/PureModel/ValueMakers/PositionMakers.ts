@@ -16,11 +16,14 @@ import {
   ControlConfigAndUpdateFunction,
 } from "./AbstractValueMaker";
 import { v4 as uuid } from "uuid";
+import { getCenterFromTangent, getPositionOnCircle } from "../../Math";
+import { createImportSpecifier } from "typescript";
 
 export type PossiblePositionMakers =
   | "StaticPositionMaker"
   | "OrbitingPositionMaker"
-  | "XYPositionMaker";
+  | "XYPositionMaker"
+  | "RollingBallPositionMaker";
 export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker"> {
   private value: Position;
   constructor(
@@ -83,6 +86,8 @@ export class StaticPositionMaker extends AbstractValueMaker<"StaticPositionMaker
   }
 }
 
+let i = 0;
+
 export class OrbittingPositionMaker extends AbstractValueMaker<"OrbitingPositionMaker"> {
   getValue(): Position {
     const center = findValueByKey(
@@ -116,16 +121,19 @@ export class OrbittingPositionMaker extends AbstractValueMaker<"OrbitingPosition
       "color"
     ) as unknown as Color | null;
 
-    return {
-      x: center.x + Math.cos(Math.PI * 2 * phase) * radius,
-      y: center.y + Math.sin(Math.PI * 2 * phase) * radius,
-      color: color || {
+    const position = getPositionOnCircle(
+      center,
+      radius,
+      phase,
+      color || {
         r: 255,
         g: 255,
         b: 255,
         a: 1,
-      },
-    };
+      }
+    );
+
+    return position;
   }
 }
 
@@ -133,10 +141,27 @@ export class XYPositionMaker extends AbstractValueMaker<"XYPositionMaker"> {
   getValue(): Position {
     const x = this.lookupValueByKey("x");
     const y = this.lookupValueByKey("y");
+    const dx = this.lookupValueByKey("dx");
+    const dy = this.lookupValueByKey("dy");
 
     return {
       x,
       y,
+      dx,
+      dy,
     };
+  }
+}
+
+// Todo rename this is remove unused params
+
+export class RollingBallPositionMaker extends AbstractValueMaker<"RollingBallPositionMaker"> {
+  getValue(): Position {
+    const tangent = this.lookupValueByKey("tangent");
+
+    const radius = this.lookupValueByKey("radius");
+
+    const center = getCenterFromTangent(tangent, radius);
+    return center;
   }
 }
