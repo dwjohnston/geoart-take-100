@@ -50,9 +50,6 @@ export const Canvas = (props: CanvasProps) => {
   const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    console.log("did change");
-    console.log(model);
-
     if (animationFrameRef.current) {
       window.cancelAnimationFrame(animationFrameRef.current);
     }
