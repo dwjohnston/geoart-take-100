@@ -1,10 +1,10 @@
 import { ControlHint } from "../Frontend/Controls/Abstractions";
+import { AbstractDrawItem } from "../PureModel/AbstractDrawItem";
+import { ValueJson } from "../PureModel/AbstractModelItem";
 
 export type Algorithm = {
   name: string;
-  //TODO tighten these
-
-  modelDefinition: Array<any>;
-  drawMakers: Array<any>;
+  modelDefinition: Array<ValueJson>;
+  drawMakers: Array<AbstractDrawItem>;
   controlHints: Array<ControlHint>;
 };
