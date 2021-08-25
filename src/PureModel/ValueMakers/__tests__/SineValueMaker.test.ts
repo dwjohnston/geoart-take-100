@@ -1,4 +1,4 @@
-import { SineNumberMaker } from "../NumberMakers";
+import { SineNumberMaker } from "../NumberMakers/NumberMakers";
 
 describe("SineNumberMaker", () => {
   it("produces correct values of sine: 0", () => {

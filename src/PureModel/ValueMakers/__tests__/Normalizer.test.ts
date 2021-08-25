@@ -1,4 +1,4 @@
-import { Normalizer } from "../NumberMakers";
+import { Normalizer } from "../NumberMakers/NumberMakers";
 
 describe("Normalizer", () => {
   // (Math.PI * 2)  => 1

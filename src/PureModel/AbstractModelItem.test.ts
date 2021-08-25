@@ -6,8 +6,8 @@ import {
   checkForCircularDependencies,
   constructModelFromJsonArray,
 } from "./AbstractModelItem";
-import { StaticNumberMaker } from "./ValueMakers/NumberMakers";
-import { StaticPositionMaker } from "./ValueMakers/PositionMakers";
+import { StaticNumberMaker } from "./ValueMakers/NumberMakers/NumberMakers";
+import { StaticPositionMaker } from "./ValueMakers/PositionMakers/PositionMakers";
 
 function testFunction<TValueMaker extends ValueMakers>(
   value: ValueJson<TValueMaker>

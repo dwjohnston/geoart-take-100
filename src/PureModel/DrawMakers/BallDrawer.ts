@@ -7,8 +7,8 @@ import { Line } from "../Drawables/Line";
 import { Tangent } from "../Drawables/Tangent";
 import { colorToString } from "../Drawables/utils";
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
-import { PossibleNumberMakers } from "../ValueMakers/NumberMakers";
-import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
+import { PossibleNumberMakers } from "../ValueMakers/NumberMakers/NumberMakers";
+import { PossiblePositionMakers } from "../ValueMakers/PositionMakers/PositionMakers";
 
 export class BallDrawer implements IDrawMaker {
   private _center: AbstractValueMaker<PossiblePositionMakers>;

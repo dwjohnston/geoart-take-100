@@ -5,8 +5,8 @@ import { IDrawMaker, Position } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
 import { Tangent } from "../Drawables/Tangent";
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
-import { PossibleNumberMakers } from "../ValueMakers/NumberMakers";
-import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
+import { PossibleNumberMakers } from "../ValueMakers/NumberMakers/NumberMakers";
+import { PossiblePositionMakers } from "../ValueMakers/PositionMakers/PositionMakers";
 
 export class PlanetDrawer implements IDrawMaker {
   private _center: AbstractValueMaker<PossiblePositionMakers>;

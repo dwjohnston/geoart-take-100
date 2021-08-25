@@ -2,7 +2,7 @@ import { IDrawMaker } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
 import { Line } from "../Drawables/Line";
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
-import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
+import { PossiblePositionMakers } from "../ValueMakers/PositionMakers/PositionMakers";
 
 export class DotMaker implements IDrawMaker {
   private p1: AbstractValueMaker<PossiblePositionMakers>;
