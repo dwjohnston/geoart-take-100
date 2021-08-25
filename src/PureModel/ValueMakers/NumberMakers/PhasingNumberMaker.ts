@@ -11,7 +11,6 @@ export type PhasingNumberMakerTyping = {
     initialValue: number;
     max: number;
     step: number;
-    valueType: number;
   };
   valueType: number;
 };
@@ -23,7 +22,7 @@ export class PhasingNumberMaker
   private value: number;
 
   constructor(
-    valueJson: ValueJson<PhasingNumberMakerTyping>,
+    valueJson: ValueJson<PhasingNumberMakerTyping["name"]>,
     referencedNodes: NodeReferenceMap<PhasingNumberMakerTyping>
   ) {
     super(valueJson, referencedNodes);

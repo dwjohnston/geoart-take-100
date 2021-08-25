@@ -28,7 +28,7 @@ export class StaticColorMaker
   private a: number;
 
   constructor(
-    valueJson: ValueJson<StaticColorMakerTyping>,
+    valueJson: ValueJson<StaticColorMakerTyping["name"]>,
     referencedNodes: NodeReferenceMap<StaticColorMakerTyping>
   ) {
     super(valueJson, referencedNodes);
@@ -61,22 +61,22 @@ export class StaticColorMaker
     // Is it the default control config?
     // I don't think it makes sense for that to live in this model
     return [
-      {
-        config: {
-          type: "color-control",
-          id: this.valueJson.id,
-          params: {
-            label: this.valueJson.id,
-            initialValue: {
-              r: this.lookupValueByKey("r"),
-              g: this.lookupValueByKey("g"),
-              b: this.lookupValueByKey("b"),
-              a: this.lookupValueByKey("a"),
-            },
-          },
-        },
-        updateFn: (value) => this.updateValue(value),
-      },
+      // {
+      //   config: {
+      //     type: "color-control",
+      //     id: this.valueJson.id,
+      //     params: {
+      //       label: this.valueJson.id,
+      //       initialValue: {
+      //         r: this.lookupValueByKey("r"),
+      //         g: this.lookupValueByKey("g"),
+      //         b: this.lookupValueByKey("b"),
+      //         a: this.lookupValueByKey("a"),
+      //       },
+      //     },
+      //   },
+      //   updateFn: (value) => this.updateValue(value),
+      // },
     ];
   }
 }

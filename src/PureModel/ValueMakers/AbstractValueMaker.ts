@@ -4,6 +4,12 @@ import {
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
 import { Color, Position } from "../ValueTypes";
+import {
+  AllValueMakerTypings,
+  DiscriminatedUnion,
+  TypingsMap,
+  TypingsMap2,
+} from "./ConcreteMap";
 import { findValueByKey } from "./_functions/findValueByKey";
 
 export type ControlConfigAndUpdateFunction<T> = {
@@ -42,15 +48,21 @@ export type ValueMakerTyping = {
   valueType: PossibleValueTypes;
 };
 
-export type ValueJson<TValueMakerTyping extends ValueMakerTyping> = {
-  valueType: ReverseValueTypeMapLookup<TValueMakerTyping["valueType"]>;
-  valueMakerName: TValueMakerTyping["name"];
-  params: TValueMakerTyping["params"];
-  id: string;
+export type ValueJsonParameters<T> = {
+  [K in keyof T]: ParameterValue<T[K]>;
 };
 
+export type ValueJson<T extends keyof TypingsMap = keyof TypingsMap> = {
+  [K in keyof TypingsMap]: {
+    valueType: any; // For now - because I don't think this is being useful.
+    valueMakerName: K;
+    params: ValueJsonParameters<TypingsMap[K]["params"]>;
+    id: string;
+  };
+}[T];
+
 /** Value reference - when declaring a model, you are referring to either a fix value ('static') or a reference value (eg. another node) */
-export type ValueReference<T> = StaticReference<T> | NodeReference;
+export type ParameterValue<T> = StaticReference<T> | NodeReference | T;
 
 export type StaticReference<T> = {
   type: "static";
@@ -74,14 +86,16 @@ export type NodeReferenceMap<TValueMakerTyping extends ValueMakerTyping> =
     }
   >;
 
-export class AbstractValueMaker<TValueMakerTyping extends ValueMakerTyping> {
+export class AbstractValueMaker<
+  TValueMakerTyping extends AllValueMakerTypings
+> {
   protected id: string;
   protected valueType: ReverseValueTypeMapLookup<
     TValueMakerTyping["valueType"]
   >;
   protected valueMakerName: TValueMakerTyping["name"];
 
-  protected valueJson: ValueJson<TValueMakerTyping>;
+  protected valueJson: ValueJson<TValueMakerTyping["name"]>;
   protected referencedNodes: NodeReferenceMap<TValueMakerTyping>;
 
   protected lookupValueByKey: <K extends keyof TValueMakerTyping["params"]>(
@@ -89,7 +103,7 @@ export class AbstractValueMaker<TValueMakerTyping extends ValueMakerTyping> {
   ) => TValueMakerTyping["params"][K];
 
   constructor(
-    valueJson: ValueJson<TValueMakerTyping>,
+    valueJson: ValueJson<TValueMakerTyping["name"]>,
     referencedNodes: NodeReferenceMap<TValueMakerTyping>
   ) {
     this.valueType = valueJson.valueType;
@@ -141,7 +155,7 @@ export class AbstractValueMaker<TValueMakerTyping extends ValueMakerTyping> {
    * You will not need to implement this.
    * @returns
    */
-  toJson(): ValueJson<TValueMakerTyping> {
+  toJson(): ValueJson<TValueMakerTyping["name"]> {
     return this.valueJson;
   }
 }

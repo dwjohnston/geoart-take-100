@@ -5,11 +5,13 @@ export const EarthVenusAlgorithm: Algorithm = {
   modelDefinition: [
     {
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "StaticPositionMaker",
       params: {
         value: {
           x: 0.5,
           y: 0.5,
+          dx: 0,
+          dy: 0,
         },
       },
       id: "position-center",
@@ -18,7 +20,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     //PLANET 1 RGBA
     {
       valueType: "color",
-      valueMaker: "StaticColorMaker",
+      valueMakerName: "StaticColorMaker",
       params: {
         r: 255,
         g: 0,
@@ -31,7 +33,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     //PLANET 1 RGBA
     {
       valueType: "color",
-      valueMaker: "StaticColorMaker",
+      valueMakerName: "StaticColorMaker",
       params: {
         r: 0,
         g: 0,
@@ -43,7 +45,7 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0.9,
         max: 1,
@@ -56,7 +58,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -70,7 +72,7 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.003,
       },
@@ -79,7 +81,7 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.002,
       },
@@ -88,7 +90,7 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.2,
       },
@@ -96,7 +98,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.4,
       },
@@ -105,7 +107,7 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",
@@ -129,7 +131,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     },
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",

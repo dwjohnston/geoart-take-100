@@ -18,7 +18,7 @@ export type StaticPositionMakerTyping = {
 export class StaticPositionMaker extends AbstractValueMaker<StaticPositionMakerTyping> {
   private value: Position;
   constructor(
-    valueJson: ValueJson<StaticPositionMakerTyping>,
+    valueJson: ValueJson<StaticPositionMakerTyping["name"]>,
     referenceNodes: NodeReferenceMap<StaticPositionMakerTyping>
   ) {
     super(valueJson, referenceNodes);

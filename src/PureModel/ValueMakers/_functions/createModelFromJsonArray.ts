@@ -1,7 +1,9 @@
 /* eslint-disable no-loop-func */
+import { GeneralError } from "../../../Errors/errors";
 import { partition } from "../../../utils/partition";
 import { ModelMap } from "../../AbstractModelItem";
 import { ValueJson } from "../AbstractValueMaker";
+import { AllValueMakerTypings, concreteValueMakerMap } from "../ConcreteMap";
 import { checkForCircularDependencies } from "./checkForCircularDependencies";
 import {
   objectIsNodeReference,
@@ -9,12 +11,13 @@ import {
 } from "./findValueByKey";
 
 function constructSingleModelItemFromJson(
-  valueJson: ValueJson<any>,
+  valueJson: ValueJson,
   dependencyNodes: any = {} // I'm getting lazy
 ) {
   try {
-    const Class = ValueMakersConstructorMap[valueJson.valueMaker];
-    //@ts-ignore - obvs I need to sort this.
+    const Class = concreteValueMakerMap[valueJson.valueMakerName];
+
+    //@ts-ignore
     return new Class(valueJson, dependencyNodes);
   } catch (err) {
     throw new GeneralError(err.message, { valueJson });
@@ -31,6 +34,7 @@ export function constructModelFromJsonArray(
     const params = Object.values(v.params);
     const hasDependencies = params.reduce((acc, cur) => {
       if (objectIsValueReference(cur)) {
+        //@ts-ignore
         return cur.type === "reference";
       } else {
         return acc;

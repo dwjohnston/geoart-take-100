@@ -1,7 +1,7 @@
 import { IDrawMaker } from "../AbstractModelItem";
 import { Line } from "../Drawables/Line";
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
-import { PossiblePositionMakers } from "../ValueMakers/PositionMakers/PositionMakers";
+import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
 
 export class Linker implements IDrawMaker {
   private p1: AbstractValueMaker<PossiblePositionMakers>;

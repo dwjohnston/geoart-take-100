@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Color } from "../../../PureModel/AbstractModelItem";
 import { AbstractControlId, AbstractControlProps } from "../Abstractions";
 import styled from "styled-components";
 import { Slider } from "@material-ui/core";
 import { colorToString } from "../../../PureModel/Drawables/utils";
+import { Color } from "../../../PureModel/ValueTypes";
 
 export type GeoColorControlProps = AbstractControlProps<
   AbstractControlId,

@@ -1,4 +1,4 @@
-import { Color, Position } from "../AbstractModelItem";
+import { Color, Position } from "../ValueTypes";
 
 export function adjustX(context: CanvasRenderingContext2D, value: number) {
   let sizeX = context.canvas.width;

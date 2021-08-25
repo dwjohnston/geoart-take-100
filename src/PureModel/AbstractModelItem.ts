@@ -3,31 +3,12 @@ import {
   AbstractControlId,
   AbstractControlOutput,
 } from "../Frontend/Controls/Abstractions";
-import { partition } from "../utils/partition";
 import {
   AbstractValueMaker,
   ControlConfigAndUpdateFunction,
-  ValueJson,
-  ValueMakerTyping,
+  NodeReference,
 } from "./ValueMakers/AbstractValueMaker";
-import {
-  PossibleColorMakers,
-  StaticColorMaker,
-} from "./ValueMakers/ColorMakers/ColorMakers";
-import {
-  StaticNumberMaker,
-  PhasingNumberMaker,
-  SineNumberMaker,
-  Normalizer,
-  PossibleNumberMakers,
-} from "./ValueMakers/NumberMakers/NumberMakers";
-import {
-  StaticPositionMaker,
-  OrbittingPositionMaker,
-  XYPositionMaker,
-  PossiblePositionMakers,
-  RollingBallPositionMaker,
-} from "./ValueMakers/PositionMakers/PositionMakers";
+import { AllValueMakerTypings } from "./ValueMakers/ConcreteMap";
 
 export type Canvas = {
   ctx: CanvasRenderingContext2D;
@@ -73,10 +54,10 @@ export interface IControllable<T> {
 }
 
 // Fairly sure this isn't right.
-export type ModelMap = Record<string, AbstractValueMaker<ValueMakers>>;
+export type ModelMap = Record<string, AbstractValueMaker<AllValueMakerTypings>>;
 
 export function getValueMakerFromReferenceNode(
-  referenceNode: NodeValueReference,
+  referenceNode: NodeReference,
   modelMap: ModelMap
 ) {
   const node = modelMap[referenceNode.reference];

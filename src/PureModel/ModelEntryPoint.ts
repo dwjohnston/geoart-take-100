@@ -4,7 +4,6 @@ import {
   ITickable,
   DrawPackage,
   ModelMap,
-  constructModelFromJsonArray,
 } from "./AbstractModelItem";
 
 import { Algorithm } from "../Algorithms/_Algorithm";
@@ -18,6 +17,7 @@ import {
 } from "../Frontend/Controls/Abstractions";
 import { ControlConfigAndUpdateFunction } from "./ValueMakers/AbstractValueMaker";
 import { createDrawMakersFromDrawItems } from "./AbstractDrawItem";
+import { constructModelFromJsonArray } from "./ValueMakers/_functions/createModelFromJsonArray";
 
 /**
  * This file is the main entry point into the pure javascript model. ie. All frontend interactions should be through methods exposed here.
@@ -107,9 +107,7 @@ export function getModel(modelName: keyof typeof preBuiltModels): {
   const prebuiltModel = preBuiltModels[modelName];
   const { modelDefinition, drawMakers, controlHints } = prebuiltModel;
 
-  //@ts-ignore
   const modelMap = constructModelFromJsonArray(modelDefinition);
-  //@ts-ignore
   const drawMakersObjects = createDrawMakersFromDrawItems(drawMakers, modelMap);
 
   const model = new TheWholeModel(modelMap, drawMakersObjects);
