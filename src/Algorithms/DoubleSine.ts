@@ -4,7 +4,7 @@ export const DoubleSineAlgorithm: Algorithm = {
   modelDefinition: [
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.2,
       },
@@ -13,7 +13,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -24,7 +24,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "Normalizer",
+      valueMakerName: "Normalizer",
       params: {
         offset: 0,
         numerator: {
@@ -42,7 +42,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "SineNumberMaker",
+      valueMakerName: "SineNumberMaker",
       params: {
         phase: {
           type: "reference",
@@ -55,7 +55,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "Normalizer",
+      valueMakerName: "Normalizer",
       params: {
         offset: 0.5,
         numerator: 1,
@@ -70,7 +70,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "XYPositionMaker",
+      valueMakerName: "XYPositionMaker",
       params: {
         x: {
           type: "reference",
@@ -89,7 +89,7 @@ export const DoubleSineAlgorithm: Algorithm = {
     // Number 2
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.3,
       },
@@ -98,7 +98,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -109,7 +109,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "Normalizer",
+      valueMakerName: "Normalizer",
       params: {
         offset: 0,
         numerator: {
@@ -126,7 +126,7 @@ export const DoubleSineAlgorithm: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "SineNumberMaker",
+      valueMakerName: "SineNumberMaker",
       params: {
         phase: {
           type: "reference",
@@ -139,7 +139,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "Normalizer",
+      valueMakerName: "Normalizer",
       params: {
         offset: 0.5,
         numerator: 1,
@@ -154,7 +154,7 @@ export const DoubleSineAlgorithm: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "XYPositionMaker",
+      valueMakerName: "XYPositionMaker",
       params: {
         x: {
           type: "reference",

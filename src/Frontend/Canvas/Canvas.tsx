@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { TheWholeModel } from "../../PureModel/ModelEntryPoint";
 import styled from "styled-components";
 import { useGlobalControls } from "../Providers/GlobalControlsProvider";
+import { useUserPreferences } from "../Providers/UserPreferencesProvider";
 
 const randInt = () => {
   return Math.floor(Math.random() * 500);
@@ -40,15 +41,15 @@ export const Canvas = (props: CanvasProps) => {
   const lastDrawTime = useRef(0);
 
   const { isPaused } = useGlobalControls();
+  const { getPreference } = useUserPreferences();
+
+  const showDebug = getPreference("showDebug");
 
   useEffect(() => {}, [isPaused]);
 
   const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    console.log("did change");
-    console.log(model);
-
     if (animationFrameRef.current) {
       window.cancelAnimationFrame(animationFrameRef.current);
     }
@@ -76,7 +77,7 @@ export const Canvas = (props: CanvasProps) => {
         if (ts - lastDrawTime.current > DRAW_RATE_MS) {
           contextTemp.clearRect(0, 0, 500, 500);
 
-          const drawPackage = model.tick();
+          const drawPackage = model.tick(!!showDebug);
 
           drawPackage.temp.forEach((v) => {
             v.draw({
@@ -98,7 +99,7 @@ export const Canvas = (props: CanvasProps) => {
 
       animationFrameRef.current = window.requestAnimationFrame(draw);
     }
-  }, [model, isPaused]);
+  }, [model, isPaused, showDebug]);
 
   const resetRef = useRef(() => {
     if (!refPaint.current) {

@@ -9,7 +9,7 @@ export const RollingBall: Algorithm = {
   modelDefinition: [
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -20,7 +20,7 @@ export const RollingBall: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 1,
       },
@@ -28,7 +28,7 @@ export const RollingBall: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.1,
       },
@@ -38,7 +38,7 @@ export const RollingBall: Algorithm = {
     {
       id: "x",
       valueType: "number",
-      valueMaker: "Normalizer",
+      valueMakerName: "Normalizer",
       params: {
         offset: 0.5,
         numerator: {
@@ -56,7 +56,7 @@ export const RollingBall: Algorithm = {
     {
       id: "y",
       valueType: "number",
-      valueMaker: "Normalizer",
+      valueMakerName: "Normalizer",
       params: {
         offset: 0.25,
         numerator: {
@@ -73,7 +73,7 @@ export const RollingBall: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "XYPositionMaker",
+      valueMakerName: "XYPositionMaker",
       params: {
         x: {
           type: "reference",
@@ -97,7 +97,7 @@ export const RollingBall: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.1,
       },
@@ -106,7 +106,7 @@ export const RollingBall: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.3,
       },
@@ -115,7 +115,7 @@ export const RollingBall: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "RollingBallPositionMaker",
+      valueMakerName: "TangentOffsetPositionMaker",
       params: {
         tangent: {
           type: "reference",
@@ -125,20 +125,12 @@ export const RollingBall: Algorithm = {
           type: "reference",
           reference: "radius",
         },
-        drawDistance: {
-          type: "reference",
-          reference: "drawDistance",
-        },
-        phase: {
-          type: "reference",
-          reference: "phase",
-        },
       },
       id: "ballCenter",
     },
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",
@@ -152,6 +144,12 @@ export const RollingBall: Algorithm = {
         phase: {
           type: "reference",
           reference: "phase",
+        },
+        color: {
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 1,
         },
       },
       id: "ballDrawPoint",

@@ -37,14 +37,10 @@ const StyledGeoSlider = styled.div`
 export const GeoSlider = (props: SliderProps) => {
   const { params, onChange, id } = props;
   const { min, max, initialValue, step, label } = params;
-
-  console.log(params);
-
   const [currentValue, setCurrentValue] = useState(initialValue);
 
   // TODO this logic can probably be moved up a layer.
   useEffect(() => {
-    console.log("change");
     onChange({
       id,
       value: currentValue,
@@ -52,8 +48,6 @@ export const GeoSlider = (props: SliderProps) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(currentValue);
 
   return (
     <StyledGeoSlider className="geo-slider">

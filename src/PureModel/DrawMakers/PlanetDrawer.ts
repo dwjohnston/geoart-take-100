@@ -1,11 +1,15 @@
 import { COLOR_ORBIT_GREY, COLOR_PLANET_DEFAULT } from "../../Contants/colors";
 import { SIZE_PLANET } from "../../Contants/sizes";
-import { IDrawMaker, Position } from "../AbstractModelItem";
+import { createOptionalArrayItem } from "../../utils/createOptionalArrayItem";
+import { IDrawMaker } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
+import { Line } from "../Drawables/Line";
 import { Tangent } from "../Drawables/Tangent";
+import { colorToString } from "../Drawables/utils";
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
 import { PossibleNumberMakers } from "../ValueMakers/NumberMakers";
 import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
+import { Color } from "../ValueTypes";
 
 export class PlanetDrawer implements IDrawMaker {
   private _center: AbstractValueMaker<PossiblePositionMakers>;
@@ -24,7 +28,7 @@ export class PlanetDrawer implements IDrawMaker {
     this.position = position;
   }
 
-  getDrawables() {
+  getDrawables(debugMode?: boolean) {
     return {
       temp: [
         new Circle(
@@ -32,9 +36,10 @@ export class PlanetDrawer implements IDrawMaker {
           this._orbitSize.getValue(),
           COLOR_ORBIT_GREY
         ),
-
-        new Tangent(this.position.getValue()),
-
+        ...createOptionalArrayItem(
+          debugMode,
+          new Tangent(this.position.getValue())
+        ),
         new Circle(this.position.getValue(), SIZE_PLANET, COLOR_PLANET_DEFAULT),
       ],
       paint: [],

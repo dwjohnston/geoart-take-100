@@ -1,4 +1,5 @@
-import { Canvas, IDrawable, Position } from "../AbstractModelItem";
+import { Canvas, IDrawable } from "../AbstractModelItem";
+import { Position } from "../ValueTypes";
 import { adjustPosition, colorToString, isColorPoint } from "./utils";
 
 // This is more for debugging

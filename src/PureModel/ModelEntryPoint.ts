@@ -4,7 +4,6 @@ import {
   ITickable,
   DrawPackage,
   ModelMap,
-  constructModelFromJsonArray,
 } from "./AbstractModelItem";
 
 import { Algorithm } from "../Algorithms/_Algorithm";
@@ -18,6 +17,7 @@ import {
 } from "../Frontend/Controls/Abstractions";
 import { ControlConfigAndUpdateFunction } from "./ValueMakers/AbstractValueMaker";
 import { createDrawMakersFromDrawItems } from "./AbstractDrawItem";
+import { constructModelFromJsonArray } from "./ValueMakers/_functions/createModelFromJsonArray";
 
 /**
  * This file is the main entry point into the pure javascript model. ie. All frontend interactions should be through methods exposed here.
@@ -26,7 +26,7 @@ import { createDrawMakersFromDrawItems } from "./AbstractDrawItem";
 export class TheWholeModel implements ITheWholeModel {
   private _drawmakers: IDrawMaker[] = [];
   private _tickables: ITickable[] = [];
-  private _controlConfigs: ControlConfigAndUpdateFunction<unknown>[];
+  private _controlConfigs: ControlConfigAndUpdateFunction<any>[];
 
   private _updateFns: Record<
     AbstractControlId,
@@ -64,14 +64,14 @@ export class TheWholeModel implements ITheWholeModel {
    * eg. setInterval, or drawAnimationFrame
    * * @returns
    */
-  tick() {
+  tick(debugMode?: boolean) {
     this._tickables.forEach((v) => {
       v.tick();
     });
 
     return this._drawmakers.reduce(
       (acc, cur) => {
-        const drawPackage = cur.getDrawables();
+        const drawPackage = cur.getDrawables(debugMode);
         return {
           temp: [...acc.temp, ...drawPackage.temp],
           paint: [...acc.paint, ...drawPackage.paint],
@@ -93,7 +93,7 @@ export class TheWholeModel implements ITheWholeModel {
    * Get hints about how the model should be displayed
    * @returns
    */
-  getControlConfigs(): ControlConfigAndUpdateFunction<unknown>[] {
+  getControlConfigs(): ControlConfigAndUpdateFunction<any>[] {
     return this._controlConfigs;
   }
 }
@@ -107,12 +107,33 @@ export function getModel(modelName: keyof typeof preBuiltModels): {
   const prebuiltModel = preBuiltModels[modelName];
   const { modelDefinition, drawMakers, controlHints } = prebuiltModel;
 
-  //@ts-ignore
   const modelMap = constructModelFromJsonArray(modelDefinition);
-  //@ts-ignore
   const drawMakersObjects = createDrawMakersFromDrawItems(drawMakers, modelMap);
 
   const model = new TheWholeModel(modelMap, drawMakersObjects);
 
   return { model, controlHints };
+}
+
+/**
+ * Util function for the frontend, just so we don't try provide any broken algorithms
+ * @returns
+ */
+export function getNonBrokenAlgorithms(): Record<string, Algorithm> {
+  const workingAlgoMap = Object.entries(preBuiltModels).reduce(
+    (acc, [key, value]) => {
+      try {
+        getModel(key);
+        return {
+          ...acc,
+          [key]: value,
+        };
+      } catch (err) {
+        return acc;
+      }
+    },
+    {}
+  );
+
+  return workingAlgoMap;
 }

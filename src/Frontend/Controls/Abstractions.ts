@@ -1,4 +1,4 @@
-import { Color } from "../../PureModel/AbstractModelItem";
+import { Color } from "../../PureModel/ValueTypes";
 import { controlMapping } from "./mapping";
 
 export type AbstractControlId = string;

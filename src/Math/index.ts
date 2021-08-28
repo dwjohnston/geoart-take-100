@@ -1,4 +1,4 @@
-import { Color, Position } from "../PureModel/AbstractModelItem";
+import { Color, Position } from "../PureModel/ValueTypes";
 
 export function getPerpendicularTangent(tangent: Position): Position {
   const { x, y, dx, dy, color } = tangent;
