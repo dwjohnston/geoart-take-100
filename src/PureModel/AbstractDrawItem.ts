@@ -9,6 +9,9 @@ import { DotMaker } from "./DrawMakers/DotMaker";
 import { Linker } from "./DrawMakers/Linker";
 import { PlanetDrawer } from "./DrawMakers/PlanetDrawer";
 
+// TODO
+// This is implementation - move it
+
 export const DrawMakingMap = {
   DrawLinker: Linker,
   DrawPlanet: PlanetDrawer,
