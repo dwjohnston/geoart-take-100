@@ -126,6 +126,8 @@ export class AbstractValueMaker<
         valueJson.valueMakerName,
         valueJson,
         referencedNodes,
+
+        //@ts-ignore - not sure what's happening here
         key
       );
 
