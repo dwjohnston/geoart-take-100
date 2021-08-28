@@ -9,7 +9,7 @@ export const StraightWave: Algorithm = {
       params: {
         initialValue: 0,
         max: 1,
-        step: 0.055,
+        step: 0.0015,
       },
       id: "phase",
     },
@@ -18,7 +18,7 @@ export const StraightWave: Algorithm = {
       valueType: "number",
       valueMakerName: "StaticNumberMaker",
       params: {
-        value: 0.2,
+        value: 1,
       },
       id: "frequency",
     },
@@ -26,7 +26,7 @@ export const StraightWave: Algorithm = {
       valueType: "number",
       valueMakerName: "StaticNumberMaker",
       params: {
-        value: 0.2,
+        value: 0.9,
       },
       id: "amplitude",
     },
