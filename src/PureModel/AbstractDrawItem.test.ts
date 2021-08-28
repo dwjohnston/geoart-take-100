@@ -2,7 +2,7 @@ import {
   AbstractDrawItem,
   createDrawMakersFromDrawItems,
 } from "./AbstractDrawItem";
-import { constructModelFromJsonArray } from "./AbstractModelItem";
+import { constructModelFromJsonArray } from "./ValueMakers/_functions/createModelFromJsonArray";
 import { Linker } from "./DrawMakers/Linker";
 import { PlanetDrawer } from "./DrawMakers/PlanetDrawer";
 
@@ -10,32 +10,33 @@ describe("createDrawMakersFromDrawItems", () => {
   const modelMap = constructModelFromJsonArray([
     {
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "XYPositionMaker",
       params: {
-        value: {
+        x: {
           type: "reference",
           reference: "bar",
         },
+        y: 0,
       },
       id: "foo",
     },
     {
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "XYPositionMaker",
       params: {
-        value: {
+        x: {
           type: "reference",
-          reference: "foo",
+          reference: "bar",
         },
+        y: 0,
       },
       id: "foo2",
     },
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: {
-          // @ts-ignore this shouldn't be a problem! :'(
           value: 1,
         },
       },

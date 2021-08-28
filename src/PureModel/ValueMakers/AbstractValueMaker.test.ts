@@ -1,16 +1,27 @@
-import { PossibleParamValue } from "./AbstractValueMaker";
+import { StaticNumberMaker } from "./NumberMakers/StaticNumberMaker";
 
-import { StaticNumberMakerTyping } from "./NumberMakers/StaticNumberMaker";
-
-describe("PossibleParamValueTypes", () => {
-  it("has type errors in the right places", () => {
-    type A = PossibleParamValue<StaticNumberMakerTyping>;
-
-    const a: A = 9;
-
-    function acceptsNumber(value: number) {}
-
-    // Should be ok.
-    acceptsNumber(a);
+describe("AbstractValueMaker", () => {
+  describe("lookupValueByKey", () => {
+    it("if the value key doesn't exist, it throws an error", () => {
+      expect(
+        () =>
+          new StaticNumberMaker(
+            {
+              valueMakerName: "StaticNumberMaker",
+              valueType: "number",
+              params: {
+                value: {
+                  type: "reference",
+                  reference: "doesnotexist",
+                },
+              },
+              id: "a",
+            },
+            {
+              value: undefined,
+            }
+          )
+      ).toThrow();
+    });
   });
 });

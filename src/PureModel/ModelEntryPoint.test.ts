@@ -7,21 +7,17 @@ describe("TheWholeModel", () => {
       const modelMap = constructModelFromJsonArray([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
-            value: {
-              x: 0.5,
-              y: 0.5,
-              dx: 0,
-              dy: 0,
-            },
+            x: 0.5,
+            y: 0.5,
           },
           id: "position-center",
         },
 
         {
           valueType: "number",
-          valueMaker: "TickingPhaseMaker",
+          valueMakerName: "PhasingNumberMaker",
           params: {
             initialValue: 0.9,
             max: 1,
@@ -34,7 +30,7 @@ describe("TheWholeModel", () => {
         },
         {
           valueType: "number",
-          valueMaker: "TickingPhaseMaker",
+          valueMakerName: "PhasingNumberMaker",
           params: {
             initialValue: 0,
             max: 1,
@@ -48,7 +44,7 @@ describe("TheWholeModel", () => {
 
         {
           valueType: "number",
-          valueMaker: "StaticNumberMaker",
+          valueMakerName: "StaticNumberMaker",
           params: {
             value: 0.003,
           },
@@ -57,7 +53,7 @@ describe("TheWholeModel", () => {
 
         {
           valueType: "number",
-          valueMaker: "StaticNumberMaker",
+          valueMakerName: "StaticNumberMaker",
           params: {
             value: 0.002,
           },
@@ -66,7 +62,7 @@ describe("TheWholeModel", () => {
 
         {
           valueType: "number",
-          valueMaker: "StaticNumberMaker",
+          valueMakerName: "StaticNumberMaker",
           params: {
             value: 0.2,
           },
@@ -74,7 +70,7 @@ describe("TheWholeModel", () => {
         },
         {
           valueType: "number",
-          valueMaker: "StaticNumberMaker",
+          valueMakerName: "StaticNumberMaker",
           params: {
             value: 0.4,
           },
@@ -83,7 +79,7 @@ describe("TheWholeModel", () => {
 
         {
           valueType: "position",
-          valueMaker: "OrbitingPositionMaker",
+          valueMakerName: "OrbitingPositionMaker",
           params: {
             center: {
               type: "reference",
@@ -103,7 +99,7 @@ describe("TheWholeModel", () => {
         },
         {
           valueType: "position",
-          valueMaker: "OrbitingPositionMaker",
+          valueMakerName: "OrbitingPositionMaker",
           params: {
             center: {
               type: "reference",
@@ -127,7 +123,7 @@ describe("TheWholeModel", () => {
 
       const controlConfigs = model.getControlConfigs();
 
-      expect(controlConfigs).toHaveLength(4);
+      expect(controlConfigs).toHaveLength(6);
     });
   });
 });

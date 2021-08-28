@@ -1,11 +1,11 @@
-import { SineNumberMaker } from "../NumberMakers/NumberMakers";
+import { SineNumberMaker } from "./SineNumberMaker";
 
 describe("SineNumberMaker", () => {
   it("produces correct values of sine: 0", () => {
     const valueMaker = new SineNumberMaker(
       {
         id: "sine",
-        valueMaker: "SineNumberMaker",
+        valueMakerName: "SineNumberMaker",
         valueType: "number",
         params: {
           phase: 0,
@@ -27,7 +27,7 @@ describe("SineNumberMaker", () => {
     const valueMaker = new SineNumberMaker(
       {
         id: "sine",
-        valueMaker: "SineNumberMaker",
+        valueMakerName: "SineNumberMaker",
         valueType: "number",
         params: {
           phase: Math.PI * 0.5,
