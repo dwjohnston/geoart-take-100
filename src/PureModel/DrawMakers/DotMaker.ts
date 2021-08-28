@@ -1,6 +1,5 @@
 import { IDrawMaker } from "../AbstractModelItem";
 import { Circle } from "../Drawables/Circle";
-
 import { AbstractValueMaker } from "../ValueMakers/AbstractValueMaker";
 import { PossiblePositionMakers } from "../ValueMakers/PositionMakers";
 
