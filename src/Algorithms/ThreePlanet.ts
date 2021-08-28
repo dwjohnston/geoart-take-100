@@ -8,22 +8,20 @@ export const ThreePlanet: Algorithm = {
       valueType: "position",
       valueMakerName: "StaticPositionMaker",
       params: {
-        value: {
-          x: 0.5,
-          y: 0.5,
-          dx: 0,
-          dy: 0,
-        },
+        x: 0.5,
+        y: 0.5,
       },
     },
     {
       valueType: "color",
       valueMakerName: "StaticColorMaker",
       params: {
-        r: 255,
-        g: 255,
-        b: 255,
-        a: 0.3,
+        value: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1,
+        },
       },
       id: "color",
     },

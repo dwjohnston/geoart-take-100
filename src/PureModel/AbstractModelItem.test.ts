@@ -1,16 +1,14 @@
-import {
-  findValueByKey,
-  ValueJson,
-  ValueMakers,
-  ValueMakersMap,
-  checkForCircularDependencies,
-  constructModelFromJsonArray,
-} from "./AbstractModelItem";
-import { StaticNumberMaker } from "./ValueMakers/NumberMakers/NumberMakers";
-import { StaticPositionMaker } from "./ValueMakers/PositionMakers/PositionMakers";
+import { ValueJson, ValueMakerTyping } from "./ValueMakers/AbstractValueMaker";
+import { AllValueMakerTypings } from "./ValueMakers/ConcreteMap";
+import { StaticNumberMaker } from "./ValueMakers/NumberMakers/StaticNumberMaker";
+import { StaticPositionMaker } from "./ValueMakers/PositionMakers/StaticPositionMaker";
+import { XYPositionMaker } from "./ValueMakers/PositionMakers/XYPositionMaker";
+import { checkForCircularDependencies } from "./ValueMakers/_functions/checkForCircularDependencies";
+import { constructModelFromJsonArray } from "./ValueMakers/_functions/createModelFromJsonArray";
+import { findValueByKey } from "./ValueMakers/_functions/findValueByKey";
 
-function testFunction<TValueMaker extends ValueMakers>(
-  value: ValueJson<TValueMaker>
+function testFunction<TValueMaker extends AllValueMakerTypings>(
+  value: ValueJson<TValueMaker["name"]>
 ) {}
 
 describe("Typings", () => {
@@ -19,31 +17,14 @@ describe("Typings", () => {
     //@ts-expect-error
     testFunction({});
 
-    // valueType doesn't match the value maker
-    testFunction({
-      // @ts-expect-error
-      valueType: "number",
-      valueMaker: "StaticPositionMaker",
-      params: {
-        value: {
-          x: 1,
-          y: 1,
-          dx: 0,
-          dy: 0,
-        },
-      },
-      id: "foo",
-    });
-
     // params don't fit the position maker.
     testFunction({
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "StaticPositionMaker",
+
+      //@ts-expect-error
       params: {
-        // @ts-expect-error
-        value: {
-          y: 1,
-        },
+        x: 0,
       },
       id: "foo",
     });
@@ -52,14 +33,10 @@ describe("Typings", () => {
   it("They don't have errors when things are correct", () => {
     testFunction({
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "StaticPositionMaker",
       params: {
-        value: {
-          x: 1,
-          y: 1,
-          dx: 0,
-          dy: 0,
-        },
+        x: 1,
+        y: 1,
       },
       id: "foo",
     });
@@ -67,12 +44,15 @@ describe("Typings", () => {
     // References are ok too!
     testFunction({
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "XYPositionMaker",
       params: {
-        value: {
+        x: {
           type: "reference",
           reference: "some reference",
         },
+        y: 0,
+        dx: 0,
+        dy: 0,
       },
       id: "foo",
     });
@@ -86,7 +66,7 @@ describe("checkForCircularDependencies", () => {
       checkForCircularDependencies([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               x: 1,
@@ -99,7 +79,7 @@ describe("checkForCircularDependencies", () => {
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               x: 1,
@@ -118,7 +98,7 @@ describe("checkForCircularDependencies", () => {
       checkForCircularDependencies([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -129,7 +109,7 @@ describe("checkForCircularDependencies", () => {
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               x: 1,
@@ -148,7 +128,7 @@ describe("checkForCircularDependencies", () => {
       checkForCircularDependencies([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -159,7 +139,7 @@ describe("checkForCircularDependencies", () => {
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -170,7 +150,7 @@ describe("checkForCircularDependencies", () => {
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               x: 1,
@@ -191,7 +171,7 @@ describe("checkForCircularDependencies", () => {
       checkForCircularDependencies([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -208,7 +188,7 @@ describe("checkForCircularDependencies", () => {
       checkForCircularDependencies([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -219,7 +199,7 @@ describe("checkForCircularDependencies", () => {
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -236,7 +216,7 @@ describe("checkForCircularDependencies", () => {
     const model = [
       {
         valueType: "number",
-        valueMaker: "StaticNumberMaker",
+        valueMakerName: "StaticNumberMaker",
         params: {
           value: 0.2,
         },
@@ -245,7 +225,7 @@ describe("checkForCircularDependencies", () => {
 
       {
         valueType: "number",
-        valueMaker: "TickingPhaseMaker",
+        valueMakerName: "TickingPhaseMaker",
         params: {
           initialValue: 9,
           max: 2 * Math.PI,
@@ -259,7 +239,7 @@ describe("checkForCircularDependencies", () => {
 
       {
         valueType: "number",
-        valueMaker: "normalizer",
+        valueMakerName: "normalizer",
         params: {
           offset: 0,
           ratio: 1 / (Math.PI * 2),
@@ -273,7 +253,7 @@ describe("checkForCircularDependencies", () => {
 
       {
         valueType: "number",
-        valueMaker: "SineNumberMaker",
+        valueMakerName: "SineNumberMaker",
         params: {
           phase: {
             type: "reference",
@@ -285,7 +265,7 @@ describe("checkForCircularDependencies", () => {
       },
       {
         valueType: "position",
-        valueMaker: "XYPositionMaker",
+        valueMakerName: "XYPositionMaker",
         params: {
           x: {
             type: "reference",
@@ -311,7 +291,7 @@ describe("checkForCircularDependencies", () => {
       checkForCircularDependencies([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -322,7 +302,7 @@ describe("checkForCircularDependencies", () => {
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -342,7 +322,7 @@ describe("constructModelFromJsonArray", () => {
       constructModelFromJsonArray([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -353,7 +333,7 @@ describe("constructModelFromJsonArray", () => {
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
             value: {
               type: "reference",
@@ -371,36 +351,33 @@ describe("constructModelFromJsonArray", () => {
       constructModelFromJsonArray([
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
-            value: {
+            x: {
               type: "reference",
               reference: "bar",
             },
+            y: 1,
           },
           id: "foo",
         },
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
-            value: {
+            x: {
               type: "reference",
               reference: "bar",
             },
+            y: 1,
           },
           id: "foo2",
         },
         {
-          valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueType: "number",
+          valueMakerName: "StaticNumberMaker",
           params: {
-            value: {
-              x: 1,
-              y: 1,
-              dx: 0,
-              dy: 0,
-            },
+            value: 1,
           },
           id: "bar",
         },
@@ -412,127 +389,127 @@ describe("constructModelFromJsonArray", () => {
     const result = constructModelFromJsonArray([
       {
         valueType: "position",
-        valueMaker: "StaticPositionMaker",
+        valueMakerName: "XYPositionMaker",
         params: {
-          value: {
+          x: {
             type: "reference",
             reference: "bar",
           },
+          y: 1,
+          dx: 0,
+          dy: 0,
         },
         id: "foo",
       },
       {
         valueType: "position",
-        valueMaker: "StaticPositionMaker",
+        valueMakerName: "XYPositionMaker",
         params: {
-          value: {
+          x: {
             type: "reference",
             reference: "bar",
           },
+          y: 1,
+          dx: 0,
+          dy: 0,
         },
         id: "foo2",
       },
       {
-        valueType: "position",
-        valueMaker: "StaticPositionMaker",
+        valueType: "number",
+        valueMakerName: "StaticNumberMaker",
         params: {
-          value: {
-            x: 1,
-            y: 1,
-            dx: 0,
-            dy: 0,
-          },
+          value: 1,
         },
         id: "bar",
       },
     ]);
 
-    expect(result["foo"]).toBeInstanceOf(StaticPositionMaker);
-    expect(result["foo2"]).toBeInstanceOf(StaticPositionMaker);
-    expect(result["bar"]).toBeInstanceOf(StaticPositionMaker);
+    expect(result["foo"]).toBeInstanceOf(XYPositionMaker);
+    expect(result["foo2"]).toBeInstanceOf(XYPositionMaker);
+    expect(result["bar"]).toBeInstanceOf(StaticNumberMaker);
   });
 });
 
 describe("getValue", () => {
   it("returns the right value for a direct primitive", () => {
     const result = findValueByKey(
-      "StaticPositionMaker",
+      "XYPositionMaker",
       {
         valueType: "position",
-        valueMaker: "StaticPositionMaker",
+        valueMakerName: "XYPositionMaker",
         params: {
-          value: {
-            x: 1,
-            y: 1,
-            dx: 0,
-            dy: 0,
-          },
+          x: 1,
+          y: 1,
+          dx: 0,
+          dy: 0,
         },
         id: "foo",
       },
-      { value: undefined },
-      "value"
+      {},
+      "x"
     );
 
-    expect(result).toEqual({ x: 1, y: 1, dx: 0, dy: 0 });
+    expect(result).toEqual(1);
   });
 
   it("returns the right value for a static refrerence", () => {
     const result = findValueByKey(
-      "StaticPositionMaker",
+      "XYPositionMaker",
+
       {
         valueType: "position",
-        valueMaker: "StaticPositionMaker",
+        valueMakerName: "XYPositionMaker",
         params: {
-          value: {
+          x: {
             type: "static",
-            value: { x: 1, y: 1, dx: 0, dy: 0 },
+            value: 1,
           },
+          y: 0,
+          dx: 0,
+          dy: 0,
         },
         id: "foo",
       },
-      { value: undefined },
-      "value"
+      { x: undefined },
+      "x"
     );
 
-    expect(result).toEqual({ x: 1, y: 1, dx: 0, dy: 0 });
+    expect(result).toEqual(1);
   });
 
   it("returns the right value for a node reference", () => {
     const result = findValueByKey(
-      "StaticPositionMaker",
+      "XYPositionMaker",
       {
         valueType: "position",
-        valueMaker: "StaticPositionMaker",
+        valueMakerName: "XYPositionMaker",
         params: {
-          value: {
+          x: {
             type: "reference",
             reference: "bar",
           },
+          y: 0,
+          dx: 0,
+          dy: 0,
         },
         id: "foo",
       },
       {
-        value: new StaticPositionMaker(
+        x: new StaticPositionMaker(
           {
             id: "bar",
             valueType: "position",
-            valueMaker: "StaticPositionMaker",
+            valueMakerName: "StaticPositionMaker",
             params: {
-              value: {
-                x: 2,
-                y: 2,
-                dx: 0,
-                dy: 0,
-              },
+              x: 2,
+              y: 2,
             },
           },
-          {
-            value: undefined,
-          }
+          {}
         ),
       },
-      "value"
+      "x"
     );
 
     expect(result).toEqual({ x: 2, y: 2, dx: 0, dy: 0 });
@@ -544,18 +521,18 @@ describe("getValue", () => {
         "StaticPositionMaker",
         {
           valueType: "position",
-          valueMaker: "StaticPositionMaker",
+          valueMakerName: "StaticPositionMaker",
           params: {
-            value: {
+            x: {
               type: "reference",
               reference: "bar",
             },
+            y: 1,
           },
           id: "foo",
         },
-        //@ts-expect-error
         {},
-        "value"
+        "x"
       )
     ).toThrow();
   });

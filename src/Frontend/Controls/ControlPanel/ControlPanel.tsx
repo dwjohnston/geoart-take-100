@@ -53,8 +53,6 @@ export const ControlPanel = (props: ControlPanelProps) => {
     };
   }, {} as Record<string, ControlHint>);
 
-  console.log(controls);
-
   return (
     <StyledControlPanel>
       {controls.map((v) => {

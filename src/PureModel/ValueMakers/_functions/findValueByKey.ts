@@ -4,8 +4,9 @@ import {
   NodeReferenceMap,
   ValueJson,
   ParameterValue,
+  DiscriminatedValueMakerTypeName,
 } from "../AbstractValueMaker";
-import { AllValueMakerTypings } from "../ConcreteMap";
+import { AllValueMakerTypings, TypingsMap } from "../ConcreteMap";
 
 export function objectIsValueReference(
   obj: unknown
@@ -39,13 +40,14 @@ export function objectIsNodeReference(obj: unknown): obj is NodeReference {
 
 // Fair bit of type coercion here, but I think it works
 export function findValueByKey<
-  TValueMakerTyping extends AllValueMakerTypings,
-  TParamKey extends keyof TValueMakerTyping["params"]
+  TValueMakerName extends DiscriminatedValueMakerTypeName,
+  TParamKey extends keyof TypingsMap[TValueMakerName]["params"]
 >(
-  valueJson: ValueJson<TValueMakerTyping["name"]>,
-  referenceNodes: NodeReferenceMap<TValueMakerTyping>,
+  valueMakerName: TValueMakerName,
+  valueJson: ValueJson<TValueMakerName>,
+  referenceNodes: NodeReferenceMap<TypingsMap[TValueMakerName]>,
   paramKey: TParamKey
-): TValueMakerTyping["params"][TParamKey] {
+): TypingsMap[TValueMakerName]["params"][TParamKey] {
   //@ts-ignore
   const param = valueJson.params[paramKey];
   if (objectIsValueReference(param)) {
@@ -61,10 +63,10 @@ export function findValueByKey<
         );
       }
       //@ts-ignore
-      return referencedNode.getValue() as TValueMakerTyping["params"][TParamKey];
+      return referencedNode.getValue() as TypingsMap[TValueMakerName]["params"][TParamKey];
     } else {
       //@ts-ignore
-      return param.value as TValueMakerTyping["params"][TParamKey];
+      return param.value as TypingsMap[TValueMakerName][TParamKey];
     }
   } else {
     return param;

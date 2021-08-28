@@ -9,10 +9,10 @@ import {
 export type StaticPositionMakerTyping = {
   name: "StaticPositionMaker";
   params: {
-    value: Position;
+    x: number;
+    y: number;
   };
   valueType: Position;
-  class: StaticPositionMaker;
 };
 
 export class StaticPositionMaker extends AbstractValueMaker<StaticPositionMakerTyping> {
@@ -22,7 +22,12 @@ export class StaticPositionMaker extends AbstractValueMaker<StaticPositionMakerT
     referenceNodes: NodeReferenceMap<StaticPositionMakerTyping>
   ) {
     super(valueJson, referenceNodes);
-    this.value = this.lookupValueByKey("value");
+    this.value = {
+      x: this.lookupValueByKey("x"),
+      y: this.lookupValueByKey("y"),
+      dx: 0,
+      dy: 0,
+    };
   }
 
   updateValue(value: Position) {
@@ -33,38 +38,42 @@ export class StaticPositionMaker extends AbstractValueMaker<StaticPositionMakerT
     return this.value;
   }
 
-  getControlConfig(): ControlConfigAndUpdateFunction<Position>[] {
-    // Typings aren't quite right here.
-    // The control config should be allowed to be anything.
-
+  getControlConfig(): ControlConfigAndUpdateFunction<StaticPositionMakerTyping>[] {
     return [
-      // {
-      //   config: {
-      //     type: "slider",
-      //     id: this.valueJson.id,
-      //     params: {
-      //       label: this.valueJson.id+'-x',
-      //       min: 0,
-      //       max: 1,
-      //       step: 0.1,
-      //       initialValue: this.valueJson.params.value.x
-      //     },
-      //   },
-      //   updateFn: (value) => this.updateValue({...this.value, x: value}),
-      // },
-      // {
-      //   config: {
-      //     type: "slider",
-      //     id: this.valueJson.id,
-      //     params: {
-      //       label: this.valueJson.id+'-y',
-      //       min: 0,
-      //       max: 1,
-      //       step: 0.1,
-      //       initialValue: this.valueJson.params.value.x
-      //     },
-      //   },
-      //   updateFn: (value) => this.updateValue({...this.value, y: value}),      },
+      {
+        paramKey: "x",
+        config: {
+          type: "slider",
+          id: this.valueJson.id + "-x",
+          params: {
+            label: this.valueJson.id + "-x",
+            min: 0,
+            max: 1,
+            step: 0.1,
+            initialValue: this.value.x,
+          },
+        },
+        updateFn: (value) => {
+          this.updateValue({ ...this.value, x: value });
+        },
+      },
+      {
+        paramKey: "y",
+        config: {
+          type: "slider",
+          id: this.valueJson.id + "-y",
+          params: {
+            label: this.valueJson.id + "-y",
+            min: 0,
+            max: 1,
+            step: 0.1,
+            initialValue: this.value.y,
+          },
+        },
+        updateFn: (value) => {
+          this.updateValue({ ...this.value, y: value });
+        },
+      },
     ];
   }
 }

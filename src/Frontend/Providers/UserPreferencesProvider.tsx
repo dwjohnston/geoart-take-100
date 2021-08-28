@@ -48,7 +48,6 @@ export const UserPreferencesContextProvider = (
         setUserPreference(key, value);
       } else {
         setInMemoryState((state) => {
-          console.log("got here", value);
           return {
             ...state,
             [key]: existingPreference,

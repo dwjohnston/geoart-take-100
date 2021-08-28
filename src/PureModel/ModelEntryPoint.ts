@@ -26,7 +26,7 @@ import { constructModelFromJsonArray } from "./ValueMakers/_functions/createMode
 export class TheWholeModel implements ITheWholeModel {
   private _drawmakers: IDrawMaker[] = [];
   private _tickables: ITickable[] = [];
-  private _controlConfigs: ControlConfigAndUpdateFunction<unknown>[];
+  private _controlConfigs: ControlConfigAndUpdateFunction<any>[];
 
   private _updateFns: Record<
     AbstractControlId,
@@ -93,7 +93,7 @@ export class TheWholeModel implements ITheWholeModel {
    * Get hints about how the model should be displayed
    * @returns
    */
-  getControlConfigs(): ControlConfigAndUpdateFunction<unknown>[] {
+  getControlConfigs(): ControlConfigAndUpdateFunction<any>[] {
     return this._controlConfigs;
   }
 }

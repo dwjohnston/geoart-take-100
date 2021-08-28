@@ -81,7 +81,7 @@ export const GeoColorControl = (props: GeoColorControlProps) => {
         <div className="sliders">
           {(["r", "g", "b", "a"] as Array<keyof Color>).map((v) => {
             return (
-              <div className="individual-slider">
+              <div className="individual-slider" key={v}>
                 <span>{v}</span>
                 <div className="slider-container">
                   <Slider

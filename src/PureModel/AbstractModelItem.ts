@@ -47,12 +47,6 @@ export interface ITheWholeModel {
   ) => void; // TODO probably have a tighter definition.
 }
 
-/** could this be deleted? */
-export interface IControllable<T> {
-  updateValue: (value: T) => void;
-  getControlConfig: () => ControlConfigAndUpdateFunction<T>[];
-}
-
 // Fairly sure this isn't right.
 export type ModelMap = Record<string, AbstractValueMaker<AllValueMakerTypings>>;
 

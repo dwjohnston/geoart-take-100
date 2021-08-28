@@ -8,12 +8,8 @@ export const RollingBall2: Algorithm = {
       valueType: "position",
       valueMakerName: "StaticPositionMaker",
       params: {
-        value: {
-          x: 0.5,
-          y: 0.5,
-          dx: 0,
-          dy: 0,
-        },
+        x: 0.5,
+        y: 0.5,
       },
     },
     {
@@ -74,10 +70,12 @@ export const RollingBall2: Algorithm = {
       valueType: "color",
       valueMakerName: "StaticColorMaker",
       params: {
-        r: 255,
-        g: 255,
-        b: 255,
-        a: 0.3,
+        value: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1,
+        },
       },
       id: "color",
     },
@@ -155,83 +153,6 @@ export const RollingBall2: Algorithm = {
         step: 0.0125,
       },
       id: "phase2",
-    },
-
-    {
-      valueType: "number",
-      valueMakerName: "StaticNumberMaker",
-      params: {
-        value: 1,
-      },
-      id: "deltaX",
-    },
-    {
-      valueType: "number",
-      valueMakerName: "StaticNumberMaker",
-      params: {
-        value: 0.1,
-      },
-      id: "deltaY",
-    },
-
-    {
-      id: "x",
-      valueType: "number",
-      valueMakerName: "Normalizer",
-      params: {
-        offset: 0,
-        numerator: {
-          type: "reference",
-          reference: "deltaX",
-        },
-        denominator: 1,
-        inputValue: {
-          type: "reference",
-          reference: "phase",
-        },
-      },
-    },
-
-    {
-      id: "y",
-      valueType: "number",
-      valueMakerName: "Normalizer",
-      params: {
-        offset: 0.25,
-        numerator: {
-          type: "reference",
-          reference: "deltaY",
-        },
-        denominator: 1,
-        inputValue: {
-          type: "reference",
-          reference: "phase",
-        },
-      },
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "XYPositionMaker",
-      params: {
-        x: {
-          type: "reference",
-          reference: "x",
-        },
-        y: {
-          type: "reference",
-          reference: "y",
-        },
-        dx: {
-          type: "reference",
-          reference: "deltaX",
-        },
-        dy: {
-          type: "reference",
-          reference: "deltaY",
-        },
-      },
-      id: "plane-position",
     },
 
     {

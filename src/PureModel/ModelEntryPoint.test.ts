@@ -1,5 +1,5 @@
 import { TheWholeModel } from "./ModelEntryPoint";
-import { constructModelFromJsonArray } from "./AbstractModelItem";
+import { constructModelFromJsonArray } from "./ValueMakers/_functions/createModelFromJsonArray";
 
 describe("TheWholeModel", () => {
   describe("getControlConfigs", () => {

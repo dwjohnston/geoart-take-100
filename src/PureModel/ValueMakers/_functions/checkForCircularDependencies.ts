@@ -7,8 +7,6 @@ export function checkForCircularDependencies(json: Array<ValueJson<any>>) {
   const map = createMapFromArray(json);
 
   json.forEach((valueJson) => {
-    console.info(`Starting circular dependencies check for: ${valueJson.id}`);
-
     const recursiveCheck = (
       currentJson: ValueJson<any>,
       foundIds: Record<string, boolean>

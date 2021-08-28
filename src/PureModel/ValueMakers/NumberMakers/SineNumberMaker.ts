@@ -1,4 +1,7 @@
-import { AbstractValueMaker } from "../AbstractValueMaker";
+import {
+  AbstractValueMaker,
+  ControlConfigAndUpdateFunction,
+} from "../AbstractValueMaker";
 
 export type SineNumberMakerTyping = {
   name: "SineNumberMaker";

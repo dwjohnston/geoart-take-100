@@ -7,12 +7,8 @@ export const EarthVenusAlgorithm: Algorithm = {
       valueType: "position",
       valueMakerName: "StaticPositionMaker",
       params: {
-        value: {
-          x: 0.5,
-          y: 0.5,
-          dx: 0,
-          dy: 0,
-        },
+        x: 0.5,
+        y: 0.5,
       },
       id: "position-center",
     },
@@ -22,10 +18,12 @@ export const EarthVenusAlgorithm: Algorithm = {
       valueType: "color",
       valueMakerName: "StaticColorMaker",
       params: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1,
+        value: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1,
+        },
       },
       id: "planet-1-color",
     },
@@ -35,10 +33,12 @@ export const EarthVenusAlgorithm: Algorithm = {
       valueType: "color",
       valueMakerName: "StaticColorMaker",
       params: {
-        r: 0,
-        g: 0,
-        b: 255,
-        a: 1,
+        value: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1,
+        },
       },
       id: "planet-2-color",
     },
