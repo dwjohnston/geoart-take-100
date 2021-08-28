@@ -8,12 +8,14 @@ import { BallDrawer } from "./DrawMakers/BallDrawer";
 import { DotMaker } from "./DrawMakers/DotMaker";
 import { Linker } from "./DrawMakers/Linker";
 import { PlanetDrawer } from "./DrawMakers/PlanetDrawer";
+import { LineMaker } from "./DrawMakers/LineMaker";
 
 export const DrawMakingMap = {
   DrawLinker: Linker,
   DrawPlanet: PlanetDrawer,
   DrawDot: DotMaker,
   DrawBall: BallDrawer,
+  DrawLine: LineMaker,
 };
 
 export type PossibleDrawTypes = keyof typeof DrawMakingMap;
