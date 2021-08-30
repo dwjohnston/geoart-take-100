@@ -11,6 +11,7 @@ const randInt = () => {
 export type CanvasProps = {
   model: TheWholeModel;
   onMount: (payload: { resetCallback: () => void }) => void;
+  superSpeed: number;
 };
 
 export const StyledCanvas = styled.div`
@@ -33,7 +34,7 @@ export const StyledCanvas = styled.div`
 const DRAW_RATE_MS = 1000 / 30;
 
 export const Canvas = (props: CanvasProps) => {
-  const { model, onMount } = props;
+  const { model, onMount, superSpeed } = props;
 
   const refPaint = useRef<HTMLCanvasElement>(null);
   const refTemp = useRef<HTMLCanvasElement>(null);
@@ -77,17 +78,22 @@ export const Canvas = (props: CanvasProps) => {
         if (ts - lastDrawTime.current > DRAW_RATE_MS) {
           contextTemp.clearRect(0, 0, 500, 500);
 
-          const drawPackage = model.tick(!!showDebug);
+          const drawPackages = new Array(superSpeed).fill(true).map(() => {
+            const drawPackage = model.tick(!!showDebug);
+            return drawPackage;
+          });
 
-          drawPackage.temp.forEach((v) => {
+          drawPackages[drawPackages.length - 1].temp.forEach((v) => {
             v.draw({
               ctx: contextTemp,
             });
           });
 
-          drawPackage.paint.forEach((v) => {
-            v.draw({
-              ctx: contextPaint,
+          drawPackages.forEach((u) => {
+            u.paint.forEach((v) => {
+              v.draw({
+                ctx: contextPaint,
+              });
             });
           });
 
@@ -99,7 +105,7 @@ export const Canvas = (props: CanvasProps) => {
 
       animationFrameRef.current = window.requestAnimationFrame(draw);
     }
-  }, [model, isPaused, showDebug]);
+  }, [model, isPaused, showDebug, superSpeed]);
 
   const resetRef = useRef(() => {
     if (!refPaint.current) {

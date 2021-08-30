@@ -28,6 +28,7 @@ function App() {
   const [controlHints, setControlHints] = useState<Array<ControlHint>>([]);
 
   const [model, setModel] = useState<TheWholeModel | null>(null);
+  const [superSpeed, setSuperSpeed] = useState(1); // Careful here - I've been a bit lazy and these can get out of sync.
 
   useEffect(() => {
     resetRef.current();
@@ -38,17 +39,11 @@ function App() {
     setControlHints(controlHints);
   }, [selectedModelName]);
 
-  // @tidy tidyup required here
+  useEffect(() => {
+    resetRef.current();
+  }, [superSpeed]);
 
-  const handleChange = (idList: string[], value: unknown) => {
-    // model.updateProperty(idList, value);
-    setOnChangeDebug({
-      idList,
-      value,
-    });
-  };
-
-  const handleChange2 = (
+  const handleChange = (
     value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>
   ) => {
     if (model) {
@@ -73,7 +68,11 @@ function App() {
       <main>
         {model && (
           <>
-            <Canvas model={model} onMount={handleCanvasMount} />
+            <Canvas
+              model={model}
+              onMount={handleCanvasMount}
+              superSpeed={superSpeed}
+            />
             <div>
               <label>
                 {" "}
@@ -96,7 +95,8 @@ function App() {
               </label>
             </div>
             <ControlPanel
-              onChange={handleChange2}
+              onSuperSpeedChange={setSuperSpeed}
+              onChange={handleChange}
               controls={model.getControlConfigs().map((v) => v.config)}
               controlHints={controlHints}
             />

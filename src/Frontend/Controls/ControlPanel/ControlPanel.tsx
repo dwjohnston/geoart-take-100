@@ -17,6 +17,7 @@ import { GeoSlider } from "../GeoSlider/GeoSlider";
 export type ControlPanelProps = {
   controls: Array<ControlConfig<AbstractControlType>>;
   controlHints: Array<ControlHint>;
+  onSuperSpeedChange: (value: number) => void;
   onChange: (
     value: AbstractControlOutput<AbstractControlId, AbstractControlOutputValue>
   ) => void;
@@ -44,7 +45,7 @@ const StyledControlPanel = styled.div`
 `;
 
 export const ControlPanel = (props: ControlPanelProps) => {
-  const { controls, onChange, controlHints } = props;
+  const { controls, onChange, controlHints, onSuperSpeedChange } = props;
 
   const controlHintMap = controlHints.reduce((acc, cur) => {
     return {
@@ -55,6 +56,18 @@ export const ControlPanel = (props: ControlPanelProps) => {
 
   return (
     <StyledControlPanel>
+      <GeoSlider
+        id="super-speed"
+        onChange={(v) => onSuperSpeedChange(v.value)}
+        params={{
+          min: 1,
+          max: 30,
+          step: 1,
+          label: "Super Speed",
+          initialValue: 1,
+        }}
+      />
+
       {controls.map((v) => {
         const { type, id, params } = v;
 
