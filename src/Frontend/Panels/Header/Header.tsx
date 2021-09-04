@@ -3,6 +3,7 @@ import BugReport from "@material-ui/icons/BugReport";
 import Pause from "@material-ui/icons/Pause";
 import Play from "@material-ui/icons/PlayArrow";
 import React from "react";
+import { useTracking } from "../../Providers/TrackingProvider";
 import { useUserPreferences } from "../../Providers/UserPreferencesProvider";
 import { StyledHeader } from "./Header.styles";
 
@@ -11,6 +12,8 @@ export type HeaderProps = {};
 export const Header = (props: HeaderProps) => {
   const {} = props;
 
+  const { trackFeatureToggled } = useTracking();
+
   const { getPreference, setPreference } = useUserPreferences();
 
   const showDebugPanel = getPreference("showDebug");
@@ -18,10 +21,13 @@ export const Header = (props: HeaderProps) => {
 
   const handlePauseClick = () => {
     setPreference("isPaused", !isPaused);
+    // Possibly move the tracking events into the preferences provider?
+    trackFeatureToggled("isPaused", !isPaused);
   };
 
   const handleDebugClick = () => {
     setPreference("showDebug", !showDebugPanel);
+    trackFeatureToggled("showDebug", !showDebugPanel);
   };
 
   return (
