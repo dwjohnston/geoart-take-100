@@ -18,6 +18,7 @@ import { InfoPanel } from "./Panels/InfoPanel/InfoPanel";
 import { Header } from "./Panels/Header/Header";
 import { DebugPanel } from "./Panels/DebugPanel/DebugPanel";
 import { StyledApp } from "./App.styles";
+import { useTracking } from "./Providers/TrackingProvider";
 
 const preBuiltModels = getNonBrokenAlgorithms();
 
@@ -26,6 +27,8 @@ function App() {
     keyof typeof preBuiltModels
   >("EarthVenusAlgorithm");
   const [controlHints, setControlHints] = useState<Array<ControlHint>>([]);
+  const { trackAlgorithmSelected, trackControlChanged, trackFeatureToggled } =
+    useTracking();
 
   const [model, setModel] = useState<TheWholeModel | null>(null);
   const [superSpeed, setSuperSpeed] = useState(1); // Careful here - I've been a bit lazy and these can get out of sync.
@@ -37,7 +40,9 @@ function App() {
 
     setModel(model);
     setControlHints(controlHints);
-  }, [selectedModelName]);
+
+    trackAlgorithmSelected(selectedModelName);
+  }, [selectedModelName, trackAlgorithmSelected]);
 
   useEffect(() => {
     resetRef.current();

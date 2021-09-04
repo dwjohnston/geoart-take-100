@@ -1,5 +1,8 @@
 import React, { FunctionComponent } from "react";
 import styled from "styled-components";
+import { useTracking } from "../../Providers/TrackingProvider";
+import { debounce } from "lodash";
+
 import {
   AbstractControlId,
   AbstractControlInputParams,
@@ -47,6 +50,8 @@ const StyledControlPanel = styled.div`
 export const ControlPanel = (props: ControlPanelProps) => {
   const { controls, onChange, controlHints, onSuperSpeedChange } = props;
 
+  const { trackControlChanged } = useTracking();
+
   const controlHintMap = controlHints.reduce((acc, cur) => {
     return {
       ...acc,
@@ -58,7 +63,16 @@ export const ControlPanel = (props: ControlPanelProps) => {
     <StyledControlPanel>
       <GeoSlider
         id="super-speed"
-        onChange={(v) => onSuperSpeedChange(v.value)}
+        onChange={(v, isMount) => {
+          onSuperSpeedChange(v.value);
+
+          if (!isMount) {
+            trackControlChanged({
+              controlKey: "superSpeed",
+              controlType: "slider",
+            });
+          }
+        }}
         params={{
           min: 1,
           max: 30,
@@ -78,10 +92,45 @@ export const ControlPanel = (props: ControlPanelProps) => {
         const paramsToUse = (controlHint && controlHint.params) || params;
         const doDisplayControl = controlHint ? controlHint.visible : true;
 
+        const debouncedFunction = debounce(
+          () =>
+            trackControlChanged({
+              controlKey: id,
+              controlType: type,
+            }),
+          1000,
+          {
+            leading: false,
+          }
+        );
+
+        const handleChange = (...params: Parameters<typeof onChange>) => {
+          onChange(...params);
+
+          // @ts-ignore Is there a better way to do this?
+          if (!params[1]) {
+            debouncedFunction();
+          }
+        };
+
+        // // I really don't like this, but I'm feeling lazy.
+        // // Basically it's a 'when the thing mounts, you need to do an on change'
+        // // But I don't want to fire the tracking event
+        // // Several things wrong with this:
+        // // - This is a render, not a mount. This could fire unnecessarily
+        // // - We don't know that the params will have an initialValue
+
+        // onChange({
+        //   id,
+        //   value: params.initialValue
+        // })
+
         return doDisplayControl ? (
           <ControlContainer key={id}>
             {/* @ts-ignore - I think we need generic typings */}
-            <Component {...{ id, onChange, params: paramsToUse }} />
+            <Component
+              {...{ id, onChange: handleChange, params: paramsToUse }}
+            />
           </ControlContainer>
         ) : null;
       })}

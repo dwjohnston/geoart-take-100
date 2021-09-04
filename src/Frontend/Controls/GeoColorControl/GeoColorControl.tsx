@@ -54,12 +54,15 @@ export const GeoColorControl = (props: GeoColorControlProps) => {
 
   const [currentValue, setCurrentValue] = useState(initialValue);
 
-  // TODO this logic can probably be moved up a layer.
+  // // TODO this logic can probably be moved up a layer.
   useEffect(() => {
-    onChange({
-      id,
-      value: currentValue,
-    });
+    onChange(
+      {
+        id,
+        value: currentValue,
+      },
+      true
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

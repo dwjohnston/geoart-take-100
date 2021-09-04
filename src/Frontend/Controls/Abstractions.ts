@@ -47,7 +47,10 @@ export type AbstractControlProps<
   TOutputValue extends AbstractControlOutputValue
 > = {
   id: TId;
-  onChange: (value: AbstractControlOutput<TId, TOutputValue>) => void;
+  onChange: (
+    value: AbstractControlOutput<TId, TOutputValue>,
+    isMount?: boolean
+  ) => void;
   params: TInputParams;
 };
 
