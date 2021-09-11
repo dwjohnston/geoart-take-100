@@ -54,8 +54,6 @@ export const ControlPanel = (props: ControlPanelProps) => {
 
   const { trackControlChanged } = useTracking();
 
-  const { trackControlChanged } = useTracking();
-
   const controlHintMap = controlHints.reduce((acc, cur) => {
     return {
       ...acc,
