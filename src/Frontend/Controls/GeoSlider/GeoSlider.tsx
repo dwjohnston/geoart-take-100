@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Slider } from "@material-ui/core";
 import { AbstractControlId, AbstractControlProps } from "../Abstractions";
 import styled from "styled-components";
+import { toSignificantFigures } from "../../../utils/toSignificantFigures";
 
 export type SliderProps = AbstractControlProps<
   AbstractControlId,
@@ -72,7 +73,7 @@ export const GeoSlider = (props: SliderProps) => {
           }}
         />
       </div>
-      <div>{currentValue}</div>
+      <div>{toSignificantFigures(currentValue, 3)}</div>
     </StyledGeoSlider>
   );
 };

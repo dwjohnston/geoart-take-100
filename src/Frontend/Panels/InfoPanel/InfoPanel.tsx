@@ -22,7 +22,6 @@ export const InfoPanel = (props: InfoPanelProps): React.ReactElement => {
               aria-label="close"
               className="close-button"
               onClick={() => {
-                console.log("click");
                 setPreference("showInfoPanel", false);
               }}
             >

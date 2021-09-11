@@ -18,6 +18,7 @@ import { ControlContainer } from "../ControlContainer/ControlContainer";
 import { GeoColorControl } from "../GeoColorControl/GeoColorControl";
 import { GeoSlider } from "../GeoSlider/GeoSlider";
 export type ControlPanelProps = {
+  algorithmKey: string;
   controls: Array<ControlConfig<AbstractControlType>>;
   controlHints: Array<ControlHint>;
   onSuperSpeedChange: (value: number) => void;
@@ -48,7 +49,8 @@ const StyledControlPanel = styled.div`
 `;
 
 export const ControlPanel = (props: ControlPanelProps) => {
-  const { controls, onChange, controlHints, onSuperSpeedChange } = props;
+  const { controls, onChange, controlHints, onSuperSpeedChange, algorithmKey } =
+    props;
 
   const { trackControlChanged } = useTracking();
 
@@ -126,9 +128,11 @@ export const ControlPanel = (props: ControlPanelProps) => {
         // })
 
         return doDisplayControl ? (
-          <ControlContainer key={id}>
+          <ControlContainer>
             {/* @ts-ignore - I think we need generic typings */}
             <Component
+              // The key is necessary to remount the controls between algorithm switches
+              key={`${algorithmKey}-${id}`}
               {...{ id, onChange: handleChange, params: paramsToUse }}
             />
           </ControlContainer>

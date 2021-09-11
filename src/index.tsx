@@ -29,6 +29,7 @@ ReactDOM.render(
             showDebug: false,
             showInfoPanel: true,
             isPaused: false,
+            selectedAlgorithm: "EarthVenusAlgorithm",
           }}
         >
           <GlobalControlsContextProvider>

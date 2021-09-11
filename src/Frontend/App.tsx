@@ -19,13 +19,11 @@ import { Header } from "./Panels/Header/Header";
 import { DebugPanel } from "./Panels/DebugPanel/DebugPanel";
 import { StyledApp } from "./App.styles";
 import { useTracking } from "./Providers/TrackingProvider";
+import { useUserPreferences } from "./Providers/UserPreferencesProvider";
 
 const preBuiltModels = getNonBrokenAlgorithms();
 
 function App() {
-  const [selectedModelName, setSelectedModelName] = useState<
-    keyof typeof preBuiltModels
-  >("EarthVenusAlgorithm");
   const [controlHints, setControlHints] = useState<Array<ControlHint>>([]);
   const { trackAlgorithmSelected, trackControlChanged, trackFeatureToggled } =
     useTracking();
@@ -33,16 +31,34 @@ function App() {
   const [model, setModel] = useState<TheWholeModel | null>(null);
   const [superSpeed, setSuperSpeed] = useState(1); // Careful here - I've been a bit lazy and these can get out of sync.
 
+  const { setPreference, getPreference } = useUserPreferences();
+
+  const [selectedModelName, setSelectedModelName] =
+    useState<keyof typeof preBuiltModels | null>(null);
+
   useEffect(() => {
-    resetRef.current();
+    setSelectedModelName(getPreference("selectedAlgorithm"));
+  }, [getPreference, selectedModelName]);
 
-    const { model, controlHints } = getModel(selectedModelName);
+  useEffect(() => {
+    if (selectedModelName) {
+      resetRef.current();
 
-    setModel(model);
-    setControlHints(controlHints);
+      const { model, controlHints } = getModel(selectedModelName);
 
-    trackAlgorithmSelected(selectedModelName);
+      setModel(model);
+      setControlHints(controlHints);
+
+      trackAlgorithmSelected(selectedModelName);
+    }
   }, [selectedModelName, trackAlgorithmSelected]);
+
+  const handleModelChange = (
+    selectedModelName: keyof typeof preBuiltModels
+  ) => {
+    setPreference("selectedAlgorithm", selectedModelName);
+    setSelectedModelName(selectedModelName);
+  };
 
   useEffect(() => {
     resetRef.current();
@@ -70,44 +86,47 @@ function App() {
       <Header />
       <InfoPanel />
       <DebugPanel onChangeValue={onChangeDebug} />
-      <main>
-        {model && (
-          <>
-            <Canvas
-              model={model}
-              onMount={handleCanvasMount}
-              superSpeed={superSpeed}
-            />
-            <div>
-              <label>
-                {" "}
-                Select Algorithm:
-                <Select
-                  value={selectedModelName}
-                  variant="outlined"
-                  onChange={(e) => {
-                    setSelectedModelName(
-                      e.target.value as keyof typeof preBuiltModels
-                    );
-                  }}
-                >
-                  {Object.keys(preBuiltModels).map((v) => (
-                    <MenuItem value={v} key={v}>
-                      {v}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </label>
-            </div>
-            <ControlPanel
-              onSuperSpeedChange={setSuperSpeed}
-              onChange={handleChange}
-              controls={model.getControlConfigs().map((v) => v.config)}
-              controlHints={controlHints}
-            />
-          </>
-        )}
-      </main>
+      {selectedModelName && (
+        <main>
+          {model && (
+            <>
+              <Canvas
+                model={model}
+                onMount={handleCanvasMount}
+                superSpeed={superSpeed}
+              />
+              <div>
+                <label>
+                  {" "}
+                  Select Algorithm:
+                  <Select
+                    value={selectedModelName}
+                    variant="outlined"
+                    onChange={(e) => {
+                      handleModelChange(
+                        e.target.value as keyof typeof preBuiltModels
+                      );
+                    }}
+                  >
+                    {Object.keys(preBuiltModels).map((v) => (
+                      <MenuItem value={v} key={v}>
+                        {v}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </label>
+              </div>
+              <ControlPanel
+                algorithmKey={selectedModelName}
+                onSuperSpeedChange={setSuperSpeed}
+                onChange={handleChange}
+                controls={model.getControlConfigs().map((v) => v.config)}
+                controlHints={controlHints}
+              />
+            </>
+          )}
+        </main>
+      )}
     </StyledApp>
   );
 }
