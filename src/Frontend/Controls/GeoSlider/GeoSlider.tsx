@@ -53,8 +53,6 @@ export const GeoSlider = (props: SliderProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(params);
-
   return (
     <StyledGeoSlider className="geo-slider">
       <p className="label"> {label}</p>

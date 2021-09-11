@@ -57,11 +57,9 @@ export const UserPreferencesContextProvider = (
       );
 
       const existingPreference = JSON.parse(valueFromLocalStorage || "null");
-      console.log(key, existingPreference);
       if (existingPreference === null) {
         setUserPreference(key, value);
       } else {
-        console.log(key, existingPreference);
         setInMemoryState((state) => {
           return {
             ...state,
@@ -77,7 +75,6 @@ export const UserPreferencesContextProvider = (
   const getUserPreference = <T extends keyof UserPreferences>(
     key: T
   ): UserPreferences[T] | null => {
-    console.log(inMemoryState);
     return inMemoryState[key];
   };
 
@@ -85,7 +82,6 @@ export const UserPreferencesContextProvider = (
     key: T,
     value: UserPreferences[T]
   ): UserPreferences[T] => {
-    console.log(key, value);
     setInMemoryState((state) => {
       const keyToUse = prefix + "__" + key;
       window.localStorage.setItem(keyToUse, JSON.stringify(value));
