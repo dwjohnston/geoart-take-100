@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+
+import * as Algorithms from "../../Algorithms/_index";
 
 type UserPreferences = {
   showInfoPanel: boolean;
   showDebug: boolean;
   isPaused: boolean;
+  selectedAlgorithm: keyof typeof Algorithms;
 };
 
 type UserPreferencesContextProps = {
@@ -35,7 +38,16 @@ export const UserPreferencesContextProvider = (
 ) => {
   const { children, prefix = "user-preference", initialPreferences } = props;
 
-  const [inMemoryState, setInMemoryState] = React.useState(initialPreferences);
+  //We prevent a flash of 'initialPreferences' by setting them all to null to start.
+  //initial values will be set in the useEffect
+  const [inMemoryState, setInMemoryState] = React.useState(
+    Object.entries(initialPreferences).reduce((acc, [key, value]) => {
+      return {
+        ...acc,
+        [key]: null,
+      };
+    }, {} as typeof initialPreferences)
+  );
 
   useEffect(() => {
     Object.entries(initialPreferences).forEach(([_key, value]) => {
@@ -43,10 +55,13 @@ export const UserPreferencesContextProvider = (
       const valueFromLocalStorage = window.localStorage.getItem(
         prefix + "__" + key
       );
+
       const existingPreference = JSON.parse(valueFromLocalStorage || "null");
+      console.log(key, existingPreference);
       if (existingPreference === null) {
         setUserPreference(key, value);
       } else {
+        console.log(key, existingPreference);
         setInMemoryState((state) => {
           return {
             ...state,
@@ -62,6 +77,7 @@ export const UserPreferencesContextProvider = (
   const getUserPreference = <T extends keyof UserPreferences>(
     key: T
   ): UserPreferences[T] | null => {
+    console.log(inMemoryState);
     return inMemoryState[key];
   };
 
@@ -69,6 +85,7 @@ export const UserPreferencesContextProvider = (
     key: T,
     value: UserPreferences[T]
   ): UserPreferences[T] => {
+    console.log(key, value);
     setInMemoryState((state) => {
       const keyToUse = prefix + "__" + key;
       window.localStorage.setItem(keyToUse, JSON.stringify(value));

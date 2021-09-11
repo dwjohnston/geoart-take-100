@@ -119,7 +119,10 @@ export function getModel(modelName: keyof typeof preBuiltModels): {
  * Util function for the frontend, just so we don't try provide any broken algorithms
  * @returns
  */
-export function getNonBrokenAlgorithms(): Record<string, Algorithm> {
+export function getNonBrokenAlgorithms(): Record<
+  keyof typeof algorithms,
+  Algorithm
+> {
   const workingAlgoMap = Object.entries(preBuiltModels).reduce(
     (acc, [key, value]) => {
       try {
@@ -135,5 +138,5 @@ export function getNonBrokenAlgorithms(): Record<string, Algorithm> {
     {}
   );
 
-  return workingAlgoMap;
+  return workingAlgoMap as Record<keyof typeof algorithms, Algorithm>;
 }
