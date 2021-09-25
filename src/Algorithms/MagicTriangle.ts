@@ -48,11 +48,11 @@ export const MagicTriangle: Algorithm = {
         },
         pLeft: {
           type: "reference",
-          reference: "vertex-b",
+          reference: "position-b",
         },
         pRight: {
           type: "reference",
-          reference: "vertex-c",
+          reference: "position-c",
         },
       },
       id: "vertex-a",
@@ -68,11 +68,11 @@ export const MagicTriangle: Algorithm = {
         },
         pLeft: {
           type: "reference",
-          reference: "vertex-c",
+          reference: "position-c",
         },
         pRight: {
           type: "reference",
-          reference: "vertex-a",
+          reference: "position-a",
         },
       },
       id: "vertex-b",
@@ -88,54 +88,14 @@ export const MagicTriangle: Algorithm = {
         },
         pLeft: {
           type: "reference",
-          reference: "vertex-e",
+          reference: "position-a",
         },
         pRight: {
           type: "reference",
-          reference: "vertex-f",
+          reference: "position-b",
         },
       },
       id: "vertex-c",
-    },
-
-    {
-      valueType: "vertex",
-      valueMakerName: "StaticVertexMaker",
-      params: {
-        pVertex: {
-          type: "reference",
-          reference: "position-c",
-        },
-        pLeft: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        pRight: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-      },
-      id: "vertex-e",
-    },
-
-    {
-      valueType: "vertex",
-      valueMakerName: "StaticVertexMaker",
-      params: {
-        pVertex: {
-          type: "reference",
-          reference: "position-c",
-        },
-        pLeft: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        pRight: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-      },
-      id: "vertex-f",
     },
 
     {
@@ -151,63 +111,87 @@ export const MagicTriangle: Algorithm = {
     {
       drawType: "DrawImpossible",
       params: {
-        pVertex: {
+        thisVertex: {
           type: "reference",
           reference: "vertex-a",
         },
-        pVertexLeft: {
+        vertexLeft: {
           type: "reference",
           reference: "vertex-b",
         },
-        pVertexRight: {
+        vertexRight: {
           type: "reference",
           reference: "vertex-c",
         },
         trim: {
           type: "reference",
           reference: "distance",
+        },
+        leftsLeft: {
+          type: "reference",
+          reference: "vertex-c",
+        },
+        rightsRight: {
+          type: "reference",
+          reference: "vertex-b",
         },
       },
     },
     {
       drawType: "DrawImpossible",
       params: {
-        pVertex: {
+        thisVertex: {
           type: "reference",
           reference: "vertex-b",
         },
-        pVertexLeft: {
+        vertexLeft: {
           type: "reference",
           reference: "vertex-c",
         },
-        pVertexRight: {
+        vertexRight: {
           type: "reference",
           reference: "vertex-a",
         },
         trim: {
           type: "reference",
           reference: "distance",
+        },
+        leftsLeft: {
+          type: "reference",
+          reference: "vertex-a",
+        },
+        rightsRight: {
+          type: "reference",
+          reference: "vertex-c",
         },
       },
     },
     {
       drawType: "DrawImpossible",
       params: {
-        pVertex: {
+        thisVertex: {
           type: "reference",
           reference: "vertex-c",
         },
-        pVertexLeft: {
+        vertexLeft: {
           type: "reference",
           reference: "vertex-a",
         },
-        pVertexRight: {
+        vertexRight: {
           type: "reference",
           reference: "vertex-b",
         },
         trim: {
           type: "reference",
           reference: "distance",
+        },
+        leftsLeft: {
+          type: "reference",
+          reference: "vertex-b",
+        },
+        rightsRight: {
+          type: "reference",
+          reference: "vertex-a",
         },
       },
     },

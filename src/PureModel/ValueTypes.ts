@@ -17,7 +17,7 @@ export type Position = {
 };
 
 export type Vertex = {
-  pLeft: Postion;
+  pLeft: Position;
   pRight: Position;
   pVertex: Position;
 };

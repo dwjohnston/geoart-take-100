@@ -9,8 +9,8 @@ import {
 export type StaticVertexMakerTyping = {
   name: "StaticPositionMaker";
   params: {
-    pLeft: Vertex;
-    pRight: Vertex;
+    pLeft: Position;
+    pRight: Position;
     pVertex: Position;
   };
   valueType: Vertex;
@@ -35,6 +35,12 @@ export class StaticVertexMaker extends AbstractValueMaker<StaticVertexMakerTypin
   }
 
   getValue() {
+    this.value = {
+      pLeft: this.lookupValueByKey("pLeft"),
+      pRight: this.lookupValueByKey("pRight"),
+      pVertex: this.lookupValueByKey("pVertex"),
+    };
+
     return this.value;
   }
 

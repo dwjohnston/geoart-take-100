@@ -24,30 +24,14 @@ function getPointsForVertex(
   o: Position;
   p: Position;
 } {
-  const thisM = findPointAlongLine(vertex.pVertex, vertex.pLeft.pVertex, trim);
-  const thisN = findPointAlongLine(vertex.pVertex, vertex.pRight.pVertex, trim);
+  const thisM = findPointAlongLine(vertex.pVertex, vertex.pLeft, trim);
+  const thisN = findPointAlongLine(vertex.pVertex, vertex.pRight, trim);
 
-  const leftM = findPointAlongLine(
-    vertex.pLeft.pVertex,
-    vertex.pLeft.pLeft.pVertex,
-    trim
-  );
-  const leftN = findPointAlongLine(
-    vertex.pLeft.pVertex,
-    vertex.pLeft.pRight.pVertex,
-    trim
-  );
+  const leftM = findPointAlongLine(vLeft.pVertex, vLeft.pLeft, trim);
+  const leftN = findPointAlongLine(vLeft.pVertex, vLeft.pRight, trim);
 
-  const rightM = findPointAlongLine(
-    vertex.pRight.pVertex,
-    vertex.pRight.pLeft.pVertex,
-    trim
-  );
-  const rightN = findPointAlongLine(
-    vertex.pRight.pVertex,
-    vertex.pRight.pRight.pVertex,
-    trim
-  );
+  const rightM = findPointAlongLine(vRight.pVertex, vRight.pLeft, trim);
+  const rightN = findPointAlongLine(vRight.pVertex, vRight.pRight, trim);
 
   const shiftLeft = getDiffBetweenPoints(leftM, leftN);
   const shiftRight = getDiffBetweenPoints(rightN, rightM);
@@ -64,77 +48,78 @@ function getPointsForVertex(
 }
 
 export class ImpossibleDrawer implements IDrawMaker {
-  private pVertex: AbstractValueMaker<PossibleVertexMakers>;
-  private pVertexLeft: AbstractValueMaker<PossibleVertexMakers>;
-  private pVertexRight: AbstractValueMaker<PossibleVertexMakers>;
+  private thisVertex: AbstractValueMaker<PossibleVertexMakers>;
+  private vertexLeft: AbstractValueMaker<PossibleVertexMakers>;
+  private vertexRight: AbstractValueMaker<PossibleVertexMakers>;
+
+  private leftsLeft: AbstractValueMaker<PossibleVertexMakers>;
+  private rightsRight: AbstractValueMaker<PossibleVertexMakers>;
 
   private trim: AbstractValueMaker<PossibleNumberMakers>;
 
   constructor(params: {
-    pVertex: AbstractValueMaker<PossibleVertexMakers>;
-    pVertexLeft: AbstractValueMaker<PossibleVertexMakers>;
-    pVertexRight: AbstractValueMaker<PossibleVertexMakers>;
+    thisVertex: AbstractValueMaker<PossibleVertexMakers>;
+    vertexLeft: AbstractValueMaker<PossibleVertexMakers>;
+    vertexRight: AbstractValueMaker<PossibleVertexMakers>;
+    leftsLeft: AbstractValueMaker<PossibleVertexMakers>;
+    rightsRight: AbstractValueMaker<PossibleVertexMakers>;
     trim: AbstractValueMaker<PossibleNumberMakers>;
   }) {
-    const { pVertex, pVertexLeft, pVertexRight, trim } = params;
-    this.pVertex = pVertex;
-    this.pVertexLeft = pVertexLeft;
-    this.pVertexRight = pVertexRight;
+    const {
+      thisVertex,
+      vertexLeft,
+      vertexRight,
+      trim,
+      leftsLeft,
+      rightsRight,
+    } = params;
+
+    console.log(params);
+    this.thisVertex = thisVertex;
+    this.vertexLeft = vertexLeft;
+    this.vertexRight = vertexRight;
     this.trim = trim;
+
+    this.leftsLeft = leftsLeft;
+    this.rightsRight = rightsRight;
   }
 
   getDrawables() {
-    const pVertex = this.pVertex.getValue();
-    const pVertexLeft = this.pVertexLeft.getValue();
-    const pVertexRight = this.pVertexRight.getValue();
+    const pVertex = this.thisVertex.getValue();
+    const pVertexLeft = this.vertexLeft.getValue();
+    const pVertexRight = this.vertexRight.getValue();
+    const leftsLeft = this.leftsLeft.getValue();
+    const rightsRight = this.rightsRight.getValue();
 
     const trim = this.trim.getValue();
 
-    const thisM = findPointAlongLine(
-      pVertex.pVertex,
-      pVertexLeft.pVertex,
+    const thisPoints = getPointsForVertex(
+      pVertex,
+      pVertexLeft,
+      pVertexRight,
       trim
     );
-    const thisN = findPointAlongLine(
-      pVertex.pVertex,
-      pVertexRight.pVertex,
+    const leftPoints = getPointsForVertex(
+      pVertexLeft,
+      leftsLeft,
+      pVertex,
       trim
     );
-
-    const leftM = findPointAlongLine(
-      pVertexLeft.pVertex,
-      pVertexLeft.pLeft.pVertex,
-      trim
-    );
-    const leftN = findPointAlongLine(
-      pVertexLeft.pVertex,
-      pVertex.pVertex,
+    const rightPoints = getPointsForVertex(
+      pVertexRight,
+      pVertex,
+      rightsRight,
       trim
     );
 
-    const rightM = findPointAlongLine(
-      pVertexRight.pVertex,
-      pVertex.pVertex,
-      trim
-    );
-    const rightN = findPointAlongLine(
-      pVertexRight.pVertex,
-      pVertexRight.pRight.pVertex,
-      trim
-    );
-
-    const shiftLeft = getDiffBetweenPoints(leftM, leftN);
-    const shiftRight = getDiffBetweenPoints(rightN, rightM);
-
-    const thisInnerO = shiftPoint(shiftPoint(thisM, shiftLeft), shiftLeft);
-    const thisInnerP = shiftPoint(thisInnerO, shiftRight);
-
+    console.log({ thisPoints, leftPoints, rightPoints });
     return {
       temp: [
-        new Line(leftN, thisM, "rgba(255, 0, 0, 1)"),
-        new Line(rightM, thisN, "rgba(255, 0, 0, 1)"),
-        new Line(thisM, thisN, "rgba(255, 0, 0, 1)"),
-        new Line(thisInnerO, thisInnerP, "rgba(255, 255, 255, 1)"),
+        new Line(leftPoints.n, thisPoints.m, "rgba(255, 0, 0, 1)"),
+        new Line(rightPoints.m, thisPoints.n, "rgba(255, 0, 0, 1)"),
+        new Line(thisPoints.n, thisPoints.m, "rgba(255, 0, 0, 1)"),
+        new Line(thisPoints.o, rightPoints.n, "rgba(255, 255, 255, 1)"),
+        new Line(thisPoints.o, leftPoints.p, "rgba(255, 255, 255, 1)"),
       ],
       paint: [],
     };
