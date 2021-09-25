@@ -1,6 +1,23 @@
 import { SineNumberMaker } from "../PureModel/ValueMakers/NumberMakers/SineNumberMaker";
 import { Color, Position } from "../PureModel/ValueTypes";
 
+export function getDiffBetweenPoints(p1: Position, p2: Position): Position {
+  return {
+    x: p1.x - p2.x,
+    y: p1.y - p2.y,
+    dx: 0,
+    dy: 0,
+  };
+}
+
+export function shiftPoint(original: Position, shift: Position): Position {
+  return {
+    ...original,
+    x: original.x + shift.x,
+    y: original.y + shift.y,
+  };
+}
+
 export function getPerpendicularTangent(tangent: Position): Position {
   const { x, y, dx, dy, color } = tangent;
   return {

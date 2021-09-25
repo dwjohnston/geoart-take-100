@@ -12,10 +12,10 @@ export const MagicTriangle: Algorithm = {
       valueType: "position",
       valueMakerName: "StaticPositionMaker",
       params: {
-        x: 0.7,
+        x: 0.5,
         y: 0.1,
       },
-      id: "vertex-a",
+      id: "position-a",
     },
 
     {
@@ -23,9 +23,9 @@ export const MagicTriangle: Algorithm = {
       valueMakerName: "StaticPositionMaker",
       params: {
         x: 0.9,
-        y: 0.7,
+        y: 0.9,
       },
-      id: "vertex-b",
+      id: "position-b",
     },
 
     {
@@ -35,7 +35,107 @@ export const MagicTriangle: Algorithm = {
         x: 0.1,
         y: 0.9,
       },
+      id: "position-c",
+    },
+
+    {
+      valueType: "vertex",
+      valueMakerName: "StaticVertexMaker",
+      params: {
+        pVertex: {
+          type: "reference",
+          reference: "position-a",
+        },
+        pLeft: {
+          type: "reference",
+          reference: "vertex-b",
+        },
+        pRight: {
+          type: "reference",
+          reference: "vertex-c",
+        },
+      },
+      id: "vertex-a",
+    },
+
+    {
+      valueType: "vertex",
+      valueMakerName: "StaticVertexMaker",
+      params: {
+        pVertex: {
+          type: "reference",
+          reference: "position-b",
+        },
+        pLeft: {
+          type: "reference",
+          reference: "vertex-c",
+        },
+        pRight: {
+          type: "reference",
+          reference: "vertex-a",
+        },
+      },
+      id: "vertex-b",
+    },
+
+    {
+      valueType: "vertex",
+      valueMakerName: "StaticVertexMaker",
+      params: {
+        pVertex: {
+          type: "reference",
+          reference: "position-c",
+        },
+        pLeft: {
+          type: "reference",
+          reference: "vertex-e",
+        },
+        pRight: {
+          type: "reference",
+          reference: "vertex-f",
+        },
+      },
       id: "vertex-c",
+    },
+
+    {
+      valueType: "vertex",
+      valueMakerName: "StaticVertexMaker",
+      params: {
+        pVertex: {
+          type: "reference",
+          reference: "position-c",
+        },
+        pLeft: {
+          type: "reference",
+          reference: "vertex-a",
+        },
+        pRight: {
+          type: "reference",
+          reference: "vertex-b",
+        },
+      },
+      id: "vertex-e",
+    },
+
+    {
+      valueType: "vertex",
+      valueMakerName: "StaticVertexMaker",
+      params: {
+        pVertex: {
+          type: "reference",
+          reference: "position-c",
+        },
+        pLeft: {
+          type: "reference",
+          reference: "vertex-a",
+        },
+        pRight: {
+          type: "reference",
+          reference: "vertex-b",
+        },
+      },
+      id: "vertex-f",
     },
 
     {
@@ -46,549 +146,68 @@ export const MagicTriangle: Algorithm = {
       },
       id: "distance",
     },
-
-    {
-      valueType: "number",
-      valueMakerName: "StaticNumberMaker",
-      params: {
-        value: 0.1,
-      },
-      id: "3d-angle",
-    },
-
-    // {
-    //     valueType:"position",
-    //     valueMakerName: "StaticPositionMaker",
-    //     params: findPointAtAngleAndDistanceFromLine({
-    //         x: 0.1,
-    //         y: 0.9,
-    //         dx:0,
-    //         dy:0,
-    //     },
-    //     {
-    //         x: 0.9,
-    //         y: 0.1,
-    //         dx:0,
-    //         dy:0,
-    //     },
-    //     3,
-    //     0.4, ),
-    //     id: "vertex-c-a"
-    // },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-c",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-b",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          console.log({ p0, p1, distance, angle });
-          return findPointAtAngleAndDistanceFromLine(p0, p1, distance, angle);
-        },
-      },
-      id: "vertex-c-a",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-a-a",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-c",
-        },
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-c",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          // const xd = findPointAlongLine(p0, p1, distance);
-
-          // const xb = findPointAlongLine(xd, p2, distance);
-
-          const xb = findPointAlongLine(p0, p2, distance);
-          return xb;
-        },
-      },
-      id: "vertex-a-b",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-b-a",
-        },
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-c",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          // const xd = findPointAlongLine(p1, p2, distance);
-          // const xb = findPointAlongLine(xd, p0, distance);
-
-          const xb = findPointAlongLine(p1, p0, distance);
-
-          return xb;
-        },
-      },
-      id: "vertex-b-b",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-c-a",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          const xd = findPointAlongLine(p2, p1, distance);
-          //const xb = findPointAlongLine(xd, p1, distance);
-
-          return xd;
-        },
-      },
-      id: "vertex-c-b",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-b-b",
-        },
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-c-b",
-        },
-
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          const xd = findPointAlongLine(p0, p1, distance * 2);
-
-          const xc = findPointAlongLine(xd, p2, distance);
-
-          return xc;
-        },
-      },
-      id: "vertex-a-c",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-c",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          const xd = findPointAlongLine(p1, p2, distance * 2);
-
-          const xc = findPointAlongLine(xd, p0, distance);
-
-          return xc;
-        },
-      },
-      id: "vertex-b-c",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-c",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          const xd = findPointAlongLine(p2, p0, distance * 2);
-
-          const xc = findPointAlongLine(xd, p1, distance);
-
-          return xc;
-        },
-      },
-      id: "vertex-c-c",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-c",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          console.log({ p0, p1, distance, angle });
-          return findPointAtAngleAndDistanceFromLine(p0, p1, distance, angle);
-        },
-      },
-      id: "vertex-a-a",
-    },
-
-    {
-      valueType: "position",
-      valueMakerName: "NormaliseByFunctionPositionMaker",
-      params: {
-        p0: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-        p1: {
-          type: "reference",
-          reference: "vertex-c",
-        },
-
-        p2: {
-          // not used
-          type: "reference",
-          reference: "vertex-a",
-        },
-        distance: {
-          type: "reference",
-          reference: "distance",
-        },
-        angle: {
-          type: "reference",
-          reference: "3d-angle",
-        },
-        fn: (p0, p1, p2, distance, angle) => {
-          console.log({ p0, p1, distance, angle });
-          return findPointAtAngleAndDistanceFromLine(p0, p1, distance, angle);
-        },
-      },
-      id: "vertex-b-a",
-    },
   ],
   drawMakers: [
     {
-      drawType: "DrawLinker",
+      drawType: "DrawImpossible",
       params: {
-        p1: {
+        pVertex: {
           type: "reference",
           reference: "vertex-a",
         },
-        p2: {
-          type: "reference",
-          reference: "vertex-c-a",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-a-a",
-        },
-        p2: {
+        pVertexLeft: {
           type: "reference",
           reference: "vertex-b",
         },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-b-a",
-        },
-        p2: {
+        pVertexRight: {
           type: "reference",
           reference: "vertex-c",
         },
+        trim: {
+          type: "reference",
+          reference: "distance",
+        },
       },
     },
-
     {
-      drawType: "DrawLinker",
+      drawType: "DrawImpossible",
       params: {
-        p1: {
+        pVertex: {
+          type: "reference",
+          reference: "vertex-b",
+        },
+        pVertexLeft: {
           type: "reference",
           reference: "vertex-c",
         },
-        p2: {
-          type: "reference",
-          reference: "vertex-a-b",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
+        pVertexRight: {
           type: "reference",
           reference: "vertex-a",
         },
-        p2: {
+        trim: {
           type: "reference",
-          reference: "vertex-b-b",
+          reference: "distance",
         },
       },
     },
-
     {
-      drawType: "DrawLinker",
+      drawType: "DrawImpossible",
       params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-        p2: {
-          type: "reference",
-          reference: "vertex-c-b",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-c-b",
-        },
-        p2: {
-          type: "reference",
-          reference: "vertex-a-c",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-b-b",
-        },
-        p2: {
-          type: "reference",
-          reference: "vertex-c-c",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-a-b",
-        },
-        p2: {
-          type: "reference",
-          reference: "vertex-b-c",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-a",
-        },
-        p2: {
-          type: "reference",
-          reference: "vertex-a-a",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-b",
-        },
-        p2: {
-          type: "reference",
-          reference: "vertex-b-a",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawLinker",
-      params: {
-        p1: {
+        pVertex: {
           type: "reference",
           reference: "vertex-c",
         },
-        p2: {
+        pVertexLeft: {
           type: "reference",
-          reference: "vertex-c-a",
+          reference: "vertex-a",
         },
-      },
-    },
-
-    {
-      drawType: "DrawDot",
-      params: {
-        p1: {
+        pVertexRight: {
           type: "reference",
-          reference: "vertex-a-c",
+          reference: "vertex-b",
         },
-      },
-    },
-    {
-      drawType: "DrawDot",
-      params: {
-        p1: {
+        trim: {
           type: "reference",
-          reference: "vertex-b-c",
-        },
-      },
-    },
-
-    {
-      drawType: "DrawDot",
-      params: {
-        p1: {
-          type: "reference",
-          reference: "vertex-c-c",
+          reference: "distance",
         },
       },
     },

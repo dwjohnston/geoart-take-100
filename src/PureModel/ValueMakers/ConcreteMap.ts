@@ -48,6 +48,10 @@ import {
   XYPositionMaker,
   XYPositionMakerTyping,
 } from "./PositionMakers/XYPositionMaker";
+import {
+  StaticVertexMaker,
+  StaticVertexMakerTyping,
+} from "./VertexMakers.ts/StaticVertexMaker";
 
 export const concreteValueMakerMap = {
   StaticColorMaker: StaticColorMaker,
@@ -62,6 +66,8 @@ export const concreteValueMakerMap = {
   TangentOffsetPositionMaker: TangentOffsetPositionMaker,
   XYPositionMaker: XYPositionMaker,
   NormaliseByFunctionPositionMaker: NormaliseByFunctionPositionMaker,
+
+  StaticVertexMaker: StaticVertexMaker,
 } as const;
 
 export type AllValueMakerTypings =
@@ -75,7 +81,8 @@ export type AllValueMakerTypings =
   | StaticPositionMakerTyping
   | TangentOffsetPositionMakerTyping
   | XYPositionMakerTyping
-  | NormaliseByFunctionPositionMakerTyping;
+  | NormaliseByFunctionPositionMakerTyping
+  | StaticVertexMakerTyping;
 
 //Manually declaring the type map.
 // There is hopefully a better way to do it.
@@ -95,6 +102,7 @@ export type TypingsMap = {
   TangentOffsetPositionMaker: TangentOffsetPositionMakerTyping;
   XYPositionMaker: XYPositionMakerTyping;
   NormaliseByFunctionPositionMaker: NormaliseByFunctionPositionMakerTyping;
+  StaticVertexMaker: StaticVertexMakerTyping;
 };
 
 export type TypingsMap2 = {
