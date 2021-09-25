@@ -3,7 +3,7 @@ import {
   AbstractControlType,
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
-import { Color, Position } from "../ValueTypes";
+import { Color, Position, Vertex } from "../ValueTypes";
 import { AllValueMakerTypings, TypingsMap } from "./ConcreteMap";
 import { findValueByKey } from "./_functions/findValueByKey";
 
@@ -18,14 +18,7 @@ export type ControlConfigAndUpdateFunction<
 
 /** move these? */
 
-type PossibleValueTypes = Color | number | Position;
-type PossibleValueTypesAsString = "color" | "number" | "position";
-
-type ValueTypeMap = {
-  color: Color;
-  number: number;
-  position: Position;
-};
+type PossibleValueTypes = Color | number | Position | Vertex;
 
 // This doesn't work properly
 type ReverseValueTypeMapLookup<T extends PossibleValueTypes> = T extends Color

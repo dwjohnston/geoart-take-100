@@ -9,6 +9,7 @@ import { DotMaker } from "./DrawMakers/DotMaker";
 import { Linker } from "./DrawMakers/Linker";
 import { PlanetDrawer } from "./DrawMakers/PlanetDrawer";
 import { LineMaker } from "./DrawMakers/LineMaker";
+import { ImpossibleDrawer } from "./DrawMakers/ImpossibleDrawer";
 
 // TODO
 // This is implementation - move it
@@ -19,6 +20,7 @@ export const DrawMakingMap = {
   DrawDot: DotMaker,
   DrawBall: BallDrawer,
   DrawLine: LineMaker,
+  DrawImpossible: ImpossibleDrawer,
 };
 
 export type PossibleDrawTypes = keyof typeof DrawMakingMap;

@@ -1,4 +1,4 @@
-import { ValueJson, ValueMakerTyping } from "./ValueMakers/AbstractValueMaker";
+import { ValueJson } from "./ValueMakers/AbstractValueMaker";
 import { AllValueMakerTypings } from "./ValueMakers/ConcreteMap";
 import { StaticNumberMaker } from "./ValueMakers/NumberMakers/StaticNumberMaker";
 import { StaticPositionMaker } from "./ValueMakers/PositionMakers/StaticPositionMaker";

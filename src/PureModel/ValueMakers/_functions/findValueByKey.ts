@@ -45,6 +45,7 @@ export function findValueByKey<
 >(
   valueMakerName: TValueMakerName,
   valueJson: ValueJson<TValueMakerName>,
+  //@ts-ignore
   referenceNodes: NodeReferenceMap<TypingsMap[TValueMakerName]>,
   paramKey: TParamKey
 ): TypingsMap[TValueMakerName]["params"][TParamKey] {

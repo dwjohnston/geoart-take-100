@@ -3,8 +3,6 @@
  * We need to consolidate all of our typings to Classes somewhere, here is that place.
  */
 
-import { OptionHTMLAttributes } from "react";
-import { ValueJson } from "./AbstractValueMaker";
 import {
   StaticColorMaker,
   StaticColorMakerTyping,
@@ -44,6 +42,10 @@ import {
   XYPositionMaker,
   XYPositionMakerTyping,
 } from "./PositionMakers/XYPositionMaker";
+import {
+  StaticVertexMaker,
+  StaticVertexMakerTyping,
+} from "./VertexMakers.ts/StaticVertexMaker";
 
 export const concreteValueMakerMap = {
   StaticColorMaker: StaticColorMaker,
@@ -52,11 +54,11 @@ export const concreteValueMakerMap = {
   SineNumberMaker: SineNumberMaker,
   StaticNumberMaker: StaticNumberMaker,
   StraightWaveMaker: StraightWaveMaker,
-
   OrbitingPositionMaker: OrbitingPositionMaker,
   StaticPositionMaker: StaticPositionMaker,
   TangentOffsetPositionMaker: TangentOffsetPositionMaker,
   XYPositionMaker: XYPositionMaker,
+  StaticVertexMaker: StaticVertexMaker,
 } as const;
 
 export type AllValueMakerTypings =
@@ -69,7 +71,8 @@ export type AllValueMakerTypings =
   | OrbitingPositionMakerTyping
   | StaticPositionMakerTyping
   | TangentOffsetPositionMakerTyping
-  | XYPositionMakerTyping;
+  | XYPositionMakerTyping
+  | StaticVertexMakerTyping;
 
 //Manually declaring the type map.
 // There is hopefully a better way to do it.
@@ -88,6 +91,7 @@ export type TypingsMap = {
   StaticPositionMaker: StaticPositionMakerTyping;
   TangentOffsetPositionMaker: TangentOffsetPositionMakerTyping;
   XYPositionMaker: XYPositionMakerTyping;
+  StaticVertexMaker: StaticVertexMakerTyping;
 };
 
 export type TypingsMap2 = {

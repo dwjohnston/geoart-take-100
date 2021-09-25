@@ -15,3 +15,9 @@ export type Position = {
 
   color?: Color;
 };
+
+export type Vertex = {
+  pLeft: Position;
+  pRight: Position;
+  pVertex: Position;
+};
