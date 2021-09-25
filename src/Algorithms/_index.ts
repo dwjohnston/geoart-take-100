@@ -6,3 +6,4 @@ export * from "./RollingBall";
 export * from "./RollingBall2";
 export * from "./StraightWave";
 export * from "./MagicTriangle";
+export * from "./MagicHexagon";
