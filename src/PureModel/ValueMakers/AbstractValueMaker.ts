@@ -104,6 +104,7 @@ export class AbstractValueMaker<
   protected valueMakerName: TValueMakerTyping["name"];
 
   protected valueJson: ValueJson<TValueMakerTyping["name"]>;
+  //@ts-ignore
   protected referencedNodes: NodeReferenceMap<TValueMakerTyping>;
 
   protected lookupValueByKey: <K extends keyof TValueMakerTyping["params"]>(
@@ -112,6 +113,7 @@ export class AbstractValueMaker<
 
   constructor(
     valueJson: ValueJson<TValueMakerTyping["name"]>,
+    //@ts-ignore
     referencedNodes: NodeReferenceMap<TValueMakerTyping>
   ) {
     this.valueType = valueJson.valueType;
@@ -163,6 +165,8 @@ export class AbstractValueMaker<
    * You only need to implement this if it is a static value maker (ie. an atomic level value maker)
    * @returns
    */
+
+  //@ts-ignore
   getControlConfig(): Array<ControlConfigAndUpdateFunction<TValueMakerTyping>> {
     return [];
   }

@@ -19,7 +19,7 @@ function constructSingleModelItemFromJson(
 
     //@ts-ignore
     return new Class(valueJson, dependencyNodes);
-  } catch (err) {
+  } catch (err: any) {
     throw new GeneralError(err.message, { valueJson });
   }
 }
@@ -53,9 +53,10 @@ export function constructModelFromJsonArray(
 
   let keepProcessing = true;
   let i = 0;
-  while (keepProcessing) {
+  while (keepProcessing && dependantNodes.length > 0) {
     const valueJson = dependantNodes[i];
 
+    console.log({ json, dependantNodes, valueJson });
     const params = Object.values(valueJson.params);
 
     const readyToCreate = params.every((v) => {

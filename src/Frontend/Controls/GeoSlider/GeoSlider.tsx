@@ -20,6 +20,8 @@ export type SliderProps = AbstractControlProps<
 
 const StyledGeoSlider = styled.div`
   height: 100%; // I don't like this. But I dont' want the parent to to have to be flex.
+
+  width: 8em;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -73,7 +75,12 @@ export const GeoSlider = (props: SliderProps) => {
           }}
         />
       </div>
-      <div>{toSignificantFigures(currentValue, 3)}</div>
+      <div>
+        <span style={{ width: "8em" }}>{`${toSignificantFigures(
+          currentValue,
+          3
+        )}`}</span>
+      </div>
     </StyledGeoSlider>
   );
 };

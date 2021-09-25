@@ -1,3 +1,4 @@
+import { NormaliseByFunctionPositionMakerTyping } from "./NormaliseByFunctionPositionMaker";
 import { OrbitingPositionMakerTyping } from "./OrbitingPositionMaker";
 import { StaticPositionMakerTyping } from "./StaticPositionMaker";
 import { TangentOffsetPositionMakerTyping } from "./TangentOffsetPositionMaker";
@@ -7,4 +8,5 @@ export type PossiblePositionMakers =
   | OrbitingPositionMakerTyping
   | StaticPositionMakerTyping
   | TangentOffsetPositionMakerTyping
-  | XYPositionMakerTyping;
+  | XYPositionMakerTyping
+  | NormaliseByFunctionPositionMakerTyping;

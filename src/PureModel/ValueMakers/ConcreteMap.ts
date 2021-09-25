@@ -27,6 +27,10 @@ import {
   StraightWaveMaker,
   StraightWaveMakerTyping,
 } from "./NumberMakers/StraightWaveMaker";
+import {
+  NormaliseByFunctionPositionMaker,
+  NormaliseByFunctionPositionMakerTyping,
+} from "./PositionMakers/NormaliseByFunctionPositionMaker";
 
 import {
   OrbitingPositionMaker,
@@ -57,6 +61,7 @@ export const concreteValueMakerMap = {
   StaticPositionMaker: StaticPositionMaker,
   TangentOffsetPositionMaker: TangentOffsetPositionMaker,
   XYPositionMaker: XYPositionMaker,
+  NormaliseByFunctionPositionMaker: NormaliseByFunctionPositionMaker,
 } as const;
 
 export type AllValueMakerTypings =
@@ -69,7 +74,8 @@ export type AllValueMakerTypings =
   | OrbitingPositionMakerTyping
   | StaticPositionMakerTyping
   | TangentOffsetPositionMakerTyping
-  | XYPositionMakerTyping;
+  | XYPositionMakerTyping
+  | NormaliseByFunctionPositionMakerTyping;
 
 //Manually declaring the type map.
 // There is hopefully a better way to do it.
@@ -88,6 +94,7 @@ export type TypingsMap = {
   StaticPositionMaker: StaticPositionMakerTyping;
   TangentOffsetPositionMaker: TangentOffsetPositionMakerTyping;
   XYPositionMaker: XYPositionMakerTyping;
+  NormaliseByFunctionPositionMaker: NormaliseByFunctionPositionMakerTyping;
 };
 
 export type TypingsMap2 = {
