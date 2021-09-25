@@ -31,9 +31,9 @@ describe("Has the correct typings", () => {
     ]);
 
     wantsDiscUnion([
+      //@ts-expect-error
       {
         valueMakerName: "XYPositionMaker",
-        //@ts-expect-error
         params: {
           x: 1,
           y: 1,
