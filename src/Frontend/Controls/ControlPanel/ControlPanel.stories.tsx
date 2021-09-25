@@ -33,6 +33,8 @@ export const Default = () => {
       <Debug item={value} />
       <ComponentContainer>
         <ControlPanel
+          algorithmKey="foo"
+          onSuperSpeedChange={() => undefined}
           controlHints={[]}
           onChange={handleChange}
           controls={[

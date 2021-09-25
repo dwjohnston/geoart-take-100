@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Slider } from "@material-ui/core";
 import { AbstractControlId, AbstractControlProps } from "../Abstractions";
 import styled from "styled-components";
+import { toSignificantFigures } from "../../../utils/toSignificantFigures";
 
 export type SliderProps = AbstractControlProps<
   AbstractControlId,
@@ -19,6 +20,8 @@ export type SliderProps = AbstractControlProps<
 
 const StyledGeoSlider = styled.div`
   height: 100%; // I don't like this. But I dont' want the parent to to have to be flex.
+
+  width: 8em;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -37,23 +40,20 @@ const StyledGeoSlider = styled.div`
 export const GeoSlider = (props: SliderProps) => {
   const { params, onChange, id } = props;
   const { min, max, initialValue, step, label } = params;
-
-  console.log(params);
-
   const [currentValue, setCurrentValue] = useState(initialValue);
 
   // TODO this logic can probably be moved up a layer.
   useEffect(() => {
-    console.log("change");
-    onChange({
-      id,
-      value: currentValue,
-    });
+    onChange(
+      {
+        id,
+        value: currentValue,
+      },
+      true
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(currentValue);
 
   return (
     <StyledGeoSlider className="geo-slider">
@@ -75,7 +75,12 @@ export const GeoSlider = (props: SliderProps) => {
           }}
         />
       </div>
-      <div>{currentValue}</div>
+      <div>
+        <span style={{ width: "8em" }}>{`${toSignificantFigures(
+          currentValue,
+          3
+        )}`}</span>
+      </div>
     </StyledGeoSlider>
   );
 };

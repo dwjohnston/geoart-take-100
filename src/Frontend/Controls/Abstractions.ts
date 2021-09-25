@@ -1,4 +1,4 @@
-import { Color } from "../../PureModel/AbstractModelItem";
+import { Color } from "../../PureModel/ValueTypes";
 import { controlMapping } from "./mapping";
 
 export type AbstractControlId = string;
@@ -47,7 +47,10 @@ export type AbstractControlProps<
   TOutputValue extends AbstractControlOutputValue
 > = {
   id: TId;
-  onChange: (value: AbstractControlOutput<TId, TOutputValue>) => void;
+  onChange: (
+    value: AbstractControlOutput<TId, TOutputValue>,
+    isMount?: boolean
+  ) => void;
   params: TInputParams;
 };
 

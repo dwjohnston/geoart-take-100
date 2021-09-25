@@ -1,4 +1,4 @@
-import { Normalizer } from "../NumberMakers";
+import { Normalizer } from "./Normalizer";
 
 describe("Normalizer", () => {
   // (Math.PI * 2)  => 1
@@ -9,7 +9,7 @@ describe("Normalizer", () => {
       const valueMaker = new Normalizer(
         {
           id: "sine",
-          valueMaker: "Normalizer",
+          valueMakerName: "Normalizer",
           valueType: "number",
           params: {
             numerator: 1,
@@ -35,7 +35,7 @@ describe("Normalizer", () => {
       const valueMaker = new Normalizer(
         {
           id: "sine",
-          valueMaker: "Normalizer",
+          valueMakerName: "Normalizer",
           valueType: "number",
           params: {
             numerator: 1,
@@ -61,7 +61,7 @@ describe("Normalizer", () => {
       const valueMaker = new Normalizer(
         {
           id: "sine",
-          valueMaker: "Normalizer",
+          valueMakerName: "Normalizer",
           valueType: "number",
           params: {
             numerator: 1,

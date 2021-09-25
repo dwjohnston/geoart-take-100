@@ -3,44 +3,114 @@ import {
   AbstractControlType,
   ControlConfig,
 } from "../../Frontend/Controls/Abstractions";
-import {
-  findValueByKey,
-  NodeReferenceMap,
-  ValueJson,
-  ValueMakers,
-  ValueMakersMap,
-  ValueMakersParamMap,
-  ValueTypeMap,
-} from "../AbstractModelItem";
+import { Color, Position, Vertex } from "../ValueTypes";
+import { AllValueMakerTypings, TypingsMap } from "./ConcreteMap";
+import { findValueByKey } from "./_functions/findValueByKey";
 
-export type ControlConfigAndUpdateFunction<T> = {
+export type ControlConfigAndUpdateFunction<
+  T extends ValueMakerTyping,
+  K extends keyof T["params"] = keyof T["params"]
+> = {
+  paramKey: K;
   config: ControlConfig<AbstractControlType>;
-  updateFn: (value: T) => void;
+  updateFn: (value: T["params"][K]) => void;
 };
 
-export class AbstractValueMaker<TValueMaker extends ValueMakers> {
-  protected id: string;
-  protected valueType: ValueJson<TValueMaker>["valueType"];
-  protected valueMaker: TValueMaker;
+/** move these? */
 
-  protected valueJson: ValueJson<TValueMaker>;
-  protected referencedNodes: NodeReferenceMap<
-    TValueMaker,
-    ValueJson<TValueMaker>
+type PossibleValueTypes = Color | number | Position | Vertex;
+
+// This doesn't work properly
+type ReverseValueTypeMapLookup<T extends PossibleValueTypes> = T extends Color
+  ? "color"
+  : T extends number
+  ? "number"
+  : T extends Position
+  ? "position"
+  : never;
+
+export type PossibleParamValue<T extends ValueMakerTyping> =
+  T["params"][string];
+
+/**
+ * This is an _abstract_ typing
+ *
+ * ie. other typings will implement this
+ */
+export type ValueMakerTyping = {
+  name: string;
+  params: Record<string, PossibleValueTypes>;
+  valueType: PossibleValueTypes;
+};
+
+export type ValueJsonParameters<T> = {
+  [K in keyof T]: ParameterValue<T[K]>;
+};
+
+export type ValueJson<T extends keyof TypingsMap = keyof TypingsMap> = {
+  [K in keyof TypingsMap]: {
+    valueType: any; // For now - because I don't think this is being useful.
+    valueMakerName: K;
+    params: ValueJsonParameters<TypingsMap[K]["params"]>;
+    id: string;
+  };
+}[T];
+
+export type DiscriminatedValueMakerTypeName<
+  T extends keyof TypingsMap = keyof TypingsMap
+> = {
+  [K in keyof TypingsMap]: K;
+}[T];
+
+/** Value reference - when declaring a model, you are referring to either a fix value ('static') or a reference value (eg. another node) */
+export type ParameterValue<T> = StaticReference<T> | NodeReference | T;
+
+export type StaticReference<T> = {
+  type: "static";
+  value: T;
+};
+
+export type NodeReference = {
+  type: "reference";
+  reference: string;
+};
+
+/**
+ * This is the a map of possible parameters, to instantiated classes providing those parameters
+ */
+export type NodeReferenceMap<TValueMakerTyping extends ValueMakerTyping> =
+  Partial<
+    {
+      [K in keyof TValueMakerTyping["params"]]: {
+        getValue(): TValueMakerTyping["params"];
+      };
+    }
   >;
 
-  protected lookupValueByKey: <
-    K extends keyof ValueMakersParamMap[TValueMaker]
-  >(
+export class AbstractValueMaker<
+  TValueMakerTyping extends AllValueMakerTypings
+> {
+  protected id: string;
+  protected valueType: ReverseValueTypeMapLookup<
+    TValueMakerTyping["valueType"]
+  >;
+  protected valueMakerName: TValueMakerTyping["name"];
+
+  protected valueJson: ValueJson<TValueMakerTyping["name"]>;
+  //@ts-ignore
+  protected referencedNodes: NodeReferenceMap<TValueMakerTyping>;
+
+  protected lookupValueByKey: <K extends keyof TValueMakerTyping["params"]>(
     key: K
-  ) => ValueMakersParamMap[TValueMaker][K];
+  ) => TValueMakerTyping["params"][K];
 
   constructor(
-    valueJson: ValueJson<TValueMaker>,
-    referencedNodes: NodeReferenceMap<TValueMaker, ValueJson<TValueMaker>>
+    valueJson: ValueJson<TValueMakerTyping["name"]>,
+    //@ts-ignore
+    referencedNodes: NodeReferenceMap<TValueMakerTyping>
   ) {
     this.valueType = valueJson.valueType;
-    this.valueMaker = valueJson.valueMaker;
+    this.valueMakerName = valueJson.valueMakerName;
     this.id = valueJson.id;
 
     this.valueJson = valueJson;
@@ -48,10 +118,11 @@ export class AbstractValueMaker<TValueMaker extends ValueMakers> {
 
     this.lookupValueByKey = (key) => {
       const value = findValueByKey(
-        valueJson.valueMaker,
-        //@ts-ignore - Put a TS ignore here, for some reason the error isn't showing up in the IDE :(
+        valueJson.valueMakerName,
         valueJson,
         referencedNodes,
+
+        //@ts-ignore - not sure what's happening here
         key
       );
 
@@ -65,21 +136,39 @@ export class AbstractValueMaker<TValueMaker extends ValueMakers> {
     };
   }
 
-  getValue(): ValueTypeMap[ValueMakersMap[TValueMaker]] {
+  /**
+   * This is the main thing you will need to implement
+   */
+  getValue(): TValueMakerTyping["valueType"] {
     throw new NotImplementedError();
   }
 
-  updateValue(v: ValueTypeMap[ValueMakersMap[TValueMaker]]) {
+  /**
+
+
+  Can probably be removed. Implement as part of getControlConfig. 
+   * @param v
+   */
+  updateValue(v: TValueMakerTyping["valueType"]) {
     throw new NotImplementedError();
   }
 
-  getControlConfig(): Array<
-    ControlConfigAndUpdateFunction<ValueTypeMap[ValueMakersMap[TValueMaker]]>
-  > {
+  /**
+   * Implement this if you want to provide default control hints.
+   * You only need to implement this if it is a static value maker (ie. an atomic level value maker)
+   * @returns
+   */
+
+  //@ts-ignore
+  getControlConfig(): Array<ControlConfigAndUpdateFunction<TValueMakerTyping>> {
     return [];
   }
 
-  toJson(): ValueJson<TValueMaker> {
+  /**
+   * You will not need to implement this.
+   * @returns
+   */
+  toJson(): ValueJson<TValueMakerTyping["name"]> {
     return this.valueJson;
   }
 }

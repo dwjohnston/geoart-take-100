@@ -6,30 +6,58 @@ export const ThreePlanet: Algorithm = {
     {
       id: "center",
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "StaticPositionMaker",
       params: {
-        value: {
-          x: 0.5,
-          y: 0.5,
-        },
+        x: 0.5,
+        y: 0.5,
       },
     },
     {
       valueType: "color",
-      valueMaker: "StaticColorMaker",
+      valueMakerName: "StaticColorMaker",
       params: {
-        r: 255,
-        g: 255,
-        b: 255,
-        a: 0.3,
+        value: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 0.1,
+        },
       },
-      id: "color",
+      id: "color-1",
+    },
+
+    {
+      valueType: "color",
+      valueMakerName: "StaticColorMaker",
+      params: {
+        value: {
+          r: 0,
+          g: 255,
+          b: 0,
+          a: 0.1,
+        },
+      },
+      id: "color-2",
+    },
+
+    {
+      valueType: "color",
+      valueMakerName: "StaticColorMaker",
+      params: {
+        value: {
+          r: 0,
+          g: 0,
+          b: 255,
+          a: 0.1,
+        },
+      },
+      id: "color-3",
     },
 
     //PLANET1
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.002,
       },
@@ -38,7 +66,7 @@ export const ThreePlanet: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.2,
       },
@@ -46,7 +74,7 @@ export const ThreePlanet: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -60,7 +88,7 @@ export const ThreePlanet: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",
@@ -77,7 +105,7 @@ export const ThreePlanet: Algorithm = {
         },
         color: {
           type: "reference",
-          reference: "color",
+          reference: "color-1",
         },
       },
       id: "planet1",
@@ -86,7 +114,7 @@ export const ThreePlanet: Algorithm = {
     //PLANET2
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.002,
       },
@@ -95,7 +123,7 @@ export const ThreePlanet: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.2,
       },
@@ -103,7 +131,7 @@ export const ThreePlanet: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -117,7 +145,7 @@ export const ThreePlanet: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",
@@ -134,7 +162,7 @@ export const ThreePlanet: Algorithm = {
         },
         color: {
           type: "reference",
-          reference: "color",
+          reference: "color-2",
         },
       },
       id: "planet2",
@@ -143,7 +171,7 @@ export const ThreePlanet: Algorithm = {
     //PLANET3
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.002,
       },
@@ -152,7 +180,7 @@ export const ThreePlanet: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.2,
       },
@@ -160,7 +188,7 @@ export const ThreePlanet: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -174,7 +202,7 @@ export const ThreePlanet: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",
@@ -191,7 +219,7 @@ export const ThreePlanet: Algorithm = {
         },
         color: {
           type: "reference",
-          reference: "color",
+          reference: "color-3",
         },
       },
       id: "planet3",
@@ -286,7 +314,7 @@ export const ThreePlanet: Algorithm = {
         min: -0.1,
         max: 0.1,
         step: 0.001,
-        initialValue: 0.04,
+        initialValue: 0.01,
       },
       visible: true,
     },
@@ -298,7 +326,7 @@ export const ThreePlanet: Algorithm = {
         min: 0,
         max: 0.5,
         step: 0.01,
-        initialValue: 0.2,
+        initialValue: 0.3,
       },
       visible: true,
     },
@@ -307,10 +335,10 @@ export const ThreePlanet: Algorithm = {
       controlType: "slider",
       params: {
         label: "Planet 2 Speed",
-        min: -0.01,
-        max: 0.01,
+        min: -0.1,
+        max: 0.1,
         step: 0.001,
-        initialValue: 0.02,
+        initialValue: 0.015,
       },
       visible: true,
     },
@@ -331,10 +359,10 @@ export const ThreePlanet: Algorithm = {
       controlType: "slider",
       params: {
         label: "Planet 3 Speed",
-        min: -0.01,
-        max: 0.01,
+        min: -0.1,
+        max: 0.1,
         step: 0.001,
-        initialValue: 0.04,
+        initialValue: -0.005,
       },
       visible: true,
     },

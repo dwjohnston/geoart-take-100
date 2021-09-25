@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { UserPreferencesContextProvider } from "./Frontend/Providers/UserPreferencesProvider";
 import { GlobalControlsContextProvider } from "./Frontend/Providers/GlobalControlsProvider";
+import { TrackingContextProvider } from "./Frontend/Providers/TrackingProvider";
 
 const theme = createMuiTheme({
   palette: {
@@ -21,19 +22,22 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <UserPreferencesContextProvider
-        initialPreferences={{
-          showDebug: false,
-          showInfoPanel: true,
-          isPaused: false,
-        }}
-      >
-        <GlobalControlsContextProvider>
-          <App />
-        </GlobalControlsContextProvider>
-      </UserPreferencesContextProvider>
-    </ThemeProvider>
+    <TrackingContextProvider>
+      <ThemeProvider theme={theme}>
+        <UserPreferencesContextProvider
+          initialPreferences={{
+            showDebug: false,
+            showInfoPanel: true,
+            isPaused: false,
+            selectedAlgorithm: "EarthVenusAlgorithm",
+          }}
+        >
+          <GlobalControlsContextProvider>
+            <App />
+          </GlobalControlsContextProvider>
+        </UserPreferencesContextProvider>
+      </ThemeProvider>
+    </TrackingContextProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

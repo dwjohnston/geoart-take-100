@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Color } from "../../../PureModel/AbstractModelItem";
 import { AbstractControlId, AbstractControlProps } from "../Abstractions";
 import styled from "styled-components";
 import { Slider } from "@material-ui/core";
 import { colorToString } from "../../../PureModel/Drawables/utils";
+import { Color } from "../../../PureModel/ValueTypes";
 
 export type GeoColorControlProps = AbstractControlProps<
   AbstractControlId,
@@ -54,12 +54,15 @@ export const GeoColorControl = (props: GeoColorControlProps) => {
 
   const [currentValue, setCurrentValue] = useState(initialValue);
 
-  // TODO this logic can probably be moved up a layer.
+  // // TODO this logic can probably be moved up a layer.
   useEffect(() => {
-    onChange({
-      id,
-      value: currentValue,
-    });
+    onChange(
+      {
+        id,
+        value: currentValue,
+      },
+      true
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -81,7 +84,7 @@ export const GeoColorControl = (props: GeoColorControlProps) => {
         <div className="sliders">
           {(["r", "g", "b", "a"] as Array<keyof Color>).map((v) => {
             return (
-              <div className="individual-slider">
+              <div className="individual-slider" key={v}>
                 <span>{v}</span>
                 <div className="slider-container">
                   <Slider

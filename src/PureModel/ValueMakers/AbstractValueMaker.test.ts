@@ -1,5 +1,4 @@
-import { AbstractValueMaker } from "../AbstractValueMaker";
-import { StaticNumberMaker } from "../NumberMakers";
+import { StaticNumberMaker } from "./NumberMakers/StaticNumberMaker";
 
 describe("AbstractValueMaker", () => {
   describe("lookupValueByKey", () => {
@@ -8,7 +7,7 @@ describe("AbstractValueMaker", () => {
         () =>
           new StaticNumberMaker(
             {
-              valueMaker: "StaticNumberMaker",
+              valueMakerName: "StaticNumberMaker",
               valueType: "number",
               params: {
                 value: {

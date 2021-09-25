@@ -5,12 +5,10 @@ export const EarthVenusAlgorithm: Algorithm = {
   modelDefinition: [
     {
       valueType: "position",
-      valueMaker: "StaticPositionMaker",
+      valueMakerName: "StaticPositionMaker",
       params: {
-        value: {
-          x: 0.5,
-          y: 0.5,
-        },
+        x: 0.5,
+        y: 0.5,
       },
       id: "position-center",
     },
@@ -18,12 +16,14 @@ export const EarthVenusAlgorithm: Algorithm = {
     //PLANET 1 RGBA
     {
       valueType: "color",
-      valueMaker: "StaticColorMaker",
+      valueMakerName: "StaticColorMaker",
       params: {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 1,
+        value: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1,
+        },
       },
       id: "planet-1-color",
     },
@@ -31,19 +31,21 @@ export const EarthVenusAlgorithm: Algorithm = {
     //PLANET 1 RGBA
     {
       valueType: "color",
-      valueMaker: "StaticColorMaker",
+      valueMakerName: "StaticColorMaker",
       params: {
-        r: 0,
-        g: 0,
-        b: 255,
-        a: 1,
+        value: {
+          r: 255,
+          g: 0,
+          b: 0,
+          a: 1,
+        },
       },
       id: "planet-2-color",
     },
 
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0.9,
         max: 1,
@@ -56,7 +58,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "TickingPhaseMaker",
+      valueMakerName: "PhasingNumberMaker",
       params: {
         initialValue: 0,
         max: 1,
@@ -70,16 +72,16 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
-        value: 0.003,
+        value: 225 / (365 * 100),
       },
       id: "planet-1-speed",
     },
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.002,
       },
@@ -88,7 +90,7 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.2,
       },
@@ -96,7 +98,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     },
     {
       valueType: "number",
-      valueMaker: "StaticNumberMaker",
+      valueMakerName: "StaticNumberMaker",
       params: {
         value: 0.4,
       },
@@ -105,7 +107,7 @@ export const EarthVenusAlgorithm: Algorithm = {
 
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",
@@ -129,7 +131,7 @@ export const EarthVenusAlgorithm: Algorithm = {
     },
     {
       valueType: "position",
-      valueMaker: "OrbitingPositionMaker",
+      valueMakerName: "OrbitingPositionMaker",
       params: {
         center: {
           type: "reference",
@@ -249,8 +251,8 @@ export const EarthVenusAlgorithm: Algorithm = {
       controlType: "slider",
       params: {
         label: "Planet 1 Speed",
-        min: -0.01,
-        max: 0.01,
+        min: -0.1,
+        max: 0.1,
         step: 0.001,
         initialValue: 0.01,
       },
@@ -262,10 +264,10 @@ export const EarthVenusAlgorithm: Algorithm = {
       controlType: "slider",
       params: {
         label: "Planet 2 Speed",
-        min: -0.01,
-        max: 0.01,
+        min: -0.1,
+        max: 0.1,
         step: 0.001,
-        initialValue: -0.01,
+        initialValue: 0.01 * (365 / 225),
       },
       visible: true,
     },
@@ -277,7 +279,7 @@ export const EarthVenusAlgorithm: Algorithm = {
         min: 0,
         max: 0.5,
         step: 0.01,
-        initialValue: 0.3,
+        initialValue: 0.5,
       },
       visible: true,
     },
@@ -289,7 +291,7 @@ export const EarthVenusAlgorithm: Algorithm = {
         min: 0,
         max: 0.5,
         step: 0.01,
-        initialValue: 0.5,
+        initialValue: 0.5 * 0.7,
       },
       visible: true,
     },

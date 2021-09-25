@@ -1,12 +1,15 @@
 import {
-  NodeValueReference,
   ModelMap,
   IDrawMaker,
   getValueMakerFromReferenceNode,
 } from "./AbstractModelItem";
+import { NodeReference } from "./ValueMakers/AbstractValueMaker";
+import { BallDrawer } from "./DrawMakers/BallDrawer";
 import { DotMaker } from "./DrawMakers/DotMaker";
 import { Linker } from "./DrawMakers/Linker";
 import { PlanetDrawer } from "./DrawMakers/PlanetDrawer";
+import { LineMaker } from "./DrawMakers/LineMaker";
+import { ImpossibleDrawer } from "./DrawMakers/ImpossibleDrawer";
 
 // TODO
 // This is implementation - move it
@@ -15,6 +18,9 @@ export const DrawMakingMap = {
   DrawLinker: Linker,
   DrawPlanet: PlanetDrawer,
   DrawDot: DotMaker,
+  DrawBall: BallDrawer,
+  DrawLine: LineMaker,
+  DrawImpossible: ImpossibleDrawer,
 };
 
 export type PossibleDrawTypes = keyof typeof DrawMakingMap;
@@ -30,7 +36,7 @@ export type AbstractDrawItem<
 > = {
   drawType: TDrawType;
   params: {
-    [K in keyof PossibleParams<TDrawType>]: NodeValueReference;
+    [K in keyof PossibleParams<TDrawType>]: NodeReference;
   };
 };
 
@@ -39,9 +45,7 @@ export function createDrawMakersFromDrawItems(
   modelMap: ModelMap
 ): Array<IDrawMaker> {
   const drawMakers = drawItems.map((v) => {
-    const entries = Object.entries(v.params) as Array<
-      [string, NodeValueReference]
-    >;
+    const entries = Object.entries(v.params) as Array<[string, NodeReference]>;
 
     const params = entries.reduce((acc, [key, value]) => {
       const node = getValueMakerFromReferenceNode(value, modelMap);
