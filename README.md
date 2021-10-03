@@ -29,5 +29,5 @@ Create a new algorithm in `src/Algorithms`. I'll accept the PR if your algorithm
 The following require a decent amount of experience and likely time and effort. I'm not really expecting anyone to do these, unless you're really into the project. 
 
 - Help solve some of the @tsignores I have around the place. 
-- Enforce better typing in the algorithms. 
 - Make the site mobile friendly. 
+- (Details coming for some of these). 
