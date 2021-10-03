@@ -8,3 +8,26 @@
 
 Create a new file, make sure you add the export to `_index.ts` and that'll do the trick!
 
+
+
+
+## Hacktoberfest Guidelines
+
+### Easy(ish) 
+
+Suitable if you can code, but you perhaps don't understand all of the code here. 
+
+Create a new algorithm in `src/Algorithms`. I'll accept the PR if your algorithm is good. 
+
+### Medium 
+
+- Create new value makers. 
+- Create docs. 
+
+### Hard/Advanced
+
+The following require a decent amount of experience and likely time and effort. I'm not really expecting anyone to do these, unless you're really into the project. 
+
+- Help solve some of the @tsignores I have around the place. 
+- Enforce better typing in the algorithms. 
+- Make the site mobile friendly. 
