@@ -4,6 +4,7 @@ import { GenericModal } from "../GenericModal/GenericModal";
 
 import DownloadIcon from "@material-ui/icons/GetApp";
 import { StyledImageModalContent } from "./SaveImageModal.style";
+import { useTracking } from "../../Providers/TrackingProvider";
 
 export type SaveImageModalProps = {
   isOpen: boolean;
@@ -15,12 +16,14 @@ export const SaveImageModal = (props: SaveImageModalProps) => {
   const { isOpen, onClose, requestImage } = props;
 
   const [image, setImage] = useState<string | null>(null);
-
+  const { trackShareImageModalOpened, trackDownloadImageClicked } =
+    useTracking();
   useEffect(() => {
     if (isOpen) {
+      trackShareImageModalOpened();
       setImage(requestImage() || null);
     }
-  }, [isOpen, requestImage]);
+  }, [isOpen, requestImage, trackShareImageModalOpened]);
 
   return (
     <GenericModal
@@ -34,8 +37,13 @@ export const SaveImageModal = (props: SaveImageModalProps) => {
             {" "}
             <img src={image} alt="your creation" />
             <div className="button-container">
-              <Button component="a" size="large" href={image} download>
-                {" "}
+              <Button
+                component="a"
+                size="large"
+                href={image}
+                download
+                onClick={trackDownloadImageClicked}
+              >
                 <DownloadIcon />
               </Button>
             </div>
