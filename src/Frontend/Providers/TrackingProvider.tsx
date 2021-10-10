@@ -7,12 +7,17 @@ type Tracking = {
     controlType: string;
   }) => void;
   trackFeatureToggled: (featureName: string, state: boolean) => void;
+
+  trackShareImageModalOpened: () => void;
+  trackDownloadImageClicked: () => void;
 };
 
 const TrackingContext = React.createContext<Tracking>({
   trackAlgorithmSelected: () => undefined,
   trackControlChanged: () => undefined,
   trackFeatureToggled: () => undefined,
+  trackShareImageModalOpened: () => undefined,
+  trackDownloadImageClicked: () => undefined,
 });
 
 export const TrackingContextProvider = (
@@ -39,6 +44,14 @@ export const TrackingContextProvider = (
             featureName,
             state,
           });
+        },
+
+        trackShareImageModalOpened: () => {
+          window.analytics.track("share image modal opened");
+        },
+
+        trackDownloadImageClicked: () => {
+          window.analytics.track("download image clicked");
         },
 
         ...rest,

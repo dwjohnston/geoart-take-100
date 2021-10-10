@@ -3,6 +3,7 @@ import { TheWholeModel } from "../../PureModel/ModelEntryPoint";
 import styled from "styled-components";
 import { useGlobalControls } from "../Providers/GlobalControlsProvider";
 import { useUserPreferences } from "../Providers/UserPreferencesProvider";
+import { useSaveImageModalProvider } from "../Providers/SaveImageModalProvider";
 
 const randInt = () => {
   return Math.floor(Math.random() * 500);
@@ -48,7 +49,11 @@ export const Canvas = (props: CanvasProps) => {
 
   useEffect(() => {}, [isPaused]);
 
+  useEffect(() => {}, []);
+
   const animationFrameRef = useRef<number | null>(null);
+
+  const { registerImageSave } = useSaveImageModalProvider();
 
   useEffect(() => {
     if (animationFrameRef.current) {
@@ -72,6 +77,10 @@ export const Canvas = (props: CanvasProps) => {
     if (!contextTemp) {
       throw new Error("Context doesn't exist");
     }
+
+    registerImageSave(() => {
+      return refPaint.current?.toDataURL("image/png");
+    });
 
     if (!isPaused) {
       const draw = (ts: number) => {

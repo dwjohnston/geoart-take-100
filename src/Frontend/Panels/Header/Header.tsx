@@ -2,10 +2,12 @@ import { IconButton, Typography } from "@material-ui/core";
 import BugReport from "@material-ui/icons/BugReport";
 import Pause from "@material-ui/icons/Pause";
 import Play from "@material-ui/icons/PlayArrow";
+import Image from "@material-ui/icons/Image";
 import React from "react";
 import { useTracking } from "../../Providers/TrackingProvider";
 import { useUserPreferences } from "../../Providers/UserPreferencesProvider";
 import { StyledHeader } from "./Header.styles";
+import { useSaveImageModalProvider } from "../../Providers/SaveImageModalProvider";
 
 export type HeaderProps = {};
 
@@ -15,6 +17,7 @@ export const Header = (props: HeaderProps) => {
   const { trackFeatureToggled } = useTracking();
 
   const { getPreference, setPreference } = useUserPreferences();
+  const { openModalFn } = useSaveImageModalProvider();
 
   const showDebugPanel = getPreference("showDebug");
   const isPaused = getPreference("isPaused");
@@ -30,6 +33,11 @@ export const Header = (props: HeaderProps) => {
     trackFeatureToggled("showDebug", !showDebugPanel);
   };
 
+  const handleImageDownloadClick = () => {
+    setPreference("isPaused", !isPaused);
+    openModalFn();
+  };
+
   return (
     <>
       <StyledHeader>
@@ -39,6 +47,14 @@ export const Header = (props: HeaderProps) => {
 
         <div className="buttons">
           {/* TODO: better toggle styling */}
+
+          <IconButton
+            aria-label="download image"
+            onClick={handleImageDownloadClick}
+          >
+            <Image />
+          </IconButton>
+
           <IconButton aria-label="toggle pause" onClick={handlePauseClick}>
             {isPaused ? <Play /> : <Pause />}
           </IconButton>
