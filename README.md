@@ -4,30 +4,27 @@
 
 **PRs welcome!**
 
-**Instructions:** Look at `src/Algorithms` and you can see how I've defined algorithms there. 
+**Instructions:** Look at `src/Algorithms` and you can see how I've defined algorithms there.
 
 Create a new file, make sure you add the export to `_index.ts` and that'll do the trick!
 
-
-
-
 ## Hacktoberfest Guidelines
 
-### Easy(ish) 
+### Easy(ish)
 
-Suitable if you can code, but you perhaps don't understand all of the code here. 
+Suitable if you can code, but you perhaps don't understand all of the code here.
 
-Create a new algorithm in `src/Algorithms`. I'll accept the PR if your algorithm is good. 
+Create a new algorithm in `src/Algorithms`. I'll accept the PR if your algorithm is good.
 
-### Medium 
+### Medium
 
-- Create new value makers. 
-- Create docs. 
+- Create new value makers.
+- Create docs.
 
 ### Hard/Advanced
 
-The following require a decent amount of experience and likely time and effort. I'm not really expecting anyone to do these, unless you're really into the project. 
+The following require a decent amount of experience and likely time and effort. I'm not really expecting anyone to do these, unless you're really into the project.
 
-- Help solve some of the @tsignores I have around the place. 
-- Make the site mobile friendly. 
-- (Details coming for some of these). 
+- Help solve some of the @tsignores I have around the place.
+- Make the site mobile friendly.
+- (Details coming for some of these).
