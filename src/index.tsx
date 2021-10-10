@@ -7,6 +7,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { UserPreferencesContextProvider } from "./Frontend/Providers/UserPreferencesProvider";
 import { GlobalControlsContextProvider } from "./Frontend/Providers/GlobalControlsProvider";
 import { TrackingContextProvider } from "./Frontend/Providers/TrackingProvider";
+import { SaveImageModalProviderContextProvider } from "./Frontend/Providers/SaveImageModalProvider";
 
 const theme = createMuiTheme({
   palette: {
@@ -33,7 +34,9 @@ ReactDOM.render(
           }}
         >
           <GlobalControlsContextProvider>
-            <App />
+            <SaveImageModalProviderContextProvider>
+              <App />
+            </SaveImageModalProviderContextProvider>
           </GlobalControlsContextProvider>
         </UserPreferencesContextProvider>
       </ThemeProvider>
