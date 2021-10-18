@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useGlobalControls } from "../Providers/GlobalControlsProvider";
 import { useUserPreferences } from "../Providers/UserPreferencesProvider";
 import { useSaveImageModalProvider } from "../Providers/SaveImageModalProvider";
+import { useVideoSaving } from "../Providers/VideoSavingProvider";
 
 const randInt = () => {
   return Math.floor(Math.random() * 500);
@@ -54,6 +55,7 @@ export const Canvas = (props: CanvasProps) => {
   const animationFrameRef = useRef<number | null>(null);
 
   const { registerImageSave } = useSaveImageModalProvider();
+  const { canvasCapturer, registerCanvasElement } = useVideoSaving();
 
   useEffect(() => {
     if (animationFrameRef.current) {
@@ -77,6 +79,8 @@ export const Canvas = (props: CanvasProps) => {
     if (!contextTemp) {
       throw new Error("Context doesn't exist");
     }
+
+    registerCanvasElement(refPaint.current);
 
     registerImageSave(() => {
       return refPaint.current?.toDataURL("image/png");

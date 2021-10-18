@@ -25,7 +25,6 @@ export const SaveImageModalProviderContextProvider = (
   const imageSaverRef = useRef<() => string | undefined>(() => {
     return undefined;
   });
-
   const handleClose = () => {
     setIsOpen(false);
   };

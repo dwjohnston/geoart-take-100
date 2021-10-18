@@ -74,7 +74,6 @@ export class ImpossibleDrawer implements IDrawMaker {
       rightsRight,
     } = params;
 
-    console.log(params);
     this.thisVertex = thisVertex;
     this.vertexLeft = vertexLeft;
     this.vertexRight = vertexRight;
@@ -112,7 +111,6 @@ export class ImpossibleDrawer implements IDrawMaker {
       trim
     );
 
-    console.log({ thisPoints, leftPoints, rightPoints });
     return {
       temp: [
         new Line(leftPoints.n, thisPoints.m, "rgba(255, 0, 0, 1)"),

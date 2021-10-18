@@ -20,6 +20,8 @@ import { DebugPanel } from "./Panels/DebugPanel/DebugPanel";
 import { StyledApp } from "./App.styles";
 import { useTracking } from "./Providers/TrackingProvider";
 import { useUserPreferences } from "./Providers/UserPreferencesProvider";
+import { useVideoSaving } from "./Providers/VideoSavingProvider";
+import { GifSaver } from "./Saving/GifSaver";
 
 const preBuiltModels = getNonBrokenAlgorithms();
 
@@ -32,6 +34,8 @@ function App() {
   const [superSpeed, setSuperSpeed] = useState(1); // Careful here - I've been a bit lazy and these can get out of sync.
 
   const { setPreference, getPreference } = useUserPreferences();
+
+  const { random } = useVideoSaving();
 
   const [selectedModelName, setSelectedModelName] =
     useState<keyof typeof preBuiltModels | null>(null);
@@ -84,6 +88,8 @@ function App() {
   return (
     <StyledApp>
       <Header />
+      {random}
+      <GifSaver />
       <InfoPanel />
       <DebugPanel onChangeValue={onChangeDebug} />
       {selectedModelName && (

@@ -5,6 +5,7 @@ import { GenericModal } from "../GenericModal/GenericModal";
 import DownloadIcon from "@material-ui/icons/GetApp";
 import { StyledImageModalContent } from "./SaveImageModal.style";
 import { useTracking } from "../../Providers/TrackingProvider";
+import { GifSaver } from "../../Saving/GifSaver";
 
 export type SaveImageModalProps = {
   isOpen: boolean;
@@ -32,6 +33,8 @@ export const SaveImageModal = (props: SaveImageModalProps) => {
       title={<span>Share your creation</span>}
     >
       <StyledImageModalContent>
+        <GifSaver />
+
         {image ? (
           <>
             {" "}

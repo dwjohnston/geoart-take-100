@@ -8,6 +8,7 @@ import { UserPreferencesContextProvider } from "./Frontend/Providers/UserPrefere
 import { GlobalControlsContextProvider } from "./Frontend/Providers/GlobalControlsProvider";
 import { TrackingContextProvider } from "./Frontend/Providers/TrackingProvider";
 import { SaveImageModalProviderContextProvider } from "./Frontend/Providers/SaveImageModalProvider";
+import { VideoSavingContextProvider } from "./Frontend/Providers/VideoSavingProvider";
 
 const theme = createMuiTheme({
   palette: {
@@ -34,9 +35,11 @@ ReactDOM.render(
           }}
         >
           <GlobalControlsContextProvider>
-            <SaveImageModalProviderContextProvider>
-              <App />
-            </SaveImageModalProviderContextProvider>
+            <VideoSavingContextProvider>
+              <SaveImageModalProviderContextProvider>
+                <App />
+              </SaveImageModalProviderContextProvider>
+            </VideoSavingContextProvider>
           </GlobalControlsContextProvider>
         </UserPreferencesContextProvider>
       </ThemeProvider>

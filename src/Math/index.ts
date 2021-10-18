@@ -115,8 +115,6 @@ export function rotatePointAboutPoint(
   //   y: newPoint.y + pivot.y
   // }
 
-  console.log({ pivot, point });
-
   const newPoint = {
     x:
       Math.cos(angle) * (point.x - pivot.x) -
@@ -131,7 +129,6 @@ export function rotatePointAboutPoint(
   };
 
   // const newPoint = point;
-  console.log(newPoint);
   return newPoint;
 }
 
@@ -166,8 +163,6 @@ export function findPointAtAngleAndDistanceFromLine(
   distance: number,
   angle: number
 ): Position {
-  console.log("math", { p0, p1, distance, angle });
-
   const pointAlongLine = findPointAlongLine(p0, p1, distance);
   // const newPoint = rotatePointAboutPoint(p0, pointAlongLine, angle);
 

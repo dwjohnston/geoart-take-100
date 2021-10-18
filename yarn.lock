@@ -2783,6 +2783,11 @@
   resolved "https://registry.yarnpkg.com/@types/braces/-/braces-3.0.0.tgz#7da1c0d44ff1c7eb660a36ec078ea61ba7eb42cb"
   integrity sha512-TbH79tcyi9FHwbyboOKeRachRq63mSuWYXOflsNO9ZyE5ClQ/JaozNKl+aWUq87qPNsXasXxi2AbgfwIJ+8GQw==
 
+"@types/ccapture.js@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/ccapture.js/-/ccapture.js-1.1.1.tgz#aea2148f564fdf1364cf581a8037bfe98fa287fb"
+  integrity sha512-asPI0RGa3wMfUVtTfcPlw5upMMZEF6ftdr44htBnRpjs4hOP4Lp1XlgoTM9ifutHrXnG//htUdieydm5xOVFNg==
+
 "@types/color-convert@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-2.0.0.tgz#8f5ee6b9e863dcbee5703f5a517ffb13d3ea4e22"
@@ -4604,6 +4609,14 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, can
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001223.tgz#39b49ff0bfb3ee3587000d2f66c47addc6e14443"
   integrity sha512-k/RYs6zc/fjbxTjaWZemeSmOjO0JJV+KguOBA3NwPup8uzxM1cMhR2BD9XmO86GuqaqTCO8CgkgH9Rz//vdDiA==
 
+"canvas-capture@github:amandaghassaei/canvas-capture":
+  version "1.0.0"
+  resolved "https://codeload.github.com/amandaghassaei/canvas-capture/tar.gz/6ebdc508fcd823dd6049ab008018cc43b3114251"
+  dependencies:
+    ccapture.js "git+https://github.com/amandaghassaei/ccapture.js.git#npm-fix"
+    file-saver "^2.0.5"
+    micromodal "^0.4.6"
+
 capture-exit@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/capture-exit/-/capture-exit-2.0.0.tgz#fb953bfaebeb781f62898239dabb426d08a509a4"
@@ -4625,6 +4638,15 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
+
+ccapture.js@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/ccapture.js/-/ccapture.js-1.1.0.tgz#ac4030e8b43847e305242d784abf284d2313beff"
+  integrity sha512-28kiHJzFsZ6b0OTfKpWpEwK2n/LTAgytK1uzB+413dzjHltdh2hP5Yg2qR0+9Xw3XoBMz5UkGCh8Ektr2rVlmw==
+
+"ccapture.js@git+https://github.com/amandaghassaei/ccapture.js.git#npm-fix":
+  version "1.0.8"
+  resolved "git+https://github.com/amandaghassaei/ccapture.js.git#7ada41933411c4b1bcde4cdb09eef03758838bc7"
 
 ccount@^1.0.0:
   version "1.1.0"
@@ -6761,6 +6783,11 @@ file-loader@^6.2.0:
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
+
+file-saver@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
 
 file-system-cache@^1.0.5:
   version "1.0.5"
@@ -9641,6 +9668,11 @@ micromatch@^4.0.2:
   dependencies:
     braces "^3.0.1"
     picomatch "^2.2.3"
+
+micromodal@^0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/micromodal/-/micromodal-0.4.6.tgz#0425ad026c47923208cf826de6b58ed0693cb25a"
+  integrity sha512-2VDso2a22jWPpqwuWT/4RomVpoU3Bl9qF9D01xzwlNp5UVsImeA0gY4nSpF44vqcQtQOtkiMUV9EZkAJSRxBsg==
 
 miller-rabin@^4.0.0:
   version "4.0.1"
