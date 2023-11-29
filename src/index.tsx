@@ -1,13 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./Frontend/App";
+import "./Video.css";
+
 import reportWebVitals from "./reportWebVitals";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
-import { UserPreferencesContextProvider } from "./Frontend/Providers/UserPreferencesProvider";
-import { GlobalControlsContextProvider } from "./Frontend/Providers/GlobalControlsProvider";
+
 import { TrackingContextProvider } from "./Frontend/Providers/TrackingProvider";
-import { SaveImageModalProviderContextProvider } from "./Frontend/Providers/SaveImageModalProvider";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Main } from "./Frontend/Pages/Main";
+import { Video } from "./Frontend/Pages/Video";
 
 const theme = createMuiTheme({
   palette: {
@@ -21,24 +23,27 @@ const theme = createMuiTheme({
   },
 });
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Main />,
+  },
+  {
+    path: "/video",
+    element: (
+      <div style={{ width: 800, border: "solid 1px red" }}>
+        {" "}
+        <Video />
+      </div>
+    ),
+  },
+]);
+
 ReactDOM.render(
   <React.StrictMode>
     <TrackingContextProvider>
       <ThemeProvider theme={theme}>
-        <UserPreferencesContextProvider
-          initialPreferences={{
-            showDebug: false,
-            showInfoPanel: true,
-            isPaused: false,
-            selectedAlgorithm: "EarthVenusAlgorithm",
-          }}
-        >
-          <GlobalControlsContextProvider>
-            <SaveImageModalProviderContextProvider>
-              <App />
-            </SaveImageModalProviderContextProvider>
-          </GlobalControlsContextProvider>
-        </UserPreferencesContextProvider>
+        <RouterProvider router={router} />
       </ThemeProvider>
     </TrackingContextProvider>
   </React.StrictMode>,

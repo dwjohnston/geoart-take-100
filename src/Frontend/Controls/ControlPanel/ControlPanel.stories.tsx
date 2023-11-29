@@ -7,7 +7,6 @@ import {
   AbstractControlOutput,
   AbstractControlOutputValue,
   AbstractControlProps,
-  AbstractControlType,
   ControlConfig,
   ControlTypeMap,
 } from "../Abstractions";

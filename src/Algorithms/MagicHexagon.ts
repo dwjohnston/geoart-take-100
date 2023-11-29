@@ -1,8 +1,3 @@
-import {
-  findPointAlongLine,
-  findPointAtAngleAndDistanceFromLine,
-  rotatePointAboutPoint,
-} from "../Math";
 import { Algorithm } from "./_Algorithm";
 
 export const MagicHexagon: Algorithm = {

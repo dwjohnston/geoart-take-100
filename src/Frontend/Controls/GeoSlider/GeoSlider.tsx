@@ -1,5 +1,3 @@
-import { ReactComponent } from "*.svg";
-
 import React, { useEffect, useState } from "react";
 import { Slider } from "@material-ui/core";
 import { AbstractControlId, AbstractControlProps } from "../Abstractions";

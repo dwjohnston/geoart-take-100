@@ -9,7 +9,6 @@ import {
   AbstractControlOutput,
   AbstractControlOutputValue,
   AbstractControlProps,
-  AbstractControlType,
   ControlConfig,
   ControlHint,
   ControlTypeMap,
@@ -17,6 +16,7 @@ import {
 import { ControlContainer } from "../ControlContainer/ControlContainer";
 import { GeoColorControl } from "../GeoColorControl/GeoColorControl";
 import { GeoSlider } from "../GeoSlider/GeoSlider";
+import { AbstractControlType } from "../mapping";
 export type ControlPanelProps = {
   algorithmKey: string;
   controls: Array<ControlConfig<AbstractControlType>>;

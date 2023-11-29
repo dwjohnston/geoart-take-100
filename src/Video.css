@@ -1,0 +1,57 @@
+.video-container {
+  display: flex;
+}
+
+canvas {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+.video-panel {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1em;
+  height: 500px;
+}
+
+.video-panel > * {
+  flex: 1 0 auto;
+}
+
+.webcam-container.visble {
+  display: block;
+}
+
+.webcam-container.hidden {
+  visibility: hidden;
+}
+
+.webcam-container.hidden + .canvas-container {
+  left: -25%;
+}
+
+.webcam-container video,
+.webcam-container canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas-container,
+.webcam-container {
+  position: relative;
+  border: solid 1px grey;
+}
+
+.canvas-container canvas {
+  position: absolute;
+  inset: 0;
+}
+
+ul {
+  text-align: left;
+}

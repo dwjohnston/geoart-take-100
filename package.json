@@ -1,24 +1,16 @@
 {
-  "name": "art",
-  "version": "0.1.0",
-  "private": true,
+  "name": "geoart-take-100",
+  "version": "1.0.1",
+  "main": "lib/export.js",
+  "files": [
+    "lib"
+  ],
   "dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "lodash": "^4.17.21",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "styled-components": "^5.3.0",
-    "typescript": "^4.2.3",
-    "uuid": "^8.3.2",
-    "web-vitals": "^1.0.1"
+    "@mediapipe/tasks-vision": "^0.10.8"
   },
-  "engines": {
-    "node": "14"
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "scripts": {
     "prepare": "husky install",
@@ -29,7 +21,8 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "format": "prettier --write src",
-    "format:quick": "pretty-quick --staged"
+    "format:quick": "pretty-quick --staged",
+    "build-package": "rm -rf lib && yarn tsc -p tsconfig.build.json && cp ./src/*.css lib"
   },
   "eslintConfig": {
     "extends": [
@@ -73,6 +66,21 @@
     "@types/uuid": "^8.3.0",
     "husky": "^7.0.1",
     "prettier": "^2.3.0",
-    "pretty-quick": "^3.1.1"
+    "pretty-quick": "^3.1.1",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@mediapipe/tasks-vision": "^0.10.8",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.20.0",
+    "react-scripts": "5.0.1",
+    "styled-components": "^5.3.0",
+    "typescript": "^4.2.3",
+    "uuid": "^8.3.2",
+    "web-vitals": "^1.0.1"
   }
 }

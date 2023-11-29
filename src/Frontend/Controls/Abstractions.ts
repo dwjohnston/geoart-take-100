@@ -1,8 +1,7 @@
 import { Color } from "../../PureModel/ValueTypes";
-import { controlMapping } from "./mapping";
+import { AbstractControlType } from "./mapping";
 
 export type AbstractControlId = string;
-export type AbstractControlType = keyof typeof controlMapping;
 export type AbstractControlInputParams = Record<string, unknown>;
 export type AbstractControlOutputValue = unknown;
 

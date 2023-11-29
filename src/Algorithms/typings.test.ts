@@ -36,6 +36,7 @@ describe("Algorithm Typings", () => {
           {
             id: "foo",
             valueType: "number",
+            //@ts-ignore
             valueMaker: "StaticNumberMaker",
             params: {
               value: 1,

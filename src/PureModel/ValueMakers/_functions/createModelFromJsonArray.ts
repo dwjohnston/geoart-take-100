@@ -3,7 +3,7 @@ import { GeneralError } from "../../../Errors/errors";
 import { partition } from "../../../utils/partition";
 import { ModelMap } from "../../AbstractModelItem";
 import { ValueJson } from "../AbstractValueMaker";
-import { AllValueMakerTypings, concreteValueMakerMap } from "../ConcreteMap";
+import { concreteValueMakerMap } from "../ConcreteMap";
 import { checkForCircularDependencies } from "./checkForCircularDependencies";
 import {
   objectIsNodeReference,
@@ -55,8 +55,6 @@ export function constructModelFromJsonArray(
   let i = 0;
   while (keepProcessing && dependantNodes.length > 0) {
     const valueJson = dependantNodes[i];
-
-    console.log({ json, dependantNodes, valueJson });
     const params = Object.values(valueJson.params);
 
     const readyToCreate = params.every((v) => {

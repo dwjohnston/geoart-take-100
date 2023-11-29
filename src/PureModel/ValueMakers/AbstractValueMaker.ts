@@ -1,8 +1,6 @@
 import { GeneralError, NotImplementedError } from "../../Errors/errors";
-import {
-  AbstractControlType,
-  ControlConfig,
-} from "../../Frontend/Controls/Abstractions";
+import { ControlConfig } from "../../Frontend/Controls/Abstractions";
+import { AbstractControlType } from "../../Frontend/Controls/mapping";
 import { Color, Position, Vertex } from "../ValueTypes";
 import { AllValueMakerTypings, TypingsMap } from "./ConcreteMap";
 import { findValueByKey } from "./_functions/findValueByKey";

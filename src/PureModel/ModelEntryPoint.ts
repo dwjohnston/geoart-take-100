@@ -51,6 +51,8 @@ export class TheWholeModel implements ITheWholeModel {
     this._controlConfigs = controlConfigs;
     this._drawmakers = drawMakers;
 
+    console.log(controlConfigs);
+
     this._updateFns = controlConfigs.reduce((acc, cur) => {
       return {
         ...acc,
@@ -86,7 +88,13 @@ export class TheWholeModel implements ITheWholeModel {
    * @param value
    */
   updateProperty(value: AbstractControlOutput<AbstractControlId, unknown>) {
-    this._updateFns[value.id](value.value);
+    const updateFn = this._updateFns[value.id];
+    if (!updateFn) {
+      throw new Error(
+        `no updateFn for value id ${value.id}, ${JSON.stringify(value)}`
+      );
+    }
+    updateFn(value.value);
   }
 
   /**

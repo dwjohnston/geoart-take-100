@@ -5,3 +5,5 @@ export const controlMapping = {
   slider: GeoSlider,
   "color-control": GeoColorControl,
 };
+
+export type AbstractControlType = keyof typeof controlMapping;
